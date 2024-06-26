@@ -1,61 +1,61 @@
-import { env } from '@/env'
+import { env } from "@/env";
 
 interface TotvsProps {
-  token: string
-  page: number
-  pageSize?: number
-  daysFromToday?: number
+  token: string;
+  page: number;
+  pageSize?: number;
+  daysFromToday?: number;
 }
 
-const totvs_url = env.totvs_url
+const totvs_url = env.totvs_url;
 
 export async function fetchToken() {
-  const url =
-    `${totvs_url}/api/totvsmoda/authorization/v2/token`
+  const url = `${totvs_url}/api/totvsmoda/authorization/v2/token`;
 
   const body = {
-    grant_type: 'password',
+    grant_type: "password",
     client_id: env.client_id,
     client_secret: env.client_secret,
     username: env.username,
     password: env.password,
-  }
+  };
 
   const { access_token, token_type, expires_in, refresh_token } = await fetch(
     url,
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams(body).toString(),
     },
-  ).then((response) => response.json())
+  ).then((response) => response.json());
 
-  return { access_token, token_type, expires_in, refresh_token }
+  return { access_token, token_type, expires_in, refresh_token };
 }
 
-export async function listOrders({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function listOrders(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
+  const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -63,43 +63,44 @@ export async function listOrders({ token, page, pageSize, daysFromToday }: Totvs
         startDate: formattedStartDate,
         endDate: formattedEndDate,
       },
-      startOrderDate: '2020-01-01T17:34:58.073Z',
-      endOrderDate: '2050-04-04T17:34:58.073Z',
+      startOrderDate: "2020-01-01T17:34:58.073Z",
+      endOrderDate: "2050-04-04T17:34:58.073Z",
       branchCodeList: [1, 2],
     },
     page,
     pageSize: pageSize ?? 200,
-  }
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getOrderItems({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function getOrderItems(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
+  const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -107,44 +108,45 @@ export async function getOrderItems({ token, page, pageSize, daysFromToday }: To
         startDate: formattedStartDate,
         endDate: formattedEndDate,
       },
-      startOrderDate: '2020-01-01T17:34:58.073Z',
-      endOrderDate: '2050-04-04T17:34:58.073Z',
+      startOrderDate: "2020-01-01T17:34:58.073Z",
+      endOrderDate: "2050-04-04T17:34:58.073Z",
       branchCodeList: [1, 2],
     },
     page,
     pageSize: pageSize ?? 200,
-    expand: 'items,shippingAddress',
-  }
+    expand: "items,shippingAddress",
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getOps({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function getOps(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/production-order/v2/orders/search`
+  const url = `${totvs_url}/api/totvsmoda/production-order/v2/orders/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -156,37 +158,38 @@ export async function getOps({ token, page, pageSize, daysFromToday }: TotvsProp
     },
     page,
     pageSize: pageSize ?? 200,
-    expand: 'locations,items',
-  }
+    expand: "locations,items",
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getProductInfos({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+export async function getProductInfos(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/product/v2/products/search`
+  const url = `${totvs_url}/api/totvsmoda/product/v2/products/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -213,39 +216,40 @@ export async function getProductInfos({ token, page, pageSize, daysFromToday }: 
     },
     page,
     pageSize: pageSize ?? 100,
-    order: 'referenceCode',
-    expand: 'classifications,suppliers',
-  }
+    order: "referenceCode",
+    expand: "classifications,suppliers",
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getProductCosts({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function getProductCosts(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/product/v2/costs/search`
+  const url = `${totvs_url}/api/totvsmoda/product/v2/costs/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -270,37 +274,38 @@ export async function getProductCosts({ token, page, pageSize, daysFromToday }: 
     },
     page,
     pageSize: pageSize ?? 200,
-  }
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getProductPrices({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function getProductPrices(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/product/v2/prices/search`
+  const url = `${totvs_url}/api/totvsmoda/product/v2/prices/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -321,38 +326,39 @@ export async function getProductPrices({ token, page, pageSize, daysFromToday }:
     },
     page,
     pageSize: pageSize ?? 200,
-    order: 'productCode',
-  }
+    order: "productCode",
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function getProductBalances({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function getProductBalances(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
+  const formattedEndDate = formatISODateWithMillis(currentDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/product/v2/balances/search`
+  const url = `${totvs_url}/api/totvsmoda/product/v2/balances/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
@@ -384,54 +390,55 @@ export async function getProductBalances({ token, page, pageSize, daysFromToday 
     },
     page,
     pageSize: pageSize ?? 200,
-    order: 'referenceCode',
-  }
+    order: "referenceCode",
+  };
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }
 
-export async function listColors({ token, page, pageSize, daysFromToday }: TotvsProps) {
-  const currentDate = new Date()
-  const days = daysFromToday ?? 3
+export async function listColors(
+  { token, page, pageSize, daysFromToday }: TotvsProps,
+) {
+  const currentDate = new Date();
+  const days = daysFromToday ?? 3;
 
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const startDate = new Date(currentDate.getTime());
+  startDate.setDate(currentDate.getDate() - days);
 
   function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
+    return date.toISOString();
   }
 
-  const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedStartDate = formatISODateWithMillis(startDate);
 
-  const url =
-    `${totvs_url}/api/totvsmoda/product/v2/colors/search`
+  const url = `${totvs_url}/api/totvsmoda/product/v2/colors/search`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  };
 
   const body = {
     filter: {
       change: {
         startDate: formattedStartDate,
         endDate: currentDate,
-      }
+      },
     },
     page,
     pageSize: pageSize ?? 200,
-  }
+  };
 
   const data = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
-  }).then((response) => response.json())
+  }).then((response) => response.json());
 
-  return data
+  return data;
 }

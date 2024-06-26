@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'
-import { Prisma, Color } from '@prisma/client'
+import { prisma } from "@/lib/prisma";
+import { Color, Prisma } from "@prisma/client";
 
-import { ColorsRepository } from '../colors-repository'
+import { ColorsRepository } from "../colors-repository";
 
 export class PrismaColorsRepository implements ColorsRepository {
   async findById(id: number) {
@@ -9,8 +9,8 @@ export class PrismaColorsRepository implements ColorsRepository {
       where: {
         id,
       },
-    })
-    return color
+    });
+    return color;
   }
 
   async findByCode(code: string) {
@@ -18,8 +18,8 @@ export class PrismaColorsRepository implements ColorsRepository {
       where: {
         code,
       },
-    })
-    return color
+    });
+    return color;
   }
 
   async findByTitle(title: string) {
@@ -27,24 +27,24 @@ export class PrismaColorsRepository implements ColorsRepository {
       where: {
         title,
       },
-    })
-    return colors
+    });
+    return colors;
   }
 
   async create(data: Prisma.ColorUncheckedCreateInput) {
     const color = await prisma.color.create({
       data,
-    })
-    return color
+    });
+    return color;
   }
 
   async list() {
     const color = await prisma.color.findMany({
       orderBy: {
-        created_at: 'desc',
+        created_at: "desc",
       },
-    })
-    return color
+    });
+    return color;
   }
 
   async searchMany(query: string, page: number, perPage: number) {
@@ -60,8 +60,8 @@ export class PrismaColorsRepository implements ColorsRepository {
       },
       take: perPage,
       skip: (page - 1) * perPage,
-    })
-    return colors
+    });
+    return colors;
   }
 
   async count(query: string) {
@@ -75,15 +75,15 @@ export class PrismaColorsRepository implements ColorsRepository {
           },
         ],
       },
-    })
-    return color
+    });
+    return color;
   }
 
   async update(color: Color) {
     await prisma.color.update({
       where: { id: color.id },
       data: color,
-    })
+    });
   }
 
   async delete(color: Color) {
@@ -91,6 +91,6 @@ export class PrismaColorsRepository implements ColorsRepository {
       where: {
         id: color.id,
       },
-    })
+    });
   }
 }

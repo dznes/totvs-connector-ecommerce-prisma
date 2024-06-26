@@ -1,15 +1,15 @@
-import { FastifyInstance } from 'fastify'
-import { skuDetailsBackup } from './sku-details-backup'
-import { listSkus } from './list-skus'
-import { search } from './search-sku'
-import { skuPricesBackup } from './sku-prices-backup'
-import { totvsListSkuBalances } from './totvs-list-sku-balances'
+import { FastifyInstance } from "fastify";
+import { skuDetailsBackup } from "./sku-details-backup";
+import { listSkus } from "./list-skus";
+import { search } from "./search-sku";
+import { skuPricesBackup } from "./sku-prices-backup";
+import { totvsListSkuBalances } from "./totvs-list-sku-balances";
 
 export async function SkuRoutes(app: FastifyInstance) {
-  app.get('/sku/detail/backup', skuDetailsBackup)
-  app.get('/sku/price/backup', skuPricesBackup)
-  app.get('/sku', listSkus)
-  app.get('/sku/search', search)
+  app.get("/sku/detail/backup", skuDetailsBackup);
+  app.get("/sku/price/backup", skuPricesBackup);
+  app.get("/sku", listSkus);
+  app.get("/sku/search", search);
 
-  app.get('/totvs/sku/balance', totvsListSkuBalances)
+  app.get("/totvs/sku/balance", totvsListSkuBalances);
 }

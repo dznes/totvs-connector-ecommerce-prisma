@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'
-import { Prisma, Sku } from '@prisma/client'
+import { prisma } from "@/lib/prisma";
+import { Prisma, Sku } from "@prisma/client";
 
-import { SkusRepository } from '../skus-repository'
+import { SkusRepository } from "../skus-repository";
 
 export class PrismaSkusRepository implements SkusRepository {
   async findById(id: number) {
@@ -13,8 +13,8 @@ export class PrismaSkusRepository implements SkusRepository {
         color: true,
         size: true,
       },
-    })
-    return sku
+    });
+    return sku;
   }
 
   async findByCode(code: string) {
@@ -22,8 +22,8 @@ export class PrismaSkusRepository implements SkusRepository {
       where: {
         code,
       },
-    })
-    return sku
+    });
+    return sku;
   }
 
   async findByTitle(title: string) {
@@ -31,8 +31,8 @@ export class PrismaSkusRepository implements SkusRepository {
       where: {
         title,
       },
-    })
-    return skus
+    });
+    return skus;
   }
 
   async findBySlug(slug: string) {
@@ -44,8 +44,8 @@ export class PrismaSkusRepository implements SkusRepository {
         color: true,
         size: true,
       },
-    })
-    return sku
+    });
+    return sku;
   }
 
   async searchMany(query: string, page: number) {
@@ -75,8 +75,8 @@ export class PrismaSkusRepository implements SkusRepository {
       },
       take: 20,
       skip: (page - 1) * 20,
-    })
-    return skus
+    });
+    return skus;
   }
 
   async count(query: string) {
@@ -90,35 +90,35 @@ export class PrismaSkusRepository implements SkusRepository {
           },
         ],
       },
-    })
-    return sku
+    });
+    return sku;
   }
 
   async create(data: Prisma.SkuUncheckedCreateInput) {
     const sku = await prisma.sku.create({
       data,
-    })
-    return sku
+    });
+    return sku;
   }
 
   async list() {
     const sku = await prisma.sku.findMany({
       orderBy: {
-        created_at: 'desc',
+        created_at: "desc",
       },
       include: {
         color: true,
         size: true,
       },
-    })
-    return sku
+    });
+    return sku;
   }
 
   async update(sku: Sku) {
     await prisma.sku.update({
       where: { id: sku.id },
       data: sku,
-    })
+    });
   }
 
   async delete(sku: Sku) {
@@ -126,6 +126,6 @@ export class PrismaSkusRepository implements SkusRepository {
       where: {
         id: sku.id,
       },
-    })
+    });
   }
 }

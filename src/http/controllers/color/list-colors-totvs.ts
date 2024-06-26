@@ -1,7 +1,7 @@
-import { fetchToken, listColors } from '@/http/lib/totvs'
-import { Database } from '@/utils/database'
-import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
+import { fetchToken, listColors } from "@/http/lib/totvs";
+import { Database } from "@/utils/database";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { z } from "zod";
 
 export async function listColorsTOTVS(
   request: FastifyRequest,
@@ -11,22 +11,22 @@ export async function listColorsTOTVS(
     page: z.coerce.number().default(1),
     pageSize: z.coerce.number().default(500),
     search: z.record(z.string(), z.string()).optional(),
-  })
+  });
 
   try {
-    const token = await fetchToken()
-    const { page, pageSize, search } = querySchema.parse(request.query)
-    const offset = (page - 1) * pageSize
-    
-    const colors = await listColors({
-        token: token.access_token,
-        page,
-        pageSize,
-    })
+    const token = await fetchToken();
+    const { page, pageSize, search } = querySchema.parse(request.query);
+    const offset = (page - 1) * pageSize;
 
-    return reply.status(200).send({ data: colors, page, pageSize })
+    const colors = await listColors({
+      token: token.access_token,
+      page,
+      pageSize,
+    });
+
+    return reply.status(200).send({ data: colors, page, pageSize });
   } catch (error) {
-    console.error(error)
-    return reply.status(500).send({ error: 'Internal Server Error' })
+    console.error(error);
+    return reply.status(500).send({ error: "Internal Server Error" });
   }
 }
