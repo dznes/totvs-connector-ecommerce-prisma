@@ -1,0 +1,13 @@
+# docker compose up -d
+# docker compose stop
+version: '3'
+
+services:
+  ecommerce-prisma:
+    image: bitname/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRESQL_DATABASE=ecommerce-prisma
