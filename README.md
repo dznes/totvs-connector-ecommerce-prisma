@@ -11,19 +11,19 @@ This project connects and keeps a SQL (relational database) synced with TOTVS MO
 ### Use Cases
 
 - [X] UPSERT colors.
-- [/] UPSERT sizes. (Need to fully implement, and remove responsibility of UPSERT products info USE CASE)
-- [X] UPSERT products info.
-- [ ] UPSERT products balance.
-- [ ] UPSERT products OPs.
-- [ ] UPSERT products prices.
-- [ ] UPSERT products costs.
+- [/] UPSERT sizes. (Need to fully implement, and remove responsibility of UPSERT skus info USE CASE)
+- [X] UPSERT skus info.
+- [X] UPSERT skus balance.
+- [ ] UPSERT skus OPs.
+- [X] UPSERT skus prices.
+- [X] UPSERT skus costs.
 - [ ] UPSERT clients.
 - [ ] UPSERT orders.
-- [ ] UPSERT orders with products.
-- [X] LIST products with query params.
+- [ ] UPSERT orders with skus.
+- [X] LIST skus with query params.
 - [ ] LIST clients with query params.
 - [ ] LIST orders with query params.
-- [ ] LIST orders with products with query params.
+- [ ] LIST orders with skus with query params.
 - [ ] CREATE User.
 - [ ] CREATE Order.
 
@@ -31,19 +31,19 @@ This project connects and keeps a SQL (relational database) synced with TOTVS MO
 
 - [X] Add colors backup.
 - [X] Add product info backup.
-- [ ] Add product balances backup.
+- [X] Add product balances backup.
 - [ ] Add product OPs backup.
-- [ ] Add product prices backup.
-- [ ] Add product cost backup.
+- [X] Add product prices backup.
+- [X] Add product cost backup.
 - [ ] Add clients backup.
 - [ ] Add orders backup.
-- [ ] Add orders with products backup.
+- [ ] Add orders with skus backup.
 - [ ] Add update for product details in database every 1 minute updates from TOTVS.
 - [ ] Add update for product balance in database every 1 minute updates from TOTVS.
 - [ ] Add update for product prices and cost in database every 1 minute updates from TOTVS.
 - [ ] Add update for clients in database every 1 minute updates from TOTVS.
 - [ ] Add update for orders in database every 1 minute updates from TOTVS.
-- [ ] Add update for orders with products in database every 1 minute updates from TOTVS.
+- [ ] Add update for orders with skus in database every 1 minute updates from TOTVS.
 - [ ] Make scheduler to run updates every 1 minute in all update endpoints, in the right order:
   1. Colors
   2. Sizes
