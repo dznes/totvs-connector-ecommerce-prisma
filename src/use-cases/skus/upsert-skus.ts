@@ -24,6 +24,12 @@ interface UpsertSkuUseCaseRequest {
   colorCode: string
   colorTitle: string
   sizeCode: string
+  is_active?: boolean
+  is_finished_product?: boolean
+  is_raw_material?: boolean
+  is_bulk_material?: boolean
+  is_own_production?: boolean
+  is_blocked?: boolean
 }
 
 export class UpsertSkuUseCase {
@@ -53,6 +59,12 @@ export class UpsertSkuUseCase {
     colorCode,
     colorTitle,
     sizeCode,
+    is_active,
+    is_finished_product,
+    is_raw_material,
+    is_bulk_material,
+    is_own_production,
+    is_blocked,
   }: UpsertSkuUseCaseRequest) {
     let color = await this.colorsRepository.findByCode(colorCode)
 
@@ -85,7 +97,7 @@ export class UpsertSkuUseCase {
         size = await this.sizesRepository.create({
           code: sizeCode,
           title: sizeCode,
-          variation_type: 1,
+          variation_type: 2,
         })
       } catch (error: any) {
         if (error.code !== 'P2002') {
@@ -114,8 +126,13 @@ export class UpsertSkuUseCase {
         reference_id: reference_id || sku.reference_id,
         reference_name: reference_name || sku.reference_name,
         integration_code: integration_code || sku.integration_code,
-        quantity_op: quantity_op || sku.quantity_op,
-        balance: balance || sku.balance,
+        is_active: is_active || sku.is_active,
+        is_finished_product: is_finished_product || sku.is_finished_product,
+        is_raw_material: is_raw_material || sku.is_raw_material,
+        is_bulk_material: is_bulk_material || sku.is_bulk_material,
+        is_own_production: is_own_production || sku.is_own_production,
+        is_blocked: is_blocked || sku.is_blocked,
+        updated_at: new Date(),
       })
       console.log(`Sku ${title} updated.`)
     } else {
@@ -138,6 +155,12 @@ export class UpsertSkuUseCase {
         balance,
         color_code: colorCode,
         size_code: sizeCode,
+        is_active,
+        is_finished_product,
+        is_raw_material,
+        is_bulk_material,
+        is_own_production,
+        is_blocked,
       })
       console.log(`Sku ${title} created.`)
     }

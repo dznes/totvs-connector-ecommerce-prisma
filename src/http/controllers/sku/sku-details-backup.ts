@@ -26,20 +26,26 @@ export async function skuDetailsBackup(
         daysEndFromToday,
       })
       // Upsert (create or update) sku info in Database before fetching more items
-      items.map((skuDetail: SkuDetail) => {
+      items.map((item: SkuDetail) => {
         upsertSkuUseCase.execute({
-          code: skuDetail.productCode.toString(), // productCode is number in the API response
-          status: 200,
-          title: skuDetail.productName,
-          ean: skuDetail.productSku ?? '',
-          ncm: skuDetail.ncm,
-          mpn: skuDetail.productSku ?? '',
-          reference_id: skuDetail.referenceId.toString(),
-          reference_name: skuDetail.referenceName,
+          code: item.productCode.toString(), // productCode is number in the API response
+          status: 200, // FIXME: This should be dynamic
+          title: item.productName,
+          ean: item.productSku ?? '',
+          ncm: item.ncm,
+          mpn: item.productSku ?? '',
+          reference_id: item.referenceId.toString(),
+          reference_name: item.referenceName,
           integration_code: 'TOTVS',
-          colorCode: skuDetail.colorCode,
-          colorTitle: skuDetail.colorName,
-          sizeCode: skuDetail.size,
+          colorCode: item.colorCode,
+          colorTitle: item.colorName,
+          sizeCode: item.size,
+          is_active: item.isActive,
+          is_finished_product: item.isFinishedProduct,
+          is_raw_material: item.isRawMaterial,
+          is_bulk_material: item.isBulkMaterial,
+          is_own_production: item.isOwnProduction,
+          is_blocked: item.isBlocked,
         })
       })
 
@@ -52,11 +58,10 @@ export async function skuDetailsBackup(
       page++
     }
 
-    // Return the complete list of items in the API response
+    // Return pages processed in the API response
     return reply.status(200).send(JSON.stringify({ pages: page }))
   } catch (err) {
-    console.log(err)
-    // It's better to return an HTTP error response
+    // FIXME: For better error handling and response.
     return reply.status(500).send({ error: 'Failed to fetch sku details' })
   }
 }
