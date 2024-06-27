@@ -7,7 +7,6 @@ interface TotvsProps {
   daysStartFromToday?: number
   daysEndFromToday?: number
 }
-
 interface TotvsResponse {
   items: any[]
   totalItems: number
@@ -15,12 +14,20 @@ interface TotvsResponse {
   hasNext: boolean
 }
 
+// TOTVS Base URL
 const totvs_url = env.totvs_url
 
 // HELPER FUNCTIONS
 // ISO date with miliseconds to string
 function formatISODateWithMillis(date: Date): String {
   return date.toISOString()
+}
+
+function headerBuilder(token: string) {
+  return {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  }
 }
 
 // API ENDPOINTS
@@ -71,10 +78,7 @@ export async function listOrders({
 
   const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -120,10 +124,7 @@ export async function getOrderItems({
 
   const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -171,10 +172,7 @@ export async function getOps({
 
   const url = `${totvs_url}/api/totvsmoda/production-order/v2/orders/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -219,10 +217,7 @@ export async function getProductInfos({
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/products/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -272,10 +267,7 @@ export async function getProductCosts({
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/costs/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -333,10 +325,7 @@ export async function getProductPrices({
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/prices/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -390,10 +379,7 @@ export async function getProductBalances({
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/balances/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
@@ -444,7 +430,7 @@ export async function getColors({
   daysEndFromToday,
 }: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const daysStart = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 1000
   const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
@@ -458,10 +444,7 @@ export async function getColors({
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/colors/search`
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
+  const headers = headerBuilder(token)
 
   const body = {
     filter: {
