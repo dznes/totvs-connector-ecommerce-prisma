@@ -1,16 +1,16 @@
-import { SkusRepository } from "@/repositories/skus-repository";
-import { Sku } from "@prisma/client";
+import { SkusRepository } from '@/repositories/skus-repository'
+import { Sku } from '@prisma/client'
 
 interface SearchSkusUseCaseRequest {
-  query: string;
-  page: number;
-  perPage: number;
+  query: string
+  page: number
+  perPage: number
 }
 
 interface SearchSkusUseCaseResponse {
-  skus: Sku[];
-  count: number;
-  totalPages: number;
+  skus: Sku[]
+  count: number
+  totalPages: number
 }
 
 export class SearchSkusUseCase {
@@ -21,14 +21,14 @@ export class SearchSkusUseCase {
     page,
     perPage,
   }: SearchSkusUseCaseRequest): Promise<SearchSkusUseCaseResponse> {
-    const skus = await this.skusRepository.searchMany(query, page, perPage);
-    const count = await this.skusRepository.count(query);
-    const totalPages = Math.ceil(count / perPage);
+    const skus = await this.skusRepository.searchMany(query, page, perPage)
+    const count = await this.skusRepository.count(query)
+    const totalPages = Math.ceil(count / perPage)
 
     return {
       skus,
       count,
       totalPages,
-    };
+    }
   }
 }

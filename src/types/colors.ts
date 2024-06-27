@@ -1,5 +1,5 @@
 export interface Color {
-  colorCode: string;
-  colorName: string;
-  additionalColorInformation: string | null;
+  colorCode: string
+  colorName: string
+  additionalColorInformation: string | null
 }

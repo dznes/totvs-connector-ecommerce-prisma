@@ -42,54 +42,58 @@ model Size {
 }
 
 model Product {
-  id                  Int        @id @default(autoincrement())
-  status              Int        @default(200)
-  title               String     @unique
-  weight              Float
-  ncm                 String
-  mpn                 String?
-  ean                 String?
-  description         String
-  slug                String     @unique
-  created_at          DateTime   @default(now())
-  price_wholesale     Decimal?
-  price_retail        Decimal?
-  cost                Decimal?
-  package_weight      Float?
-  package_height      Float?
-  package_length      Float?
-  package_width       Float?
-  updated_at          DateTime?
-  discount_percentage Float?
-  reference_id        String?
-  reference_name      String?
-  integration_code    String?
-  skus                Sku[]
-  categories          Category[]
+  id                    Int        @id @default(autoincrement())
+  status                Int        @default(200)
+  title                 String     @unique
+  weight                Float
+  ncm                   String
+  mpn                   String?
+  ean                   String?
+  description           String
+  slug                  String     @unique
+  created_at            DateTime   @default(now())
+  price_wholesale       Decimal?
+  promo_price_wholesale Decimal?
+  price_retail          Decimal?
+  promo_price_retail    Decimal?
+  cost                  Decimal?
+  package_weight        Float?
+  package_height        Float?
+  package_length        Float?
+  package_width         Float?
+  updated_at            DateTime?
+  discount_percentage   Float?
+  reference_id          String?
+  reference_name        String?
+  integration_code      String?
+  skus                  Sku[]
+  categories            Category[]
 
   @@map("products")
 }
 
 model Sku {
-  id                  Int       @id @default(autoincrement())
-  code                String    @unique
-  status              Int       @default(200)
-  title               String
-  mpn                 String?
-  ncm                 String
-  ean                 String?
-  slug                String    @unique
-  created_at          DateTime  @default(now())
-  price_wholesale     Decimal?
-  price_retail        Decimal?
-  cost                Decimal?
-  balance             Int       @default(0)
-  discount_percentage Float?
-  reference_id        String?
-  reference_name      String?
-  integration_code    String?
-  quantity_op         Int?
-  updated_at          DateTime?
+  id                    Int       @id @default(autoincrement())
+  code                  String    @unique
+  status                Int       @default(200)
+  title                 String
+  mpn                   String?
+  ncm                   String
+  ean                   String?
+  slug                  String    @unique
+  created_at            DateTime  @default(now())
+  price_wholesale       Decimal?
+  promo_price_wholesale Decimal?
+  price_retail          Decimal?
+  promo_price_retail    Decimal?
+  cost                  Decimal?
+  balance               Int       @default(0)
+  discount_percentage   Float?
+  reference_id          String?
+  reference_name        String?
+  integration_code      String?
+  quantity_op           Int?
+  updated_at            DateTime?
 
   product    Product? @relation(fields: [product_id], references: [id], onDelete: Cascade)
   product_id Int?

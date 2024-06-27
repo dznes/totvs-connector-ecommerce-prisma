@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
-import { Prisma, Size } from "@prisma/client";
+import { prisma } from '@/lib/prisma'
+import { Prisma, Size } from '@prisma/client'
 
-import { SizesRepository } from "../sizes-repository";
+import { SizesRepository } from '../sizes-repository'
 
 export class PrismaSizesRepository implements SizesRepository {
   async findById(id: number) {
@@ -9,8 +9,8 @@ export class PrismaSizesRepository implements SizesRepository {
       where: {
         id,
       },
-    });
-    return size;
+    })
+    return size
   }
 
   async findByCode(code: string) {
@@ -18,8 +18,8 @@ export class PrismaSizesRepository implements SizesRepository {
       where: {
         code,
       },
-    });
-    return size;
+    })
+    return size
   }
 
   async findByTitle(title: string) {
@@ -27,24 +27,24 @@ export class PrismaSizesRepository implements SizesRepository {
       where: {
         title,
       },
-    });
-    return sizes;
+    })
+    return sizes
   }
 
   async create(data: Prisma.SizeUncheckedCreateInput) {
     const size = await prisma.size.create({
       data,
-    });
-    return size;
+    })
+    return size
   }
 
   async list() {
     const size = await prisma.size.findMany({
       orderBy: {
-        created_at: "desc",
+        created_at: 'desc',
       },
-    });
-    return size;
+    })
+    return size
   }
 
   async searchMany(query: string, page: number, perPage: number) {
@@ -60,8 +60,8 @@ export class PrismaSizesRepository implements SizesRepository {
       },
       take: perPage,
       skip: (page - 1) * perPage,
-    });
-    return sizes;
+    })
+    return sizes
   }
 
   async count(query: string) {
@@ -75,15 +75,15 @@ export class PrismaSizesRepository implements SizesRepository {
           },
         ],
       },
-    });
-    return size;
+    })
+    return size
   }
 
   async update(size: Size) {
     await prisma.size.update({
       where: { id: size.id },
       data: size,
-    });
+    })
   }
 
   async delete(size: Size) {
@@ -91,6 +91,6 @@ export class PrismaSizesRepository implements SizesRepository {
       where: {
         id: size.id,
       },
-    });
+    })
   }
 }

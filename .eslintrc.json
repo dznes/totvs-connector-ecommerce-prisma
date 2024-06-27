@@ -5,6 +5,7 @@
   ],
   "rules": {
     "no-useless-constructor": "off",
+    "camelcase": "off",
     "no-new": "off",
     "@typescript-eslint/no-empty-interface": "off"
   },

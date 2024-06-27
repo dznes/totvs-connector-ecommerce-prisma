@@ -4,7 +4,7 @@ This project connects and keeps a SQL (relational database) synced with TOTVS MO
 
 ## API Documentation
 
-[API Documentation](https://tdn.totvs.com.br/pages/releaseview.action?pageId=532385018)
+[TOTVS API Documentation](https://tdn.totvs.com.br/pages/releaseview.action?pageId=532385018)
 
 ## TODO
 
@@ -16,6 +16,7 @@ This project connects and keeps a SQL (relational database) synced with TOTVS MO
 - [ ] UPSERT products balance.
 - [ ] UPSERT products OPs.
 - [ ] UPSERT products prices.
+- [ ] UPSERT products costs.
 - [ ] UPSERT clients.
 - [ ] UPSERT orders.
 - [ ] UPSERT orders with products.
@@ -32,7 +33,8 @@ This project connects and keeps a SQL (relational database) synced with TOTVS MO
 - [X] Add product info backup.
 - [ ] Add product balances backup.
 - [ ] Add product OPs backup.
-- [ ] Add product prices and cost backup.
+- [ ] Add product prices backup.
+- [ ] Add product cost backup.
 - [ ] Add clients backup.
 - [ ] Add orders backup.
 - [ ] Add orders with products backup.
