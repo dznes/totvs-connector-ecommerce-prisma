@@ -8,8 +8,22 @@ interface TotvsProps {
   daysEndFromToday?: number
 }
 
+interface TotvsResponse {
+  items: any[]
+  totalItems: number
+  totalPages: number
+  hasNext: boolean
+}
+
 const totvs_url = env.totvs_url
 
+// HELPER FUNCTIONS
+// ISO date with miliseconds to string
+function formatISODateWithMillis(date: Date): String {
+  return date.toISOString()
+}
+
+// API ENDPOINTS
 export async function fetchToken() {
   const url = `${totvs_url}/api/totvsmoda/authorization/v2/token`
 
@@ -40,19 +54,20 @@ export async function listOrders({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
 
@@ -68,7 +83,7 @@ export async function listOrders({
         endDate: formattedEndDate,
       },
       startOrderDate: '2020-01-01T17:34:58.073Z',
-      endOrderDate: '2050-04-04T17:34:58.073Z',
+      endOrderDate: formatISODateWithMillis(currentDate),
       branchCodeList: [1, 2],
     },
     page,
@@ -88,19 +103,20 @@ export async function getOrderItems({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/sales-order/v2/orders/search`
 
@@ -137,19 +153,21 @@ export async function getOps({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
+
 
   const url = `${totvs_url}/api/totvsmoda/production-order/v2/orders/search`
 
@@ -184,18 +202,20 @@ export async function getProductInfos({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const startDate = new Date(currentDate.getTime())
+  startDate.setDate(currentDate.getDate() - daysStart)
+
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/products/search`
 
@@ -219,7 +239,7 @@ export async function getProductInfos({
     },
     page,
     pageSize: pageSize ?? 100,
-    order: 'referenceCode',
+    order: 'productCode',
   }
   const data = await fetch(url, {
     method: 'POST',
@@ -235,19 +255,20 @@ export async function getProductCosts({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/costs/search`
 
@@ -279,6 +300,7 @@ export async function getProductCosts({
     },
     page,
     pageSize: pageSize ?? 200,
+    order: 'productCode',
   }
   const data = await fetch(url, {
     method: 'POST',
@@ -294,19 +316,20 @@ export async function getProductPrices({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/prices/search`
 
@@ -350,19 +373,20 @@ export async function getProductBalances({
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(currentDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/balances/search`
 
@@ -401,7 +425,7 @@ export async function getProductBalances({
     },
     page,
     pageSize: pageSize ?? 200,
-    order: 'referenceCode',
+    order: 'productCode',
   }
   const data = await fetch(url, {
     method: 'POST',
@@ -412,23 +436,25 @@ export async function getProductBalances({
   return data
 }
 
-export async function listColors({
+export async function getColors({
   token,
   page,
   pageSize,
   daysStartFromToday,
-}: TotvsProps) {
+  daysEndFromToday,
+}: TotvsProps): Promise<TotvsResponse> {
   const currentDate = new Date()
-  const days = daysStartFromToday ?? 3
+  const daysStart = daysStartFromToday ?? 3
+  const daysEnd = daysEndFromToday ?? 0
 
   const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - days)
+  startDate.setDate(currentDate.getDate() - daysStart)
 
-  function formatISODateWithMillis(date: Date) {
-    return date.toISOString()
-  }
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
 
   const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
 
   const url = `${totvs_url}/api/totvsmoda/product/v2/colors/search`
 
@@ -441,7 +467,7 @@ export async function listColors({
     filter: {
       change: {
         startDate: formattedStartDate,
-        endDate: currentDate,
+        endDate: formattedEndDate,
       },
     },
     page,
