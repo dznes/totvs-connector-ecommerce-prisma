@@ -1,14 +1,17 @@
-import { fetchToken, getProductPrices } from '@/http/lib/totvs'
-import { SkuPrice } from '@/types/sku-price'
-import { makeUpdateSkuPricesUseCase } from '@/use-cases/factories/skus/make-update-sku-prices'
+import { fetchToken, getProductBalances } from '@/http/lib/totvs'
+import { SkuAvailableStock } from '@/types/sku-available-stock'
+import { makeUpdateSkuAvailableStocksUseCase } from '@/use-cases/factories/skus/make-update-sku-available-stocks'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 /**
- * skuPricesBackup function to fetch and upsert SKU prices.
+ * skuAvailableStocksBackup function to fetch and upsert SKU costs.
  * @param _: FastifyRequest - The incoming request object (not used).
  * @param reply: FastifyReply - The response object to send the response.
  */
-export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
+export async function skuAvailableStocksBackup(
+  _: FastifyRequest,
+  reply: FastifyReply,
+) {
   try {
     // Fetch the authentication token
     const token = await fetchToken()
@@ -18,13 +21,14 @@ export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
     let page = 1
     let isLastPage = false
 
-    // Create an instance of the update SKU prices use case
-    const updateSkuPricesUseCase = makeUpdateSkuPricesUseCase()
+    // Create an instance of the update SKU costs use case
+    const updateSkuAvailableStocksUseCase =
+      makeUpdateSkuAvailableStocksUseCase()
 
     // Loop until the last page is reached
     while (!isLastPage) {
-      // Fetch the product prices from the API with the specified parameters
-      const { items, hasNext } = await getProductPrices({
+      // Fetch the product costs from the API with the specified parameters
+      const { items, hasNext } = await getProductBalances({
         token: token.access_token,
         page,
         pageSize,
@@ -33,13 +37,10 @@ export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
       })
 
       // Upsert each SKU price into the database
-      items.map(async (item: SkuPrice) => {
-        await updateSkuPricesUseCase.execute({
+      items.map(async (item: SkuAvailableStock) => {
+        await updateSkuAvailableStocksUseCase.execute({
           code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
-          price_retail: item.prices[0].price, // Retail price
-          promo_price_retail: item.prices[0].promotionalPrice, // Retail promotional price
-          price_wholesale: item.prices[1].price, // Wholesale price
-          promo_price_wholesale: item.prices[1].promotionalPrice, // Wholesale promotional price
+          stock_available: item.balances[0].stock, // Last Purchase AvailableStock
         })
       })
 

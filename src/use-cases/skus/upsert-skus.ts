@@ -19,8 +19,6 @@ interface UpsertSkuUseCaseRequest {
   reference_id?: string
   reference_name?: string
   integration_code?: string
-  quantity_op?: number
-  balance?: number
   colorCode: string
   colorTitle: string
   sizeCode: string
@@ -54,8 +52,6 @@ export class UpsertSkuUseCase {
     reference_id,
     reference_name,
     integration_code,
-    quantity_op,
-    balance,
     colorCode,
     colorTitle,
     sizeCode,
@@ -151,8 +147,6 @@ export class UpsertSkuUseCase {
         reference_id,
         reference_name,
         integration_code,
-        quantity_op,
-        balance,
         color_code: colorCode,
         size_code: sizeCode,
         is_active,

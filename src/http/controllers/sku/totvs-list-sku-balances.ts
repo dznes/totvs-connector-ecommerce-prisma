@@ -14,7 +14,7 @@ export async function totvsListSkuBalances(
 
   try {
     const token = await fetchToken()
-    const { page, pageSize, q } = querySchema.parse(request.query)
+    const { page, pageSize } = querySchema.parse(request.query)
     // const offset = (page - 1) * pageSize
 
     const balances = await getProductBalances({

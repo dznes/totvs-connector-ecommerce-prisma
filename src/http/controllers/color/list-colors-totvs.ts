@@ -1,4 +1,4 @@
-import { fetchToken, listColors } from '@/http/lib/totvs'
+import { fetchToken, getColors } from '@/http/lib/totvs'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -14,10 +14,10 @@ export async function listColorsTOTVS(
 
   try {
     const token = await fetchToken()
-    const { page, pageSize, q } = querySchema.parse(request.query)
+    const { page, pageSize } = querySchema.parse(request.query)
     // const offset = (page - 1) * pageSize
 
-    const colors = await listColors({
+    const colors = await getColors({
       token: token.access_token,
       page,
       pageSize,

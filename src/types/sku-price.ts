@@ -1,4 +1,4 @@
-export interface Price {
+interface Price {
   branchCode: number
   priceCode: number
   priceName: string
@@ -6,4 +6,9 @@ export interface Price {
   promotionalPrice: number
   promotionalInformation: string | null
   informationOtherPromotions: string | null
+}
+
+export interface SkuPrice {
+  productCode: number
+  prices: Price[]
 }

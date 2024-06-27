@@ -18,7 +18,7 @@ model Color {
   code             String    @unique
   status           Int       @default(200)
   title            String
-  variation_type   Int
+  variation_type   Int       @default(1)
   created_at       DateTime  @default(now())
   background_color String?
   image_tags       String?
@@ -34,7 +34,7 @@ model Size {
   code           String    @unique
   status         Int       @default(200)
   title          String
-  variation_type Int
+  variation_type Int       @default(2)
   created_at     DateTime  @default(now())
   updated_at     DateTime?
 
@@ -73,27 +73,39 @@ model Product {
 }
 
 model Sku {
-  id                    Int       @id @default(autoincrement())
-  code                  String    @unique
-  status                Int       @default(200)
-  title                 String
-  mpn                   String?
-  ncm                   String
-  ean                   String?
-  slug                  String    @unique
-  created_at            DateTime  @default(now())
-  price_wholesale       Decimal?
-  promo_price_wholesale Decimal?
-  price_retail          Decimal?
-  promo_price_retail    Decimal?
-  cost                  Decimal?
-  balance               Int       @default(0)
-  discount_percentage   Float?
-  reference_id          String?
-  reference_name        String?
-  integration_code      String?
-  quantity_op           Int?
-  updated_at            DateTime?
+  id                     Int       @id @default(autoincrement())
+  code                   String    @unique
+  status                 Int       @default(200)
+  title                  String
+  mpn                    String?
+  ncm                    String
+  ean                    String?
+  slug                   String    @unique
+  created_at             DateTime  @default(now())
+  price_wholesale        Decimal?
+  promo_price_wholesale  Decimal?
+  price_retail           Decimal?
+  promo_price_retail     Decimal?
+  cost                   Decimal?
+  stock_available        Int       @default(0)
+  stock_order_production Int       @default(0)
+  discount_percentage    Float?
+  reference_id           String?
+  reference_name         String?
+  integration_code       String?
+  updated_at             DateTime?
+  measured_unit          String?
+  minimum_stock_amount   Decimal?
+  maximum_stock_amount   Decimal?
+  ideal_stock_amount     Decimal?
+  sales_start_date       DateTime?
+  sales_end_date         DateTime?
+  is_active              Boolean   @default(true)
+  is_finished_product    Boolean   @default(false)
+  is_raw_material        Boolean   @default(false)
+  is_bulk_material       Boolean   @default(false)
+  is_own_production      Boolean   @default(false)
+  is_blocked             Boolean   @default(false)
 
   product    Product? @relation(fields: [product_id], references: [id], onDelete: Cascade)
   product_id Int?

@@ -3,21 +3,27 @@ import { SkuDetail } from '@/types/sku-details'
 import { makeUpsertSkuUseCase } from '@/use-cases/factories/skus/make-upsert-sku-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function skuDetailsBackup(
-  _: FastifyRequest,
-  reply: FastifyReply,
-) {
+/**
+ * skuDetailsBackup function to fetch and upsert SKU details.
+ * @param _: FastifyRequest - The incoming request object (not used).
+ * @param reply: FastifyReply - The response object to send the response.
+ */
+export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
   try {
+    // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 500
-    const daysStartFromToday = 100
-    const daysEndFromToday = 70
+    const daysStartFromToday = 110
+    const daysEndFromToday = 100
     let page = 1
+    let isLastPage = false
 
+    // Create an instance of the upsert SKU use case
     const upsertSkuUseCase = makeUpsertSkuUseCase()
-    let hasNextValidator = true
 
-    while (hasNextValidator) {
+    // Loop until the last page is reached
+    while (!isLastPage) {
+      // Fetch the product infos (SKU details) from the API with the specified parameters
       const { items, hasNext } = await getProductInfos({
         token: token.access_token,
         page,
@@ -25,16 +31,17 @@ export async function skuDetailsBackup(
         daysStartFromToday,
         daysEndFromToday,
       })
-      // Upsert (create or update) sku info in Database before fetching more items
-      items.map((item: SkuDetail) => {
-        upsertSkuUseCase.execute({
-          code: item.productCode.toString(), // productCode is number in the API response
-          status: 200, // FIXME: This should be dynamic
+
+      // Upsert each SKU detail into the database
+      items.map(async (item: SkuDetail) => {
+        await upsertSkuUseCase.execute({
+          code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
+          status: 200, // FIXME: This should be dynamic based on real status
           title: item.productName,
-          ean: item.productSku ?? '',
+          ean: item.productSku ?? '', // Use SKU if available
           ncm: item.ncm,
-          mpn: item.productSku ?? '',
-          reference_id: item.referenceId.toString(),
+          mpn: item.productSku ?? '', // Use SKU if available
+          reference_id: item.referenceId.toString(), // Convert referenceId to string
           reference_name: item.referenceName,
           integration_code: 'TOTVS',
           colorCode: item.colorCode,
@@ -49,19 +56,19 @@ export async function skuDetailsBackup(
         })
       })
 
-      // Break the loop if there are no more pages to fetch
+      // Check if there are more pages to fetch
       if (!hasNext) {
-        hasNextValidator = false
-        break
+        isLastPage = true
+      } else {
+        page++
       }
-
-      page++
     }
 
-    // Return pages processed in the API response
+    // Return the number of pages processed in the API response
     return reply.status(200).send(JSON.stringify({ pages: page }))
   } catch (err) {
-    // FIXME: For better error handling and response.
-    return reply.status(500).send({ error: 'Failed to fetch sku details' })
+    console.error(err)
+    // Return an HTTP error response in case of failure
+    return reply.status(500).send({ error: 'Failed to fetch SKU details' })
   }
 }

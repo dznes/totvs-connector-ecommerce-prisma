@@ -19,7 +19,7 @@ const totvs_url = env.totvs_url
 
 // HELPER FUNCTIONS
 // ISO date with miliseconds to string
-function formatISODateWithMillis(date: Date): String {
+function formatISODateWithMillis(date: Date): string {
   return date.toISOString()
 }
 
@@ -169,7 +169,6 @@ export async function getOps({
   const formattedStartDate = formatISODateWithMillis(startDate)
   const formattedEndDate = formatISODateWithMillis(endDate)
 
-
   const url = `${totvs_url}/api/totvsmoda/production-order/v2/orders/search`
 
   const headers = headerBuilder(token)
@@ -269,6 +268,7 @@ export async function getProductCosts({
 
   const headers = headerBuilder(token)
 
+  // Last purchase cost code is 2
   const body = {
     filter: {
       change: {
@@ -276,17 +276,17 @@ export async function getProductCosts({
         endDate: formattedEndDate,
         inProduct: true,
         inBranchInfo: true,
-        branchInfoCodeList: [1, 2],
+        branchInfoCodeList: [1],
         inCost: true,
-        branchCostCodeList: [1, 2],
-        costCodeList: [1, 2, 3, 4],
+        branchCostCodeList: [1],
+        costCodeList: [2],
       },
     },
     option: {
       costs: [
         {
           branchCode: 1,
-          costCodeList: [1, 2, 3, 4],
+          costCodeList: [2],
         },
       ],
     },
@@ -389,7 +389,7 @@ export async function getProductBalances({
         inProduct: true,
         inStock: true,
         branchStockCodeList: [1, 2],
-        stockCodeList: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        stockCodeList: [3],
         inSalesOrder: true,
         branchSalesOrderCodeList: [1, 2],
         inPurchaseOrder: true,
@@ -402,7 +402,16 @@ export async function getProductBalances({
       balances: [
         {
           branchCode: 1,
-          stockCodeList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+          // Stock code 3 is for the "FIS+INSPECAO" <-- Using this one for now
+          // Stock code 4 "DEVOLUCAO"
+          // Stock code 5 "EM TERCEIROS"
+          // Stock code 6 "DE TERCEIROS"
+          // Stock code 7 "DEFEITO"
+          // Stock code 8 "CONFERENCIA"
+          // Stock Code 10 "SHOWROOM"
+          // Stock code 11 "ESTILO"
+          // Stock code 12 "PRE VENDA"
+          stockCodeList: [3],
           isTransaction: true,
           isSalesOrder: true,
           isProductionOrder: true,
