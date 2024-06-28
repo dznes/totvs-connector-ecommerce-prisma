@@ -163,11 +163,12 @@ model User {
   is_representative   Boolean   @default(false)
   is_shipping_company Boolean   @default(false)
   is_employee         Boolean   @default(false)
-  employee_status     String?
   is_active           Boolean   @default(true)
+  employee_status     String?
+  totvs_branch_code   Int?
 
-  addresses  Address[]
-  telephones Telephone[]
+  addresses Address[]
+  phones    Phone[]
 
   @@unique([code, id])
   @@map("users")
@@ -197,7 +198,7 @@ model Address {
   @@map("addresses")
 }
 
-model Telephone {
+model Phone {
   id         String    @id @default(uuid())
   status     Int       @default(200)
   type       String
@@ -210,5 +211,5 @@ model Telephone {
   user_code String
   user_id   String
 
-  @@map("telephones")
+  @@map("phones")
 }

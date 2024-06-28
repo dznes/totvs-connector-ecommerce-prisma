@@ -29,7 +29,7 @@ export class PrismaUsersRepository implements UsersRepository {
       },
       include: {
         addresses: true,
-        telephones: true,
+        phones: true,
       },
     })
     return user
