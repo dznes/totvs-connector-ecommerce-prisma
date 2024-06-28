@@ -4,6 +4,8 @@ import { SkuDetail } from './interfaces/sku-details'
 import { SkuCost } from './interfaces/sku-cost'
 import { SkuPrice } from './interfaces/sku-price'
 import { SkuAvailableStock } from './interfaces/sku-available-stock'
+import { ProductionOrder } from './interfaces/sku-production-order'
+import { Order } from './interfaces/orders'
 
 interface TotvsProps {
   token: string
@@ -28,15 +30,15 @@ interface Token {
 interface ColorList extends TotvsResponse {
   items: Color[]
 }
-// interface OrdersList extends TotvsResponse{
-//   items: Orders[]
-// }
+interface OrdersList extends TotvsResponse {
+  items: Order[]
+}
 // interface OrderItemsList extends TotvsResponse{
 //   items: OrdersItems[]
 // }
-// interface OpList extends TotvsResponse{
-//   items: Op[]
-// }
+interface ProductionOrderList extends TotvsResponse {
+  items: ProductionOrder[]
+}
 interface ProductInfoList extends TotvsResponse {
   items: SkuDetail[]
 }
@@ -110,13 +112,13 @@ export async function fetchToken(): Promise<Token> {
  * @param props - The parameters for listing orders, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
  * @returns A promise that resolves to the TOTVS response containing orders.
  */
-export async function listOrders({
+export async function getOrders({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<OrdersList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0
@@ -213,13 +215,13 @@ export async function getOrderItems({
  * @param props - The parameters for retrieving production orders, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
  * @returns A promise that resolves to the TOTVS response containing production orders.
  */
-export async function getOps({
+export async function getProductionOrders({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ProductionOrderList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0

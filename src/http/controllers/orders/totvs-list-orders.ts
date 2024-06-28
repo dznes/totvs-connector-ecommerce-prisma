@@ -1,4 +1,4 @@
-import { fetchToken, listOrders } from '@/http/lib/totvs'
+import { fetchToken, getOrders } from '@/http/lib/totvs'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function ListOrders(request: FastifyRequest, reply: FastifyReply) {
@@ -10,7 +10,7 @@ export async function ListOrders(request: FastifyRequest, reply: FastifyReply) {
       pageSize: 1,
       daysFromToday: 10,
     }
-    const orderItems = await listOrders(props)
+    const orderItems = await getOrders(props)
     console.log(orderItems)
     return reply.status(200).send(JSON.stringify(orderItems))
   } catch (err) {

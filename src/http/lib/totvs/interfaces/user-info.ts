@@ -1,4 +1,4 @@
-interface Address {
+export interface Address {
   addressType: string
   address: string
   addressNumber: number
