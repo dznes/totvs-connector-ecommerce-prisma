@@ -23,12 +23,12 @@ export class PrismaSizesRepository implements SizesRepository {
   }
 
   async findByTitle(title: string) {
-    const sizes = await prisma.size.findMany({
+    const size = await prisma.size.findMany({
       where: {
         title,
       },
     })
-    return sizes
+    return size
   }
 
   async create(data: Prisma.SizeUncheckedCreateInput) {
@@ -48,7 +48,7 @@ export class PrismaSizesRepository implements SizesRepository {
   }
 
   async searchMany(query: string, page: number, perPage: number) {
-    const sizes = await prisma.size.findMany({
+    const size = await prisma.size.findMany({
       where: {
         OR: [
           {
@@ -61,7 +61,7 @@ export class PrismaSizesRepository implements SizesRepository {
       take: perPage,
       skip: (page - 1) * perPage,
     })
-    return sizes
+    return size
   }
 
   async count(query: string) {

@@ -27,12 +27,12 @@ export class PrismaSkusRepository implements SkusRepository {
   }
 
   async findByTitle(title: string) {
-    const skus = await prisma.sku.findMany({
+    const sku = await prisma.sku.findMany({
       where: {
         title,
       },
     })
-    return skus
+    return sku
   }
 
   async findBySlug(slug: string) {
@@ -49,7 +49,7 @@ export class PrismaSkusRepository implements SkusRepository {
   }
 
   async searchMany(query: string, page: number) {
-    const skus = await prisma.sku.findMany({
+    const sku = await prisma.sku.findMany({
       where: {
         OR: [
           {
@@ -76,7 +76,7 @@ export class PrismaSkusRepository implements SkusRepository {
       take: 20,
       skip: (page - 1) * 20,
     })
-    return skus
+    return sku
   }
 
   async count(query: string) {
