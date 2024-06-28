@@ -30,8 +30,6 @@ interface UpsertSkuUseCaseRequest {
   is_blocked?: boolean
 }
 
-
-
 export class UpsertSkuUseCase {
   constructor(
     private skusRepository: SkusRepository,
@@ -40,7 +38,7 @@ export class UpsertSkuUseCase {
   ) {}
 
   private async findOrCreateColor(colorCode: string, colorTitle: string) {
-    let color = await this.colorsRepository.findByCode(colorCode);
+    let color = await this.colorsRepository.findByCode(colorCode)
 
     if (!color) {
       try {
@@ -53,21 +51,21 @@ export class UpsertSkuUseCase {
           image_url: '',
           image_text: '',
           image_label: '',
-        });
+        })
       } catch (error: any) {
         if (error.code === 'P2002') {
-          color = await this.colorsRepository.findByCode(colorCode);
+          color = await this.colorsRepository.findByCode(colorCode)
         } else {
-          throw error;
+          throw error
         }
       }
     }
 
-    return color;
+    return color
   }
 
   private async findOrCreateSize(sizeCode: string) {
-    let size = await this.sizesRepository.findByCode(sizeCode);
+    let size = await this.sizesRepository.findByCode(sizeCode)
 
     if (!size) {
       try {
@@ -75,16 +73,16 @@ export class UpsertSkuUseCase {
           code: sizeCode,
           title: sizeCode,
           variation_type: 2,
-        });
+        })
       } catch (error: any) {
         if (error.code !== 'P2002') {
-          throw error;
+          throw error
         }
-        size = await this.sizesRepository.findByCode(sizeCode);
+        size = await this.sizesRepository.findByCode(sizeCode)
       }
     }
 
-    return size;
+    return size
   }
 
   async execute({
@@ -112,8 +110,8 @@ export class UpsertSkuUseCase {
     is_own_production,
     is_blocked,
   }: UpsertSkuUseCaseRequest) {
-    await this.findOrCreateColor(colorCode, colorTitle);
-    await this.findOrCreateSize(sizeCode);
+    await this.findOrCreateColor(colorCode, colorTitle)
+    await this.findOrCreateSize(sizeCode)
 
     const sku = await this.skusRepository.findByCode(code)
 

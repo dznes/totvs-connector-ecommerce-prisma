@@ -1,5 +1,4 @@
 import { fetchToken, getProductCosts } from '@/http/lib/totvs'
-import { SkuCost } from '@/types/sku-cost'
 import { makeUpdateSkuCostsUseCase } from '@/use-cases/factories/skus/make-update-sku-costs'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
@@ -33,7 +32,7 @@ export async function skuCostsBackup(_: FastifyRequest, reply: FastifyReply) {
       })
 
       // Upsert each SKU price into the database
-      items.map(async (item: SkuCost) => {
+      items.map(async (item) => {
         await updateSkuCostsUseCase.execute({
           code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
           cost: item.costs[0].cost, // Last Purchase Cost

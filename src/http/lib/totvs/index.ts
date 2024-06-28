@@ -1,4 +1,9 @@
 import { env } from '@/env'
+import { Color } from './interfaces/colors'
+import { SkuDetail } from './interfaces/sku-details'
+import { SkuCost } from './interfaces/sku-cost'
+import { SkuPrice } from './interfaces/sku-price'
+import { SkuAvailableStock } from './interfaces/sku-available-stock'
 
 interface TotvsProps {
   token: string
@@ -14,15 +19,56 @@ interface TotvsResponse {
   hasNext: boolean
 }
 
+interface Token {
+  access_token: string
+  token_type: string
+  expires_in: number
+  refresh_token: string
+}
+interface ColorList extends TotvsResponse {
+  items: Color[]
+}
+// interface OrdersList extends TotvsResponse{
+//   items: Orders[]
+// }
+// interface OrderItemsList extends TotvsResponse{
+//   items: OrdersItems[]
+// }
+// interface OpList extends TotvsResponse{
+//   items: Op[]
+// }
+interface ProductInfoList extends TotvsResponse {
+  items: SkuDetail[]
+}
+interface ProductCostList extends TotvsResponse {
+  items: SkuCost[]
+}
+interface ProductPriceList extends TotvsResponse {
+  items: SkuPrice[]
+}
+interface ProductBalanceList extends TotvsResponse {
+  items: SkuAvailableStock[]
+}
+
 // TOTVS Base URL
 const totvs_url = env.totvs_url
 
 // HELPER FUNCTIONS
-// ISO date with miliseconds to string
+/**
+ * Formats a Date object to an ISO string with milliseconds.
+ * @param date - The Date object to format.
+ * @returns The ISO string with milliseconds.
+ */
 function formatISODateWithMillis(date: Date): string {
   return date.toISOString()
 }
 
+/**
+ * Builds the authorization header for API requests.
+ * @param token - The token to use for authorization.
+ * @returns The header object containing authorization and content-type.
+ */
+// Header builder
 function headerBuilder(token: string) {
   return {
     Authorization: `Bearer ${token}`,
@@ -31,7 +77,12 @@ function headerBuilder(token: string) {
 }
 
 // API ENDPOINTS
-export async function fetchToken() {
+
+/**
+ * Fetches an authorization token from the TOTVS API.
+ * @returns An object containing access token, token type, expiration time, and refresh token.
+ */
+export async function fetchToken(): Promise<Token> {
   const url = `${totvs_url}/api/totvsmoda/authorization/v2/token`
 
   const body = {
@@ -42,20 +93,23 @@ export async function fetchToken() {
     password: env.password,
   }
 
-  const { access_token, token_type, expires_in, refresh_token } = await fetch(
-    url,
-    {
+  const { access_token, token_type, expires_in, refresh_token }: Token =
+    await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams(body).toString(),
-    },
-  ).then((response) => response.json())
+    }).then((response) => response.json())
 
   return { access_token, token_type, expires_in, refresh_token }
 }
 
+/**
+ * Lists orders from the TOTVS API within a specific date range.
+ * @param props - The parameters for listing orders, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing orders.
+ */
 export async function listOrders({
   token,
   page,
@@ -102,6 +156,11 @@ export async function listOrders({
   return data
 }
 
+/**
+ * Retrieves order items from the TOTVS API with expanded details.
+ * @param props - The parameters for retrieving order items, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing order items.
+ */
 export async function getOrderItems({
   token,
   page,
@@ -149,6 +208,11 @@ export async function getOrderItems({
   return data
 }
 
+/**
+ * Retrieves production orders (OPs) from the TOTVS API within a specific date range.
+ * @param props - The parameters for retrieving production orders, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing production orders.
+ */
 export async function getOps({
   token,
   page,
@@ -194,13 +258,18 @@ export async function getOps({
   return data
 }
 
+/**
+ * Retrieves product information from the TOTVS API.
+ * @param props - The parameters for retrieving product information, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing product information.
+ */
 export async function getProductInfos({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ProductInfoList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0
@@ -227,12 +296,12 @@ export async function getProductInfos({
         inBranchInfo: true,
         branchInfoCodeList: [1, 2],
         inCost: true,
-        branchCostCodeList: [1,2],
+        branchCostCodeList: [1, 2],
         costCodeList: [2],
         inPrice: true,
         inDigitalPromotionPrice: true,
-        branchPriceCodeList: [1,2],
-        priceCodeList: [1,2],
+        branchPriceCodeList: [1, 2],
+        priceCodeList: [1, 2],
       },
     },
     option: {
@@ -251,13 +320,18 @@ export async function getProductInfos({
   return data
 }
 
+/**
+ * Retrieves product costs from the TOTVS API.
+ * @param props - The parameters for retrieving product costs, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing product costs.
+ */
 export async function getProductCosts({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ProductCostList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0
@@ -310,13 +384,18 @@ export async function getProductCosts({
   return data
 }
 
+/**
+ * Retrieves product prices from the TOTVS API.
+ * @param props - The parameters for retrieving product prices, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing product prices.
+ */
 export async function getProductPrices({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ProductPriceList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0
@@ -364,13 +443,18 @@ export async function getProductPrices({
   return data
 }
 
+/**
+ * Retrieves product balances from the TOTVS API.
+ * @param props - The parameters for retrieving product balances, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing product balances.
+ */
 export async function getProductBalances({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ProductBalanceList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 3
   const daysEnd = daysEndFromToday ?? 0
@@ -438,13 +522,18 @@ export async function getProductBalances({
   return data
 }
 
+/**
+ * Retrieves colors from the TOTVS API.
+ * @param props - The parameters for retrieving colors, including token, page, pageSize, daysStartFromToday, and daysEndFromToday.
+ * @returns A promise that resolves to the TOTVS response containing colors.
+ */
 export async function getColors({
   token,
   page,
   pageSize,
   daysStartFromToday,
   daysEndFromToday,
-}: TotvsProps): Promise<TotvsResponse> {
+}: TotvsProps): Promise<ColorList> {
   const currentDate = new Date()
   const daysStart = daysStartFromToday ?? 1000
   const daysEnd = daysEndFromToday ?? 0

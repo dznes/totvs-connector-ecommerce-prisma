@@ -4,7 +4,7 @@ import { ZodError } from 'zod'
 import { env } from './env'
 import { AppRoutes } from './http/controllers/route'
 import { OrderRoutes } from './http/controllers/orders/route'
-import { ColorRoutes } from './http/controllers/color/route'
+import { ColorRoutes } from './http/controllers/colors/route'
 import { SkuRoutes } from './http/controllers/sku/route'
 
 export const app = fastify()

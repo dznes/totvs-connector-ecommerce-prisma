@@ -1,5 +1,4 @@
 import { fetchToken, getColors } from '@/http/lib/totvs'
-import { Color } from '@/types/colors'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { makeUpsertColorUseCase } from '@/use-cases/factories/colors/make-upsert-color-use-case'
 
@@ -33,7 +32,7 @@ export async function ColorsBackup(_: FastifyRequest, reply: FastifyReply) {
       })
 
       // Upsert each color item into the database
-      items.map(async (item: Color) => {
+      items.map(async (item) => {
         await upsertColorUseCase.execute({
           status: 200,
           code: item.colorCode,

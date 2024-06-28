@@ -66,17 +66,17 @@ export class PrismaUsersRepository implements UsersRepository {
         OR: [
           {
             name: {
-                contains: query,
-              },
-              email: {
-                contains: query,
-              },
-              cpf: {
-                contains: query,
-              },
-              rg: {
-                  contains: query,
-             },
+              contains: query,
+            },
+            email: {
+              contains: query,
+            },
+            cpf: {
+              contains: query,
+            },
+            rg: {
+              contains: query,
+            },
           },
         ],
       },
@@ -101,7 +101,7 @@ export class PrismaUsersRepository implements UsersRepository {
               contains: query,
             },
             rg: {
-                contains: query,
+              contains: query,
             },
           },
         ],

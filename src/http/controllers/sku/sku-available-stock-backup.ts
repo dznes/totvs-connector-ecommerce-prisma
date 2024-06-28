@@ -1,5 +1,4 @@
 import { fetchToken, getProductBalances } from '@/http/lib/totvs'
-import { SkuAvailableStock } from '@/types/sku-available-stock'
 import { makeUpdateSkuAvailableStocksUseCase } from '@/use-cases/factories/skus/make-update-sku-available-stocks'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
@@ -37,7 +36,7 @@ export async function skuAvailableStocksBackup(
       })
 
       // Upsert each SKU price into the database
-      items.map(async (item: SkuAvailableStock) => {
+      items.map(async (item) => {
         await updateSkuAvailableStocksUseCase.execute({
           code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
           stock_available: item.balances[0].stock, // Last Purchase AvailableStock

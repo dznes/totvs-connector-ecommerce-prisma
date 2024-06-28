@@ -1,5 +1,4 @@
 import { fetchToken, getProductInfos } from '@/http/lib/totvs'
-import { SkuDetail } from '@/types/sku-details'
 import { makeUpsertSkuUseCase } from '@/use-cases/factories/skus/make-upsert-sku-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
@@ -13,7 +12,7 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 500
-    const daysStartFromToday = 2000
+    const daysStartFromToday = 3
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
@@ -33,7 +32,7 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
       })
 
       // Upsert each SKU detail into the database
-      items.map(async (item: SkuDetail) => {
+      items.map(async (item) => {
         await upsertSkuUseCase.execute({
           code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
           status: 200, // FIXME: This should be dynamic based on real status
