@@ -4,5 +4,5 @@ import { ColorsBackup } from './colors-backup'
 
 export async function ColorRoutes(app: FastifyInstance) {
   app.get('/totvs/colors', listColorsTOTVS)
-  app.get('/colors/backup', ColorsBackup)
+  app.get('/color/backup', ColorsBackup)
 }

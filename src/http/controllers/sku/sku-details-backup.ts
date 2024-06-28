@@ -13,8 +13,8 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 500
-    const daysStartFromToday = 110
-    const daysEndFromToday = 100
+    const daysStartFromToday = 2000
+    const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
 
@@ -51,7 +51,7 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
           is_finished_product: item.isFinishedProduct,
           is_raw_material: item.isRawMaterial,
           is_bulk_material: item.isBulkMaterial,
-          is_own_production: item.isOwnProduction,
+          is_own_production: item.isOwnProduction ?? false, // FIXME: Prisma default is false but getting error if not set
           is_blocked: item.isBlocked,
         })
       })

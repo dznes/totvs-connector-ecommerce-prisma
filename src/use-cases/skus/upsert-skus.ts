@@ -30,12 +30,62 @@ interface UpsertSkuUseCaseRequest {
   is_blocked?: boolean
 }
 
+
+
 export class UpsertSkuUseCase {
   constructor(
     private skusRepository: SkusRepository,
     private colorsRepository: ColorsRepository,
     private sizesRepository: SizesRepository,
   ) {}
+
+  private async findOrCreateColor(colorCode: string, colorTitle: string) {
+    let color = await this.colorsRepository.findByCode(colorCode);
+
+    if (!color) {
+      try {
+        color = await this.colorsRepository.create({
+          code: colorCode,
+          title: colorTitle,
+          variation_type: 1,
+          background_color: '',
+          image_tags: '',
+          image_url: '',
+          image_text: '',
+          image_label: '',
+        });
+      } catch (error: any) {
+        if (error.code === 'P2002') {
+          color = await this.colorsRepository.findByCode(colorCode);
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    return color;
+  }
+
+  private async findOrCreateSize(sizeCode: string) {
+    let size = await this.sizesRepository.findByCode(sizeCode);
+
+    if (!size) {
+      try {
+        size = await this.sizesRepository.create({
+          code: sizeCode,
+          title: sizeCode,
+          variation_type: 2,
+        });
+      } catch (error: any) {
+        if (error.code !== 'P2002') {
+          throw error;
+        }
+        size = await this.sizesRepository.findByCode(sizeCode);
+      }
+    }
+
+    return size;
+  }
 
   async execute({
     code,
@@ -62,48 +112,8 @@ export class UpsertSkuUseCase {
     is_own_production,
     is_blocked,
   }: UpsertSkuUseCaseRequest) {
-    let color = await this.colorsRepository.findByCode(colorCode)
-
-    if (!color) {
-      try {
-        color = await this.colorsRepository.create({
-          code: colorCode,
-          title: colorTitle,
-          variation_type: 1,
-          background_color: '',
-          image_tags: '',
-          image_url: '',
-          image_text: '',
-          image_label: '',
-        })
-      } catch (error: any) {
-        if (error.code === 'P2002') {
-          color = await this.colorsRepository.findByCode(colorCode)
-        } else {
-          throw error
-        }
-      }
-    }
-
-    let size = await this.sizesRepository.findByCode(sizeCode)
-
-    if (!size) {
-      // Only try to create the size if it doesn't exist
-      try {
-        size = await this.sizesRepository.create({
-          code: sizeCode,
-          title: sizeCode,
-          variation_type: 2,
-        })
-      } catch (error: any) {
-        if (error.code !== 'P2002') {
-          // Handle unique constraint violation error
-          throw error
-        }
-        // Fetch the existing size if it already exists (just in case)
-        size = await this.sizesRepository.findByCode(sizeCode)
-      }
-    }
+    await this.findOrCreateColor(colorCode, colorTitle);
+    await this.findOrCreateSize(sizeCode);
 
     const sku = await this.skusRepository.findByCode(code)
 
@@ -147,14 +157,22 @@ export class UpsertSkuUseCase {
         reference_id,
         reference_name,
         integration_code,
-        color_code: colorCode,
-        size_code: sizeCode,
         is_active,
         is_finished_product,
         is_raw_material,
         is_bulk_material,
         is_own_production,
         is_blocked,
+        color: {
+          connect: {
+            code: colorCode,
+          },
+        },
+        size: {
+          connect: {
+            code: sizeCode,
+          },
+        },
       })
       console.log(`Sku ${title} created.`)
     }

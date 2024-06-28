@@ -94,7 +94,7 @@ export class PrismaSkusRepository implements SkusRepository {
     return sku
   }
 
-  async create(data: Prisma.SkuUncheckedCreateInput) {
+  async create(data: Prisma.SkuCreateInput) {
     const sku = await prisma.sku.create({
       data,
     })

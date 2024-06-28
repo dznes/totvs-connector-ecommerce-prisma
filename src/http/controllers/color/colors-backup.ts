@@ -13,7 +13,7 @@ export async function ColorsBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 500
-    const daysStartFromToday = 50
+    const daysStartFromToday = 2000
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false

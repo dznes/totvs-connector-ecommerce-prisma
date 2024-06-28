@@ -226,6 +226,13 @@ export async function getProductInfos({
         inProduct: true,
         inBranchInfo: true,
         branchInfoCodeList: [1, 2],
+        inCost: true,
+        branchCostCodeList: [1,2],
+        costCodeList: [2],
+        inPrice: true,
+        inDigitalPromotionPrice: true,
+        branchPriceCodeList: [1,2],
+        priceCodeList: [1,2],
       },
     },
     option: {
