@@ -1,6 +1,6 @@
 # TOTVS MODA API Connector
 
-This project connects and keeps a SQL (relational database) synced with TOTVS MODA data. The data stored from each entity is focused on feeding an E-commerce website.
+This project connects and keeps a SQL Relational Database synced with TOTVS MODA database (document based). The data stored from each entity is focused on feeding an E-commerce website.
 
 ## API Documentation
 

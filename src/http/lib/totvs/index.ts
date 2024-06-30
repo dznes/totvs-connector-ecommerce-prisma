@@ -6,6 +6,7 @@ import { SkuPrice } from './interfaces/sku-price'
 import { SkuAvailableStock } from './interfaces/sku-available-stock'
 import { ProductionOrder } from './interfaces/sku-production-order'
 import { Order } from './interfaces/orders'
+import { User } from './interfaces/user-info'
 
 interface TotvsProps {
   token: string
@@ -50,6 +51,9 @@ interface ProductPriceList extends TotvsResponse {
 }
 interface ProductBalanceList extends TotvsResponse {
   items: SkuAvailableStock[]
+}
+interface UsersList extends TotvsResponse {
+  items: User[]
 }
 
 // TOTVS Base URL
@@ -562,6 +566,51 @@ export async function getColors({
     },
     page,
     pageSize: pageSize ?? 200,
+  }
+
+  const data = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return data
+}
+
+export async function getUsers({
+  token,
+  page,
+  pageSize,
+  daysStartFromToday,
+  daysEndFromToday,
+}: TotvsProps): Promise<UsersList> {
+  const currentDate = new Date()
+  const daysStart = daysStartFromToday ?? 1000
+  const daysEnd = daysEndFromToday ?? 0
+
+  const startDate = new Date(currentDate.getTime())
+  startDate.setDate(currentDate.getDate() - daysStart)
+
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
+
+  const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
+
+  const url = `${totvs_url}/api/totvsmoda/person/v2/individuals/search`
+
+  const headers = headerBuilder(token)
+
+  const body = {
+    filter: {
+      change: {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      },
+    },
+    page,
+    pageSize: pageSize ?? 200,
+    expand: "emails,phones,addresses,rg"
   }
 
   const data = await fetch(url, {

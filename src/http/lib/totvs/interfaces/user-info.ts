@@ -12,7 +12,7 @@ export interface Address {
   contryName: string
 }
 
-interface Phone {
+export interface Phone {
   typeName: string
   number: string
 }
@@ -35,6 +35,7 @@ export interface User {
   isShippingCompany: boolean
   insertDate: Date
   isEmployee: boolean
+  isInactive: boolean
   employeeStatus: string | null
   customerStatus: string | null
   branchInsertCode: number

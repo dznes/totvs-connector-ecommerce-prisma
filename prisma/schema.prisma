@@ -144,13 +144,11 @@ model User {
   status              Int       @default(200)
   name                String
   email               String    @unique
-  phone               String
   regitered_at        DateTime
   created_at          DateTime  @default(now())
   rg                  String?
   birthDate           DateTime?
   updated_at          DateTime?
-  address             String?
   city                String?
   state               String?
   country             String?
@@ -175,21 +173,21 @@ model User {
 }
 
 model Address {
-  id             String    @id @default(uuid())
-  status         Int       @default(200)
-  type           String
-  country        String
-  state          String
-  city           String
-  zip_code       String
-  neighborhood   String
-  street         String
-  number         Int
-  created_at     DateTime  @default(now())
-  updated_at     DateTime?
-  complement     String?
-  ibge_city_code String?
-  bcbCountryCode String?
+  id               String    @id @default(uuid())
+  status           Int       @default(200)
+  type             String
+  country          String
+  state            String
+  city             String
+  zip_code         String
+  neighborhood     String?
+  street           String
+  number           Int
+  created_at       DateTime  @default(now())
+  updated_at       DateTime?
+  complement       String?
+  ibge_city_code   Int?
+  bcb_country_code Int?
 
   user      User   @relation(fields: [user_code, user_id], references: [code, id])
   user_code String
