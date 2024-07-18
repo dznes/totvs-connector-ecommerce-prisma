@@ -1,7 +1,7 @@
 export interface Address {
   addressType: string
   address: string
-  addressNumber: number
+  addressNumber: number | null
   complement: string | null
   neiborhood: string | null
   ibgeCityCode: number
@@ -25,11 +25,12 @@ interface Email {
 export interface User {
   code: string
   name: string
-  cpf: string
+  cpf?: string
+  cnpj?: string
   rg: string | null
   gender: string | null
-  birthDate: Date | null
-  isCostumer: boolean
+  birthDate: string | null
+  isCustumer: boolean
   isSupplier: boolean
   isRepresentative: boolean
   isShippingCompany: boolean

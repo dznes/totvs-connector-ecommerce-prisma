@@ -11,13 +11,13 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 ### Use Cases
 
 - [X] UPSERT colors.
-- [/] UPSERT sizes. (Need to fully implement, and remove responsibility of UPSERT skus info USE CASE)
+- [X] UPSERT sizes. (Need to fully implement, and remove responsibility of UPSERT skus info USE CASE)
 - [X] UPSERT skus info.
 - [X] UPSERT skus balance.
 - [ ] UPSERT skus OPs.
 - [X] UPSERT skus prices.
 - [X] UPSERT skus costs.
-- [ ] UPSERT clients.
+- [X] UPSERT clients.
 - [ ] UPSERT orders.
 - [ ] UPSERT orders with skus.
 - [X] LIST skus with query params.
@@ -35,7 +35,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [ ] Add product OPs backup.
 - [X] Add product prices backup.
 - [X] Add product cost backup.
-- [ ] Add clients backup.
+- [X] Add clients backup.
 - [ ] Add orders backup.
 - [ ] Add orders with skus backup.
 - [ ] Add update for product details in database every 1 minute updates from TOTVS.

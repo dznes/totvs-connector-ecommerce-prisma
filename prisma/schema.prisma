@@ -143,11 +143,11 @@ model User {
   code                String    @unique
   status              Int       @default(200)
   name                String
-  email               String    @unique
+  email               String?
   regitered_at        DateTime
   created_at          DateTime  @default(now())
   rg                  String?
-  birthDate           DateTime?
+  birthDate           String?
   updated_at          DateTime?
   city                String?
   state               String?
@@ -167,6 +167,7 @@ model User {
 
   addresses Address[]
   phones    Phone[]
+  Order     Order[]
 
   @@unique([code, id])
   @@map("users")
@@ -175,14 +176,14 @@ model User {
 model Address {
   id               String    @id @default(uuid())
   status           Int       @default(200)
-  type             String
+  type             String?
   country          String
   state            String
   city             String
   zip_code         String
   neighborhood     String?
   street           String
-  number           Int
+  number           Int       @default(0)
   created_at       DateTime  @default(now())
   updated_at       DateTime?
   complement       String?
@@ -199,7 +200,7 @@ model Address {
 model Phone {
   id         String    @id @default(uuid())
   status     Int       @default(200)
-  type       String
+  type       String?
   ddd_code   String
   number     String
   created_at DateTime  @default(now())
@@ -210,4 +211,102 @@ model Phone {
   user_id   String
 
   @@map("phones")
+}
+
+model Order {
+  id                     String    @id @default(uuid())
+  code                   String    @unique
+  status                 Int       @default(0)
+  type                   Int
+  items_quantity         Int
+  total_items            Int
+  discount_value         Decimal
+  total_value            Decimal
+  created_at             DateTime  @default(now())
+  updated_at             DateTime?
+  utm_campaign           String?
+  utm_source             String?
+  utm_medium             String?
+  utm_content            String?
+  utm_term               String?
+  fiscal_code            String?
+  gateway_id             String?
+  order_vtex_id          String?
+  totvs_branch_code      Int?
+  totvs_creation_date    DateTime?
+  representative_code    String?
+  representative_name    String?
+  operation_code         String?
+  operation_name         String?
+  payment_condition_code String?
+  payment_condition_name String?
+  freight_type           Int?
+  freight_value          Decimal?
+  shipping_company_code  String?
+  shipping_company_cnpj  String?
+  shipping_company_name  String?
+  shipping_service_cod   String?
+  shipping_service_name  String?
+  totvs_order_status     String?
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
+  shipping_address_id String          @unique
+
+  order_items OrderItem[]
+
+  @@unique([code, id])
+  @@map("orders")
+}
+
+model ShippingAddress {
+  id               String    @id @default(uuid())
+  status           Int       @default(200)
+  type             String?
+  country          String
+  state            String
+  city             String
+  zip_code         String
+  neighborhood     String?
+  street           String
+  number           Int       @default(0)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime?
+  complement       String?
+  ibge_city_code   Int?
+  bcb_country_code Int?
+
+  order Order?
+
+  @@map("shipping_addresses")
+}
+
+model OrderItem {
+  id                     String    @id @default(uuid())
+  product_code           String
+  product_name           String
+  product_reference_code String
+  product_reference_name String
+  product_sku_code       String
+  color_code             String
+  color_name             String
+  size_name              String
+  created_at             DateTime  @default(now())
+  updated_at             DateTime?
+  to_settle_quantity     Int?
+  settled_quantity       Int?
+  canceled_quantity      Int?
+  extra_quantity         Int?
+  pending_quantity       Int?
+  original_price         Decimal?
+  price                  Decimal?
+  discount_percentage    Float?
+  last_changed_at        DateTime?
+  totvs_creation_date    DateTime?
+
+  order Order[]
+
+  @@map("order_items")
 }

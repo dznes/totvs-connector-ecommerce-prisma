@@ -10,9 +10,9 @@ interface UpsertUsersUseCaseRequest {
   phone: Phone
   regitered_at: Date
   rg: string | null
-  birthDate: Date | null
+  birthDate: string | null
   address: Address
-  cpf: string
+  cpf: string | null
   cnpj: string | null
   gender: string | null
   is_customer: boolean | null
@@ -26,13 +26,9 @@ interface UpsertUsersUseCaseRequest {
 }
 
 export class UpsertUsersUseCase {
-  constructor(
-    private usersRepository: UsersRepository,
-
-  ) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async execute({
-    id,
     code,
     status,
     name,
@@ -54,7 +50,6 @@ export class UpsertUsersUseCase {
     employee_status,
     totvs_branch_code, // Typecasting from number to string
   }: UpsertUsersUseCaseRequest) {
-
     const user = await this.usersRepository.findByCode(code)
 
     if (user) {
@@ -63,7 +58,7 @@ export class UpsertUsersUseCase {
         updated_at: new Date(),
       })
       console.log(`Sku ${name} updated.`)
-    } else {
+    } else if (address && phone) {
       await this.usersRepository.create({
         code,
         status,
@@ -71,7 +66,7 @@ export class UpsertUsersUseCase {
         email,
         regitered_at,
         rg,
-        birthDate,
+        birthDate: birthDate ?? null,
         cpf,
         cnpj,
         gender,
@@ -87,17 +82,17 @@ export class UpsertUsersUseCase {
           create: {
             status: 200,
             type: address.addressType,
-            country: address.contryName,
+            country: address.contryName ?? 'BRASIL',
             state: address.stateAbbreviation,
             city: address.cityName,
             zip_code: address.cep,
             neighborhood: address.neiborhood,
             street: address.address,
-            number: address.addressNumber,
+            number: address.addressNumber ?? 0,
             complement: address.complement,
             ibge_city_code: address.ibgeCityCode,
             bcb_country_code: address.bcbCountryCode,
-          }
+          },
         },
         phones: {
           create: {
@@ -105,10 +100,60 @@ export class UpsertUsersUseCase {
             type: phone.typeName,
             ddd_code: phone.number,
             number: phone.number,
-          }
-        }
+          },
+        },
       })
       console.log(`Sku ${name} created.`)
+    } else if (phone){
+      await this.usersRepository.create({
+        code,
+        status,
+        name,
+        email,
+        regitered_at,
+        rg,
+        birthDate: birthDate ?? null,
+        cpf,
+        cnpj,
+        gender,
+        is_customer: is_customer ?? false,
+        is_supplier: is_supplier ?? false,
+        is_representative: is_representative ?? false,
+        is_shipping_company: is_shipping_company ?? false,
+        is_employee: is_employee ?? false,
+        is_active: is_active ?? true,
+        employee_status,
+        totvs_branch_code,
+        phones: {
+          create: {
+            status: 200,
+            type: phone.typeName,
+            ddd_code: phone.number,
+            number: phone.number,
+          },
+        },
+      })
+    } else {
+      await this.usersRepository.create({
+        code,
+        status,
+        name,
+        email,
+        regitered_at,
+        rg,
+        birthDate: birthDate ?? null,
+        cpf,
+        cnpj,
+        gender,
+        is_customer: is_customer ?? false,
+        is_supplier: is_supplier ?? false,
+        is_representative: is_representative ?? false,
+        is_shipping_company: is_shipping_company ?? false,
+        is_employee: is_employee ?? false,
+        is_active: is_active ?? true,
+        employee_status,
+        totvs_branch_code,
+      })
     }
   }
 }

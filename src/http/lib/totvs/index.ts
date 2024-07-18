@@ -16,7 +16,6 @@ interface TotvsProps {
   daysEndFromToday?: number
 }
 interface TotvsResponse {
-  items: any[]
   totalItems: number
   totalPages: number
   hasNext: boolean
@@ -52,7 +51,7 @@ interface ProductPriceList extends TotvsResponse {
 interface ProductBalanceList extends TotvsResponse {
   items: SkuAvailableStock[]
 }
-interface UsersList extends TotvsResponse {
+interface RetailClients extends TotvsResponse {
   items: User[]
 }
 
@@ -577,40 +576,45 @@ export async function getColors({
   return data
 }
 
-export async function getUsers({
+export async function getRetailClients({
   token,
   page,
   pageSize,
-  daysStartFromToday,
-  daysEndFromToday,
-}: TotvsProps): Promise<UsersList> {
-  const currentDate = new Date()
-  const daysStart = daysStartFromToday ?? 1000
-  const daysEnd = daysEndFromToday ?? 0
-
-  const startDate = new Date(currentDate.getTime())
-  startDate.setDate(currentDate.getDate() - daysStart)
-
-  const endDate = new Date(currentDate.getTime())
-  endDate.setDate(currentDate.getDate() - daysEnd)
-
-  const formattedStartDate = formatISODateWithMillis(startDate)
-  const formattedEndDate = formatISODateWithMillis(endDate)
-
+}: TotvsProps): Promise<RetailClients> {
   const url = `${totvs_url}/api/totvsmoda/person/v2/individuals/search`
 
   const headers = headerBuilder(token)
 
   const body = {
-    filter: {
-      change: {
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-      },
-    },
+    filter: {},
     page,
     pageSize: pageSize ?? 200,
-    expand: "emails,phones,addresses,rg"
+    expand: 'emails,phones,addresses,rg',
+  }
+
+  const data = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return data
+}
+
+export async function getWholesaleClients({
+  token,
+  page,
+  pageSize,
+}: TotvsProps): Promise<RetailClients> {
+  const url = `${totvs_url}/api/totvsmoda/person/v2/legal-entities/search`
+
+  const headers = headerBuilder(token)
+
+  const body = {
+    filter: {},
+    page,
+    pageSize: pageSize ?? 200,
+    expand: 'emails,phones,addresses,rg',
   }
 
   const data = await fetch(url, {
