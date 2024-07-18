@@ -252,10 +252,10 @@ model Order {
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
 
-  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
-  shipping_address_id String          @unique
+  shipping_address ShippingAddress?
 
-  order_items OrderItem[]
+  order_items  OrderItem[]
+  transactions Transaction[]
 
   @@unique([code, id])
   @@map("orders")
@@ -278,13 +278,16 @@ model ShippingAddress {
   ibge_city_code   Int?
   bcb_country_code Int?
 
-  order Order?
+  order      Order  @relation(fields: [order_id, order_code], references: [id, code])
+  order_id   String @unique
+  order_code String @unique
 
+  @@unique([order_id, order_code])
   @@map("shipping_addresses")
 }
 
 model OrderItem {
-  id                     String    @id @default(uuid())
+  id                     Int       @id @default(autoincrement())
   product_code           String
   product_name           String
   product_reference_code String
@@ -303,10 +306,41 @@ model OrderItem {
   original_price         Decimal?
   price                  Decimal?
   discount_percentage    Float?
-  last_changed_at        DateTime?
-  totvs_creation_date    DateTime?
+  totvs_created_at       DateTime?
+  totvs_updated_at       DateTime?
 
-  order Order[]
+  order      Order  @relation(fields: [order_id, order_code], references: [id, code])
+  order_id   String @unique
+  order_code String @unique
 
   @@map("order_items")
+}
+
+model Transaction {
+  id                         String    @id @default(uuid())
+  status                     String
+  created_at                 DateTime  @default(now())
+  updated_at                 DateTime?
+  approved_date              DateTime?
+  cancellation_date          DateTime?
+  currency                   String
+  total_value                Decimal
+  installments               Int
+  installment_values         Decimal
+  gateway_name               String
+  gateway_transaction_id     String?
+  gateway_authorization_code String?
+  user_gateway_id            String
+  user_gateway_score         String?
+  user_gateway_card_id       String?
+  payment_type               String
+  payment_name               String
+  payment_link               String
+  payment_card_nsu           String?
+  payment_card_brand         String?
+
+  order    Order  @relation(fields: [order_id], references: [id])
+  order_id String @unique
+
+  @@map("transactions")
 }
