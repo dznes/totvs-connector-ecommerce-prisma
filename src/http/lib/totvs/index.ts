@@ -581,13 +581,33 @@ export async function getRetailClients({
   token,
   page,
   pageSize,
+  daysStartFromToday,
+  daysEndFromToday,
 }: TotvsProps): Promise<RetailClients> {
   const url = `${totvs_url}/api/totvsmoda/person/v2/individuals/search`
 
   const headers = headerBuilder(token)
 
+  const currentDate = new Date()
+  const daysStart = daysStartFromToday ?? 1000
+  const daysEnd = daysEndFromToday ?? 0
+
+  const startDate = new Date(currentDate.getTime())
+  startDate.setDate(currentDate.getDate() - daysStart)
+
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
+
+  const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
+
   const body = {
-    filter: {},
+    filter: {
+      change: {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      }
+    },
     page,
     pageSize: pageSize ?? 200,
     expand: 'emails,phones,addresses,rg',
@@ -606,13 +626,33 @@ export async function getWholesaleClients({
   token,
   page,
   pageSize,
+  daysStartFromToday,
+  daysEndFromToday,
 }: TotvsProps): Promise<RetailClients> {
   const url = `${totvs_url}/api/totvsmoda/person/v2/legal-entities/search`
 
   const headers = headerBuilder(token)
 
+  const currentDate = new Date()
+  const daysStart = daysStartFromToday ?? 1000
+  const daysEnd = daysEndFromToday ?? 0
+
+  const startDate = new Date(currentDate.getTime())
+  startDate.setDate(currentDate.getDate() - daysStart)
+
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
+
+  const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
+
   const body = {
-    filter: {},
+    filter: {
+      change: {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      }
+    },
     page,
     pageSize: pageSize ?? 200,
     expand: 'emails,phones,addresses,rg',
