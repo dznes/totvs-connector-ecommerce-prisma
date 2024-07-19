@@ -13,6 +13,15 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return order
   }
 
+  async findByCode(code: string) {
+    const order = await prisma.order.findUnique({
+      where: {
+        code,
+      },
+    })
+    return order
+  }
+
   async getDetailsById(id: string) {
     const order = await prisma.order.findUnique({
       where: {

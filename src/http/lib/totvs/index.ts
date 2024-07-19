@@ -151,6 +151,7 @@ export async function getOrders({
     },
     page,
     pageSize: pageSize ?? 200,
+    expand: "items,observations,shippingAddress,invoices"
   }
   const data = await fetch(url, {
     method: 'POST',

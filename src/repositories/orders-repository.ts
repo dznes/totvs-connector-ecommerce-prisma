@@ -2,6 +2,7 @@ import { Prisma, Order } from '@prisma/client'
 
 export interface OrdersRepository {
   findById(id: string): Promise<Order | null>
+  findByCode(code: string): Promise<Order | null>
   getDetailsById(id: string): Promise<Order | null> // FIX ME
   create(data: Prisma.OrderUncheckedCreateInput): Promise<Order>
   list(): Promise<Order[] | null>

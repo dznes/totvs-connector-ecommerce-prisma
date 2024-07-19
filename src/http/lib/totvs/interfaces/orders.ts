@@ -1,13 +1,13 @@
 import { Address } from './user-info'
 
-interface EletronicInvoice {
+export interface EletronicInvoice {
   accessKey: string
   electronicInvoiceStatus: string
   receipt: number
   receivementDate: Date
 }
 
-interface OrderItem {
+export interface OrderItem {
   productCode: number
   name: string
   quantity: number
@@ -33,7 +33,7 @@ interface OrderItem {
   lastBillingDate: Date | null
 }
 
-interface OrderInvoice {
+export interface OrderInvoice {
   code: number
   accessKey: string | null
   serial: string | null

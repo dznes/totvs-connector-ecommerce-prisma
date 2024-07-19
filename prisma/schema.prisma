@@ -245,12 +245,13 @@ model Order {
   shipping_company_code  String?
   shipping_company_cnpj  String?
   shipping_company_name  String?
-  shipping_service_cod   String?
+  shipping_service_code  String?
   shipping_service_name  String?
   totvs_order_status     String?
 
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id String
+  user      User   @relation(fields: [user_id, user_code], references: [id, code])
+  user_id   String @unique
+  user_code String @unique
 
   shipping_address ShippingAddress?
 

@@ -41,6 +41,18 @@ export class PrismaOrderItemsRepository implements OrderItemsRepository {
     return orders
   }
 
+  async listByOrderCode(orderCode: string) {
+    const orders = await prisma.orderItem.findMany({
+      where: {
+        order_code: orderCode,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    })
+    return orders
+  }
+
   async update(orderItem: OrderItem) {
     await prisma.orderItem.update({
       where: { id: orderItem.id },
