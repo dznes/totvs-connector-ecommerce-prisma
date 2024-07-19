@@ -255,8 +255,9 @@ model Order {
 
   shipping_address ShippingAddress?
 
-  order_items  OrderItem[]
-  transactions Transaction[]
+  order_items    OrderItem[]
+  order_invoices OrderInvoice[]
+  transactions   Transaction[]
 
   @@unique([code, id])
   @@map("orders")
@@ -315,6 +316,39 @@ model OrderItem {
   order_code String @unique
 
   @@map("order_items")
+}
+
+model OrderInvoice {
+  id                      Int       @id @default(autoincrement())
+  code                    String    @unique
+  access_key              String
+  serial                  String
+  status                  String
+  shipping_company_name   String
+  package_number          String
+  gross_weight            Float
+  net_weight              Float
+  tracking_code           String
+  discount_percentage     Float
+  quantity                Int
+  product_value           Decimal
+  additional_value        Decimal
+  shipping_value          Decimal
+  insurance_value         Decimal
+  ipi_value               Decimal
+  total_value             Decimal
+  transaction_branch_code String
+  transaction_date        DateTime
+  transaction_code        String
+  issue_date              DateTime
+  created_at              DateTime  @default(now())
+  updated_at              DateTime?
+
+  order      Order  @relation(fields: [order_id, order_code], references: [id, code])
+  order_id   String @unique
+  order_code String @unique
+
+  @@map("order_invoices")
 }
 
 model Transaction {

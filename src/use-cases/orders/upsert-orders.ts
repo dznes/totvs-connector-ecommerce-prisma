@@ -2,6 +2,9 @@ import { OrdersRepository } from '@/repositories/orders-repository'
 import { UsersRepository } from '@/repositories/users-repository'
 import { Order, OrderItem, OrderInvoice ,EletronicInvoice } from '@/http/lib/totvs/interfaces/orders'
 import { Address } from '@/http/lib/totvs/interfaces/user-info'
+import { OrderItemsRepository } from '@/repositories/order-items-repository'
+import { ShippingAddressesRepository } from '@/repositories/shipping-addresses-repository'
+import { OrderInvoicesRepository } from '@/repositories/order-invoices-repository'
 
 
 
@@ -47,6 +50,9 @@ export class UpsertOrdersUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
     private usersRepository: UsersRepository,
+    private orderItemsRepository: OrderItemsRepository,
+    private shippingAddressRepository: ShippingAddressesRepository,
+    private orderInvoiceRepository: OrderInvoicesRepository
   ) {}
 
   async execute({
