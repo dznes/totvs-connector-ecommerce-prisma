@@ -1,6 +1,6 @@
 import { OrdersRepository } from '@/repositories/orders-repository'
 import { UsersRepository } from '@/repositories/users-repository'
-import { Order, OrderItem, OrderInvoice ,EletronicInvoice } from '@/http/lib/totvs/interfaces/orders'
+import { OrderItem, OrderInvoice } from '@/http/lib/totvs/interfaces/orders'
 import { Address } from '@/http/lib/totvs/interfaces/user-info'
 import { OrderItemsRepository } from '@/repositories/order-items-repository'
 import { ShippingAddressesRepository } from '@/repositories/shipping-addresses-repository'
