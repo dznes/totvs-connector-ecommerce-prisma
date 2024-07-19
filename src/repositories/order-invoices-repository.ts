@@ -2,6 +2,7 @@ import { Prisma, OrderInvoice } from '@prisma/client'
 
 export interface OrderInvoicesRepository {
   findById(id: number): Promise<OrderInvoice | null>
+  findByCode(code: string): Promise<OrderInvoice | null>
   create(data: Prisma.OrderInvoiceUncheckedCreateInput): Promise<OrderInvoice>
   list(): Promise<OrderInvoice[] | null>
   listByOrderId(orderId: string): Promise<OrderInvoice[] | null>

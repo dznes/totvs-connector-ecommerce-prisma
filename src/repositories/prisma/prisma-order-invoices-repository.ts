@@ -13,6 +13,15 @@ export class PrismaOrderInvoicesRepository implements OrderInvoicesRepository {
     return orderInvoice
   }
 
+  async findByCode(code: string) {
+    const orderInvoice = await prisma.orderInvoice.findUnique({
+      where: {
+        code,
+      },
+    })
+    return orderInvoice
+  }
+
   async create(data: Prisma.OrderInvoiceUncheckedCreateInput) {
     const orderInvoice = await prisma.orderInvoice.create({
       data,

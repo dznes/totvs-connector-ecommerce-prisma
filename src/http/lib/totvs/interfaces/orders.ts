@@ -35,26 +35,26 @@ export interface OrderItem {
 
 export interface OrderInvoice {
   code: number
-  accessKey: string | null
-  serial: string | null
+  accessKey: string
+  serial: string
   issueDate: Date
   status: string
-  shippingCompanyName: string | null
-  packageNumber: string | null
-  grossWeight: number | null
-  netWeight: number | null
-  trackingCode: string | null
-  discountPercentage: number | null
+  shippingCompanyName: string
+  packageNumber: string
+  grossWeight: number
+  netWeight: number
+  trackingCode: string
+  discountPercentage: number
   quantity: number
   productValue: number
-  additionalValue: number | null
-  shippingValue: number | null
-  InsuranceValue: number | null
-  ipiValue: number | null
+  additionalValue: number
+  shippingValue: number
+  InsuranceValue: number
+  ipiValue: number
   totalValue: number
-  transactionBranchCode: number | null
-  transactionDate: Date | null
-  transactionCode: number | null
+  transactionBranchCode: number
+  transactionDate: Date
+  transactionCode: number
   electronic: EletronicInvoice | null
 }
 

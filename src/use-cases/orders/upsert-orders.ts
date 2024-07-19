@@ -6,6 +6,8 @@ import { OrderItemsRepository } from '@/repositories/order-items-repository'
 import { ShippingAddressesRepository } from '@/repositories/shipping-addresses-repository'
 import { OrderInvoicesRepository } from '@/repositories/order-invoices-repository'
 
+import { convertToDecimal } from '@/core/entities/value-objects/convert-to-decimal'
+
 interface UpsertOrdersUseCaseRequest {
     code: string
     status: number
@@ -48,9 +50,9 @@ export class UpsertOrdersUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
     private usersRepository: UsersRepository,
-    private orderItemsRepository: OrderItemsRepository,
     private shippingAddressRepository: ShippingAddressesRepository,
-    private orderInvoiceRepository: OrderInvoicesRepository
+    private orderInvoiceRepository: OrderInvoicesRepository,
+    private orderItemsRepository: OrderItemsRepository,
   ) {}
 
   async execute({
@@ -95,7 +97,6 @@ export class UpsertOrdersUseCase {
     const old_shipping_address = await this.shippingAddressRepository.findByOrderCode(code)
 
     // TODO:
-    // OR JUST CREATE USER AND REGISTER THE SHIPPING ADDRESS
     // AFTER CREATING ORDER NEED TO CREATE ORDER ITEMS, SHIPPING ADDRESS AND ORDER INVOICE
 
     if (order && old_shipping_address) {
@@ -123,6 +124,64 @@ export class UpsertOrdersUseCase {
         created_at: old_shipping_address.created_at,
         updated_at: new Date(),
       })
+
+      const old_order_invoice = await this.orderInvoiceRepository.findByCode(code)
+      if (old_order_invoice) {
+        await this.orderInvoiceRepository.update({
+            id: old_order_invoice.id,
+            code: order_invoice.code.toString(),
+            access_key: order_invoice.accessKey,
+            serial: order_invoice.serial,
+            tracking_code: order_invoice.trackingCode,
+            shipping_company_name: order_invoice.shippingCompanyName,
+            issue_date: order_invoice.issueDate,
+            net_weight: order_invoice.netWeight,
+            gross_weight: order_invoice.grossWeight,
+            package_number: order_invoice.packageNumber,
+            quantity: order_invoice.quantity,
+            discount_percentage: order_invoice.discountPercentage,
+            additional_value: convertToDecimal(order_invoice.additionalValue),
+            product_value: convertToDecimal(order_invoice.productValue),
+            shipping_value: convertToDecimal(order_invoice.shippingValue),
+            insurance_value: convertToDecimal(order_invoice.InsuranceValue),
+            ipi_value: convertToDecimal(order_invoice.ipiValue),
+            total_value: convertToDecimal(order_invoice.totalValue),
+            transaction_branch_code: order_invoice.transactionBranchCode.toString(),
+            transaction_code: order_invoice.transactionCode.toString(),
+            transaction_date: order_invoice.transactionDate,
+            status: order_invoice.status,
+            order_code: code,
+            order_id: order.id,
+            created_at: old_order_invoice.created_at,
+            updated_at: new Date(),
+        })
+      } else {
+        await this.orderInvoiceRepository.create({
+            code: order_invoice.code.toString(),
+            access_key: order_invoice.accessKey,
+            serial: order_invoice.serial,
+            tracking_code: order_invoice.trackingCode,
+            shipping_company_name: order_invoice.shippingCompanyName,
+            issue_date: order_invoice.issueDate,
+            net_weight: order_invoice.netWeight,
+            gross_weight: order_invoice.grossWeight,
+            package_number: order_invoice.packageNumber,
+            quantity: order_invoice.quantity,
+            discount_percentage: order_invoice.discountPercentage,
+            additional_value: convertToDecimal(order_invoice.additionalValue),
+            product_value: convertToDecimal(order_invoice.productValue),
+            shipping_value: convertToDecimal(order_invoice.shippingValue),
+            insurance_value: convertToDecimal(order_invoice.InsuranceValue),
+            ipi_value: convertToDecimal(order_invoice.ipiValue),
+            total_value: convertToDecimal(order_invoice.totalValue),
+            transaction_branch_code: order_invoice.transactionBranchCode.toString(),
+            transaction_code: order_invoice.transactionCode.toString(),
+            transaction_date: order_invoice.transactionDate,
+            status: order_invoice.status,
+            order_code: code,
+            order_id: order.id,
+        })
+      }
 
       console.log(`Order ${code} updated.`)
     } else if (user){
@@ -177,6 +236,32 @@ export class UpsertOrdersUseCase {
         street: shipping_address.address,
         type: shipping_address.addressType,
         zip_code: shipping_address.cep,
+      })
+
+      await this.orderInvoiceRepository.create({
+        code: order_invoice.code.toString(),
+        access_key: order_invoice.accessKey,
+        serial: order_invoice.serial,
+        tracking_code: order_invoice.trackingCode,
+        shipping_company_name: order_invoice.shippingCompanyName,
+        issue_date: order_invoice.issueDate,
+        net_weight: order_invoice.netWeight,
+        gross_weight: order_invoice.grossWeight,
+        package_number: order_invoice.packageNumber,
+        quantity: order_invoice.quantity,
+        discount_percentage: order_invoice.discountPercentage,
+        additional_value: convertToDecimal(order_invoice.additionalValue),
+        product_value: convertToDecimal(order_invoice.productValue),
+        shipping_value: convertToDecimal(order_invoice.shippingValue),
+        insurance_value: convertToDecimal(order_invoice.InsuranceValue),
+        ipi_value: convertToDecimal(order_invoice.ipiValue),
+        total_value: convertToDecimal(order_invoice.totalValue),
+        transaction_branch_code: order_invoice.transactionBranchCode.toString(),
+        transaction_code: order_invoice.transactionCode.toString(),
+        transaction_date: order_invoice.transactionDate,
+        status: order_invoice.status,
+        order_code: created_order.code,
+        order_id: created_order.id,
       })
     }
   }
