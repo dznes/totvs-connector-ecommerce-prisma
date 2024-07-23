@@ -55,3 +55,9 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [ ] Create client and push it into TOTVS MODA API.
 - [ ] Create order and push it into TOTVS MODA API.
 - [ ] Add JWT and role-based authentication to access private routes.
+
+#### CORRECTIONS AFTER IMPLEMENTATION:
+PERFORM CROSS-ANALYSIS OF THE INTERNAL DATABASE AND TOTVS.
+ITERATE OVER ALL ORDER INVOICES AND ADD EVERY ONE OF THEM.
+ADD TRANSACTIONS AND ALL ITS INFORMATIONS INTO SEPARATE DATABASE.
+
