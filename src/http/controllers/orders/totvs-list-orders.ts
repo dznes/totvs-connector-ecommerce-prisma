@@ -6,7 +6,7 @@ export async function ListOrders(request: FastifyRequest, reply: FastifyReply) {
     const token = await fetchToken()
     const props = {
       token: token.access_token,
-      page: 2,
+      page: 1,
       pageSize: 1,
       daysFromToday: 10,
     }

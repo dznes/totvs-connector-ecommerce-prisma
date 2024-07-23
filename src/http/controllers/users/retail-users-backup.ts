@@ -15,7 +15,7 @@ export async function retailUsersBackup(
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
-    let page = 80
+    let page = 1
     let isLastPage = false
 
     // Create an instance of the update SKU prices use case

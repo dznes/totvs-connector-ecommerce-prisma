@@ -231,6 +231,7 @@ model Order {
   utm_term               String?
   fiscal_code            String?
   gateway_id             String?
+  arrival_date           DateTime?
   order_vtex_id          String?
   totvs_branch_code      Int?
   totvs_creation_date    DateTime?

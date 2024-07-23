@@ -1,8 +1,7 @@
 import { OrdersRepository } from '@/repositories/orders-repository'
 import { UsersRepository } from '@/repositories/users-repository'
-import { OrderItem, OrderInvoice } from '@/http/lib/totvs/interfaces/orders'
+import { OrderInvoice } from '@/http/lib/totvs/interfaces/orders'
 import { Address } from '@/http/lib/totvs/interfaces/user-info'
-import { OrderItemsRepository } from '@/repositories/order-items-repository'
 import { ShippingAddressesRepository } from '@/repositories/shipping-addresses-repository'
 import { OrderInvoicesRepository } from '@/repositories/order-invoices-repository'
 
@@ -23,6 +22,7 @@ interface UpsertOrdersUseCaseRequest {
     utm_term: string | null
     fiscal_code: string | null
     gateway_id: string | null
+    arrival_date: Date | null
     order_vtex_id: string | null
     totvs_branch_code: number
     totvs_creation_date: Date
@@ -41,7 +41,6 @@ interface UpsertOrdersUseCaseRequest {
     shipping_service_name: string
     totvs_order_status: string
     user_code: string
-    order_items: OrderItem[]
     shipping_address: Address
     order_invoice: OrderInvoice
 }
@@ -50,9 +49,8 @@ export class UpsertOrdersUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
     private usersRepository: UsersRepository,
-    private shippingAddressRepository: ShippingAddressesRepository,
-    private orderInvoiceRepository: OrderInvoicesRepository,
-    private orderItemsRepository: OrderItemsRepository,
+    private shippingAddressesRepository: ShippingAddressesRepository,
+    private orderInvoicesRepository: OrderInvoicesRepository,
   ) {}
 
   async execute({
@@ -70,6 +68,7 @@ export class UpsertOrdersUseCase {
     utm_term,
     fiscal_code,
     gateway_id,
+    arrival_date,
     order_vtex_id,
     totvs_branch_code,
     totvs_creation_date,
@@ -89,12 +88,11 @@ export class UpsertOrdersUseCase {
     totvs_order_status,
     user_code,
     shipping_address,
-    order_items,
     order_invoice,
   }: UpsertOrdersUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(code)
     const user = await this.usersRepository.findByCode(user_code)
-    const old_shipping_address = await this.shippingAddressRepository.findByOrderCode(code)
+    const old_shipping_address = await this.shippingAddressesRepository.findByOrderCode(code)
 
     // TODO:
     // AFTER CREATING ORDER NEED TO CREATE ORDER ITEMS, SHIPPING ADDRESS AND ORDER INVOICE
@@ -105,7 +103,7 @@ export class UpsertOrdersUseCase {
         updated_at: new Date(),
       })
       
-      await this.shippingAddressRepository.update({
+      await this.shippingAddressesRepository.update({
         id: old_shipping_address.id,
         bcb_country_code: shipping_address.bcbCountryCode,
         city: shipping_address.cityName,
@@ -125,9 +123,9 @@ export class UpsertOrdersUseCase {
         updated_at: new Date(),
       })
 
-      const old_order_invoice = await this.orderInvoiceRepository.findByCode(code)
+      const old_order_invoice = await this.orderInvoicesRepository.findByCode(code)
       if (old_order_invoice) {
-        await this.orderInvoiceRepository.update({
+        await this.orderInvoicesRepository.update({
             id: old_order_invoice.id,
             code: order_invoice.code.toString(),
             access_key: order_invoice.accessKey,
@@ -156,7 +154,7 @@ export class UpsertOrdersUseCase {
             updated_at: new Date(),
         })
       } else {
-        await this.orderInvoiceRepository.create({
+        await this.orderInvoicesRepository.create({
             code: order_invoice.code.toString(),
             access_key: order_invoice.accessKey,
             serial: order_invoice.serial,
@@ -200,6 +198,7 @@ export class UpsertOrdersUseCase {
         utm_term,
         fiscal_code,
         gateway_id,
+        arrival_date,
         order_vtex_id,
         totvs_branch_code,
         totvs_creation_date,
@@ -221,7 +220,7 @@ export class UpsertOrdersUseCase {
         user_id: user.id,
       })
 
-      await this.shippingAddressRepository.create({
+      await this.shippingAddressesRepository.create({
         bcb_country_code: shipping_address.bcbCountryCode,
         city: shipping_address.cityName,
         complement: shipping_address.complement,
@@ -238,7 +237,7 @@ export class UpsertOrdersUseCase {
         zip_code: shipping_address.cep,
       })
 
-      await this.orderInvoiceRepository.create({
+      await this.orderInvoicesRepository.create({
         code: order_invoice.code.toString(),
         access_key: order_invoice.accessKey,
         serial: order_invoice.serial,
