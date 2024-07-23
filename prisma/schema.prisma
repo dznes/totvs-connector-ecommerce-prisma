@@ -231,7 +231,7 @@ model Order {
   utm_term               String?
   fiscal_code            String?
   gateway_id             String?
-  arrival_date           DateTime?
+  arrival_date           String?
   order_vtex_id          String?
   totvs_branch_code      Int?
   totvs_creation_date    DateTime?
@@ -251,8 +251,8 @@ model Order {
   totvs_order_status     String?
 
   user      User   @relation(fields: [user_id, user_code], references: [id, code])
-  user_id   String @unique
-  user_code String @unique
+  user_id   String
+  user_code String
 
   shipping_address ShippingAddress?
 
@@ -313,8 +313,8 @@ model OrderItem {
   totvs_updated_at       DateTime?
 
   order      Order  @relation(fields: [order_id, order_code], references: [id, code])
-  order_id   String @unique
-  order_code String @unique
+  order_id   String
+  order_code String
 
   @@map("order_items")
 }
@@ -326,10 +326,10 @@ model OrderInvoice {
   serial                  String
   status                  String
   shipping_company_name   String
-  package_number          String
+  package_number          Int
   gross_weight            Float
   net_weight              Float
-  tracking_code           String
+  tracking_code           String?
   discount_percentage     Float
   quantity                Int
   product_value           Decimal
@@ -339,15 +339,15 @@ model OrderInvoice {
   ipi_value               Decimal
   total_value             Decimal
   transaction_branch_code String
-  transaction_date        DateTime
+  transaction_date        String
   transaction_code        String
-  issue_date              DateTime
+  issue_date              String
   created_at              DateTime  @default(now())
   updated_at              DateTime?
 
   order      Order  @relation(fields: [order_id, order_code], references: [id, code])
-  order_id   String @unique
-  order_code String @unique
+  order_id   String
+  order_code String
 
   @@map("order_invoices")
 }
@@ -376,7 +376,7 @@ model Transaction {
   payment_card_brand         String?
 
   order    Order  @relation(fields: [order_id], references: [id])
-  order_id String @unique
+  order_id String
 
   @@map("transactions")
 }

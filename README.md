@@ -18,7 +18,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [X] UPSERT skus prices.
 - [X] UPSERT skus costs.
 - [X] UPSERT clients.
-- [ ] UPSERT orders.
+- [X] UPSERT orders.
 - [ ] UPSERT orders with skus.
 - [X] LIST skus with query params.
 - [ ] LIST clients with query params.
@@ -36,7 +36,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [X] Add product prices backup.
 - [X] Add product cost backup.
 - [X] Add clients backup.
-- [ ] Add orders backup.
+- [X] Add orders backup.
 - [ ] Add orders with skus backup.
 - [ ] Add update for product details in database every 1 minute updates from TOTVS.
 - [ ] Add update for product balance in database every 1 minute updates from TOTVS.

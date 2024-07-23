@@ -1,5 +1,7 @@
-import { fetchToken, getOrders, getRetailClients } from '@/http/lib/totvs'
+import { fetchToken, getOrders } from '@/http/lib/totvs'
+import { makeUpsertOrderInvoicesUseCase } from '@/use-cases/factories/order-invoices/make-upsert-order-invoices-use-case'
 import { makeUpsertOrdersUseCase } from '@/use-cases/factories/orders/make-upsert-orders-use-case'
+import { makeUpsertShippingAddressesUseCase } from '@/use-cases/factories/shipping-addresses/make-upsert-shipping-addresses-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 /**
@@ -7,19 +9,20 @@ import { FastifyReply, FastifyRequest } from 'fastify'
  * @param _: FastifyRequest - The incoming request object (not used).
  * @param reply: FastifyReply - The response object to send the response.
  */
-export async function OrdersBackup(
-  _: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
   try {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
+    const daysStartFromToday = 50
+    const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
 
     // Create an instance of the update SKU prices use case
     const upsertOrdersUseCase = makeUpsertOrdersUseCase()
+    const upsertShippingAddressesUseCase = makeUpsertShippingAddressesUseCase()
+    const upsertOrderInvoicesUseCase = makeUpsertOrderInvoicesUseCase()
 
     // Loop until the last page is reached
     while (!isLastPage) {
@@ -28,47 +31,62 @@ export async function OrdersBackup(
         token: token.access_token,
         page,
         pageSize,
+        daysStartFromToday,
+        daysEndFromToday,
       })
 
       // Upsert each SKU price into the database
       items.map(async (item) => {
         await upsertOrdersUseCase.execute({
-            code: item.orderCode.toString(),
-            order_vtex_id: item.orderId,
-            operation_code: item.operationCode.toString(),
-            operation_name: item.operationName,
-            user_code: item.customerCode.toString(),
-            payment_condition_name: item.paymentConditionName,
-            payment_condition_code: item.paymentConditionCode.toString(),
-            representative_code: item.representativeCode?.toString() ?? '',
-            representative_name: item.representativeName ?? '',
-            items_quantity: item.quantity,
-            total_items: item.grossValue,
-            discount_value: item.discountValue,
-            total_value: item.netValue,
-            freight_type: item.freightType,
-            freight_value: item.freightValue,
-            totvs_branch_code: item.branchCode,
-            totvs_order_status: item.statusOrder,
-            totvs_creation_date: new Date(item.insertDate),
-            arrival_date: new Date(item.arrivalDate ?? ''),
-            shipping_service_name: item.shippingServiceName ?? '',
-            shipping_company_code: item.shippingCompanyCode?.toString() ?? '',
-            shipping_company_cnpj: item.shippingCompanyCpfCnpj ?? '',
-            shipping_company_name: item.shippingCompanyName ?? '',
-            shipping_service_code: item.shippingCompanyCode?.toString() ?? '',
-            shipping_address: item.shippingAddress,
-            order_invoice: item.invoices[0],
-            fiscal_code: '',
-            status: 200,
-            type: 1,
-            gateway_id: 'TOTVS',
-            utm_campaign: '',
-            utm_content: '',
-            utm_medium: '',
-            utm_source: '',
-            utm_term: '',
+          code: item.orderCode.toString(),
+          order_vtex_id: item.orderId,
+          operation_code: item.operationCode.toString(),
+          operation_name: item.operationName,
+          user_code: item.customerCode.toString(),
+          payment_condition_name: item.paymentConditionName,
+          payment_condition_code: item.paymentConditionCode.toString(),
+          representative_code: item.representativeCode?.toString() ?? '',
+          representative_name: item.representativeName ?? '',
+          items_quantity: item.quantity,
+          total_items: item.grossValue,
+          discount_value: item.discountValue,
+          total_value: item.netValue,
+          freight_type: item.freightType,
+          freight_value: item.freightValue,
+          totvs_branch_code: item.branchCode,
+          totvs_order_status: item.statusOrder,
+          totvs_creation_date: new Date(item.insertDate),
+          arrival_date: item.arrivalDate ?? '',
+          shipping_service_name: item.shippingServiceName ?? '',
+          shipping_company_code: item.shippingCompanyCode?.toString() ?? '',
+          shipping_company_cnpj: item.shippingCompanyCpfCnpj ?? '',
+          shipping_company_name: item.shippingCompanyName ?? '',
+          shipping_service_code: item.shippingCompanyCode?.toString() ?? '',
+          fiscal_code: '',
+          status: 200,
+          type: 1,
+          gateway_id: 'TOTVS',
+          utm_campaign: '',
+          utm_content: '',
+          utm_medium: '',
+          utm_source: '',
+          utm_term: '',
         })
+
+        if (item.shippingAddress) {
+          await upsertShippingAddressesUseCase.execute({
+            order_code: item.orderCode.toString(),
+            shipping_address: item.shippingAddress,
+          })
+        }
+
+        if (item.invoices[0]) {
+          await upsertOrderInvoicesUseCase.execute({
+            order_code: item.orderCode.toString(),
+            order_invoice: item.invoices[0],
+          })
+        }
+
       })
 
       // Check if there are more pages to fetch
@@ -84,8 +102,6 @@ export async function OrdersBackup(
   } catch (err) {
     console.error(err)
     // Return an HTTP error response in case of failure
-    return reply
-      .status(500)
-      .send({ error: 'Failed to fetch orders details' })
+    return reply.status(500).send({ error: 'Failed to fetch orders details' })
   }
 }

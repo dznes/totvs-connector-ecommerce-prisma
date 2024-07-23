@@ -3,7 +3,9 @@ import { ShippingAddress, Prisma } from '@prisma/client'
 
 import { ShippingAddressesRepository } from '../shipping-addresses-repository'
 
-export class PrismaShippingAddressesRepository implements ShippingAddressesRepository {
+export class PrismaShippingAddressesRepository
+  implements ShippingAddressesRepository
+{
   async findById(id: string) {
     const address = await prisma.shippingAddress.findUnique({
       where: {
@@ -31,11 +33,11 @@ export class PrismaShippingAddressesRepository implements ShippingAddressesRepos
 
   async findByOrderId(orderCode: string) {
     const address = await prisma.shippingAddress.findUnique({
-        where: {
-          order_code: orderCode,
-        },
-      })
-      return address
+      where: {
+        order_code: orderCode,
+      },
+    })
+    return address
   }
 
   async findByOrderCode(orderCode: string) {

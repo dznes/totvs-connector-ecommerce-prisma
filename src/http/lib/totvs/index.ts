@@ -151,7 +151,7 @@ export async function getOrders({
     },
     page,
     pageSize: pageSize ?? 200,
-    expand: "shippingAddress,invoices"
+    expand: 'items,shippingAddress,invoices',
   }
   const data = await fetch(url, {
     method: 'POST',
@@ -361,11 +361,8 @@ export async function getProductCosts({
       change: {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
-        inProduct: true,
-        inBranchInfo: true,
-        branchInfoCodeList: [1],
         inCost: true,
-        branchCostCodeList: [1],
+        branchCostCodeList: [1,2],
         costCodeList: [2],
       },
     },
@@ -424,7 +421,9 @@ export async function getProductPrices({
       change: {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
-        inProduct: true,
+        inPrice: true,
+        branchPriceCodeList: [1,2],
+        priceCodeList: [1,2],
       },
     },
     option: {
@@ -483,7 +482,6 @@ export async function getProductBalances({
       change: {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
-        inProduct: true,
         inStock: true,
         branchStockCodeList: [1, 2],
         stockCodeList: [3],
@@ -606,7 +604,8 @@ export async function getRetailClients({
       change: {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
-      }
+        inCustomer: true,
+      },
     },
     page,
     pageSize: pageSize ?? 200,
@@ -651,7 +650,8 @@ export async function getWholesaleClients({
       change: {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
-      }
+        inCustomer: true,
+      },
     },
     page,
     pageSize: pageSize ?? 200,

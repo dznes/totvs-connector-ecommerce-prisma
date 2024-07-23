@@ -15,6 +15,8 @@ export async function wholesaleUsersBackup(
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
+    const daysStartFromToday = 50
+    const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
 
@@ -28,6 +30,8 @@ export async function wholesaleUsersBackup(
         token: token.access_token,
         page,
         pageSize,
+        daysStartFromToday,
+        daysEndFromToday,
       })
 
       // Upsert each SKU price into the database

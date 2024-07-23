@@ -2,7 +2,9 @@ import { ShippingAddress, Prisma } from '@prisma/client'
 
 export interface ShippingAddressesRepository {
   findById(id: string): Promise<ShippingAddress | null>
-  create(data: Prisma.ShippingAddressUncheckedCreateInput): Promise<ShippingAddress>
+  create(
+    data: Prisma.ShippingAddressUncheckedCreateInput,
+  ): Promise<ShippingAddress>
   list(): Promise<ShippingAddress[] | null>
   findByOrderId(orderId: string): Promise<ShippingAddress | null>
   findByOrderCode(orderCode: string): Promise<ShippingAddress | null>

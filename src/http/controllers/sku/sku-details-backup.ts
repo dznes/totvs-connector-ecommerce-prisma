@@ -12,7 +12,7 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 500
-    const daysStartFromToday = 3
+    const daysStartFromToday = 10
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false

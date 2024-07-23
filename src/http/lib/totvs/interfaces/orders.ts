@@ -35,12 +35,12 @@ export interface OrderItem {
 
 export interface OrderInvoice {
   code: number
-  accessKey: string
+  accessKey: string | null
   serial: string
-  issueDate: Date
+  issueDate: string
   status: string
   shippingCompanyName: string
-  packageNumber: string
+  packageNumber: number
   grossWeight: number
   netWeight: number
   trackingCode: string
@@ -53,7 +53,7 @@ export interface OrderInvoice {
   ipiValue: number
   totalValue: number
   transactionBranchCode: number
-  transactionDate: Date
+  transactionDate: string
   transactionCode: number
   electronic: EletronicInvoice | null
 }
@@ -68,7 +68,7 @@ export interface Order {
   sellerCode: number | null
   sellerCpfCnpj: string | null
   orderDate: Date
-  arrivalDate: Date | null
+  arrivalDate: string | null
   customerCode: number
   customerCpfCnpj: string | null
   representativeCode: number | null

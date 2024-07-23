@@ -22,7 +22,7 @@ export class PrismaOrderInvoicesRepository implements OrderInvoicesRepository {
     return orderInvoice
   }
 
-  async create(data: Prisma.OrderInvoiceUncheckedCreateInput) {
+  async create(data: Prisma.OrderInvoiceCreateInput) {
     const orderInvoice = await prisma.orderInvoice.create({
       data,
     })
