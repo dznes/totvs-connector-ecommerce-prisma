@@ -15,7 +15,7 @@ export async function wholesaleUsersBackup(
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
-    const daysStartFromToday = 50
+    const daysStartFromToday = 10
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false

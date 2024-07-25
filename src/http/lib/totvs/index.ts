@@ -485,12 +485,6 @@ export async function getProductBalances({
         inStock: true,
         branchStockCodeList: [1, 2],
         stockCodeList: [3],
-        inSalesOrder: true,
-        branchSalesOrderCodeList: [1, 2],
-        inPurchaseOrder: true,
-        branchPurchaseOrderCodeList: [1, 2],
-        inTransaction: true,
-        branchTransactionCodeList: [1, 2],
       },
     },
     option: {

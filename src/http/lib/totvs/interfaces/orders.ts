@@ -28,7 +28,7 @@ export interface OrderItem {
   lastChangeUserInsert: number | null
   lastChangeDate: Date | null
   billingForecastDate: Date | null
-  insertDate: Date | null
+  insertDate: Date
   billingLimitDate: Date | null
   lastBillingDate: Date | null
 }

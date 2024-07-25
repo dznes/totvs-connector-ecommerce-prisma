@@ -322,26 +322,26 @@ model OrderItem {
 model OrderInvoice {
   id                      Int       @id @default(autoincrement())
   code                    String    @unique
-  access_key              String
-  serial                  String
-  status                  String
-  shipping_company_name   String
-  package_number          Int
-  gross_weight            Float
-  net_weight              Float
+  access_key              String?
+  serial                  String?
+  status                  String?
+  shipping_company_name   String?
+  package_number          Int?
+  gross_weight            Float?
+  net_weight              Float?
   tracking_code           String?
-  discount_percentage     Float
-  quantity                Int
-  product_value           Decimal
-  additional_value        Decimal
-  shipping_value          Decimal
-  insurance_value         Decimal
-  ipi_value               Decimal
-  total_value             Decimal
-  transaction_branch_code String
-  transaction_date        String
-  transaction_code        String
-  issue_date              String
+  discount_percentage     Float?
+  quantity                Int?
+  product_value           Decimal?
+  additional_value        Decimal?
+  shipping_value          Decimal?
+  insurance_value         Decimal?
+  ipi_value               Decimal?
+  total_value             Decimal?
+  transaction_branch_code String?
+  transaction_date        String?
+  transaction_code        String?
+  issue_date              String?
   created_at              DateTime  @default(now())
   updated_at              DateTime?
 

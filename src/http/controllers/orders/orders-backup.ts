@@ -1,7 +1,9 @@
 import { fetchToken, getOrders } from '@/http/lib/totvs'
 import { makeUpsertOrderInvoicesUseCase } from '@/use-cases/factories/order-invoices/make-upsert-order-invoices-use-case'
+import { makeUpsertOrderItemsUseCase } from '@/use-cases/factories/order-items/make-upsert-order-items-use-case'
 import { makeUpsertOrdersUseCase } from '@/use-cases/factories/orders/make-upsert-orders-use-case'
 import { makeUpsertShippingAddressesUseCase } from '@/use-cases/factories/shipping-addresses/make-upsert-shipping-addresses-use-case'
+import { UpsertOrderItemsUseCase } from '@/use-cases/order-items/upsert-order-items'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 /**
@@ -14,7 +16,7 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
-    const daysStartFromToday = 40
+    const daysStartFromToday = 2000
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
@@ -23,6 +25,7 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
     const upsertOrdersUseCase = makeUpsertOrdersUseCase()
     const upsertShippingAddressesUseCase = makeUpsertShippingAddressesUseCase()
     const upsertOrderInvoicesUseCase = makeUpsertOrderInvoicesUseCase()
+    const upsertOrderItemsUseCase = makeUpsertOrderItemsUseCase()
 
     // Loop until the last page is reached
     while (!isLastPage) {
@@ -80,10 +83,36 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
           })
         }
 
-        if (item.invoices[0]) {
+        if (item.invoices[0] && item.invoices[0].code) {
           await upsertOrderInvoicesUseCase.execute({
             order_code: item.orderCode.toString(),
             order_invoice: item.invoices[0],
+          })
+        }
+
+        if (item.items) {
+          item.items.map(async (orderItem) => {
+            await upsertOrderItemsUseCase.execute({
+              order_code: item.orderCode.toString(),
+              product_code: orderItem.productCode.toString(),
+              product_name: orderItem.name,
+              product_reference_code: orderItem.referenceCode?.toString() ?? '',
+              product_reference_name: orderItem.referenceName ?? '',
+              product_sku_code: orderItem.productSku ?? '',
+              color_code: orderItem.colorCode,
+              color_name: orderItem.colorName,
+              size_name: orderItem.sizeName,
+              to_settle_quantity: orderItem.toSettleQuantity ?? 0,
+              settled_quantity: orderItem.settledQuantity ?? 0,
+              canceled_quantity: orderItem.canceledQuantity ?? 0,
+              extra_quantity: orderItem.extraQuantity ?? 0,
+              pending_quantity: orderItem.pendingQuantity ?? 0,
+              original_price: orderItem.originalPrice ?? 0,
+              price: orderItem.price ?? 0,
+              discount_percentage: orderItem.discountPercentage ?? 0,
+              totvs_created_at: new Date(orderItem.insertDate),
+              totvs_updated_at: new Date(orderItem.lastChangeDate ?? ''),
+            })
           })
         }
 
