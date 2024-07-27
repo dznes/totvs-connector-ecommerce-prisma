@@ -28,7 +28,7 @@ export async function ProductRoutes(app: FastifyInstance) {
     
     const groupedSkus = products.reduce((acc, sku) => {
         const { reference_id, code, ncm, reference_name, cost, price_wholesale, price_retail } = sku;
-        if (reference_id) {  // Filter out null reference_id
+        if (reference_id && reference_name && ncm) {  // Filter out null reference_id
             if (!acc[reference_id]) {
             acc[reference_id] = {
                 reference_id,
@@ -44,7 +44,7 @@ export async function ProductRoutes(app: FastifyInstance) {
             acc[reference_id].skus.push(code);
         }
         return acc;
-    }, {} as Record<string, { reference_id: string, title: string | null, slug: string | null, skus: string[], ncm: string | null, cost: number | null, price_wholesale: number | null, price_retail: number | null }>);
+    }, {} as Record<string, { reference_id: string, title: string, slug: string, skus: string[], ncm: string, cost: number | null, price_wholesale: number | null, price_retail: number | null }>);
 
     reply.send(Object.values(groupedSkus));
     });
