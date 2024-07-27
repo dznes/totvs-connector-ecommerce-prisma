@@ -18,6 +18,8 @@ export async function ProductRoutes(app: FastifyInstance) {
           },
           where: {
             is_finished_product: true,
+            product_id: null, // This ensures that only SKUs with no related products are fetched
+
           },
           orderBy: {
             reference_id: 'asc',
