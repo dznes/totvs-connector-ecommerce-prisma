@@ -1,10 +1,11 @@
 import { Slug } from '@/core/entities/value-objects/slug';
 import { prisma } from '@/lib/prisma';
+import { Prisma, Product } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library';
 import { FastifyInstance } from 'fastify'
 
 export async function ProductRoutes(app: FastifyInstance) {
-    app.get('/products', async (request, reply) => {
+    app.get('/products/backup', async (request, reply) => {
         const products = await prisma.sku.findMany({
           select: {
             reference_id: true,
@@ -48,6 +49,24 @@ export async function ProductRoutes(app: FastifyInstance) {
         return acc;
     }, {} as Record<string, { reference_id: string, title: string, slug: string, skus: string[], ncm: string, cost: number | null, price_wholesale: number | null, price_retail: number | null, integration_code: string | null }>);
 
-    reply.send(Object.values(groupedSkus));
+    const productsList = Object.values(groupedSkus);
+    productsList.map(async (product) => {
+        await prisma.product.create({
+            data: {
+                    code: product.reference_id,
+                    ncm: product.ncm,
+                    title: product.title,
+                    slug: product.slug,
+                    cost: product.cost ?? 0,
+                    price_retail: product.price_retail ?? 0,
+                    price_wholesale: product.price_wholesale ?? 0,
+                    integration_code: product.integration_code,
+                    skus: {
+                        connect: product.skus.map((sku) => ({ code: sku })),
+                    },
+            }
+        })
+    })
+    // reply.send(Object.values(groupedSkus));
     });
 }

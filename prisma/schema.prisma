@@ -97,7 +97,7 @@ model Product {
   id                    Int        @id @default(autoincrement())
   code                  String     @unique
   status                Int        @default(200)
-  title                 String     @unique
+  title                 String
   slug                  String     @unique
   ncm                   String
   weight                Float?

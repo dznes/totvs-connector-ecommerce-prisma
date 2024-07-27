@@ -22,7 +22,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   }
 
   async findByTitle(title: string) {
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.findFirst({
       where: {
         title,
       },
