@@ -1,6 +1,7 @@
 import { OrdersRepository } from '@/repositories/orders-repository'
 import { ShippingAddressesRepository } from '@/repositories/shipping-addresses-repository'
 import { Address } from '@/http/lib/totvs/interfaces/user-info'
+import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface UpsertShippingAddressesUseCaseRequest {
   order_code: string
@@ -18,15 +19,20 @@ export class UpsertShippingAddressesUseCase {
     shipping_address,
   }: UpsertShippingAddressesUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(order_code)
+
+    if(!order) {
+      throw new ResourceNotFoundError()
+    }
+    
     const old_shipping_address =
       await this.shippingAddressesRepository.findByOrderCode(order_code)
 
-    if (order && old_shipping_address) {
+    if (old_shipping_address) {
       await this.shippingAddressesRepository.update({
         ...old_shipping_address,
         updated_at: new Date(),
       })
-    } else if (order && !old_shipping_address) {
+    } else {
       await this.shippingAddressesRepository.create({
         bcb_country_code: shipping_address.bcbCountryCode ?? 0,
         city: shipping_address.cityName,

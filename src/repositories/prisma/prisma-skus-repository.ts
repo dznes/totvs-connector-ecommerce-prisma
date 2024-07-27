@@ -114,6 +114,20 @@ export class PrismaSkusRepository implements SkusRepository {
     return sku
   }
 
+  async listByProductCode(productCode: string) {
+    const skus = await prisma.sku.findMany({
+      where: { reference_id: productCode },
+      orderBy: {
+        created_at: 'desc',
+      },
+      include: {
+        color: true,
+        size: true,
+      },
+    })
+    return skus
+  }
+
   async update(sku: Sku) {
     await prisma.sku.update({
       where: { id: sku.id },

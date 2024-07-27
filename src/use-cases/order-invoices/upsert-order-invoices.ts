@@ -3,6 +3,7 @@ import { OrderInvoice } from '@/http/lib/totvs/interfaces/orders';
 import { OrderInvoicesRepository } from '@/repositories/order-invoices-repository';
 import { convertToDecimal } from '@/core/entities/value-objects/convert-to-decimal';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 
 interface UpsertOrderInvoicesUseCaseRequest {
   order_code: string;
@@ -21,8 +22,8 @@ export class UpsertOrderInvoicesUseCase {
   }: UpsertOrderInvoicesUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(order_code);
 
-    if (!order) {
-      throw new Error(`Order with code ${order_code} not found`);
+    if(!order) {
+      throw new ResourceNotFoundError()
     }
 
     const old_order_invoice = await this.orderInvoicesRepository.findByCode(

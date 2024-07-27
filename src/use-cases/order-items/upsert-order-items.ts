@@ -2,6 +2,7 @@ import { OrderItemsRepository } from '@/repositories/order-items-repository'
 import { OrdersRepository } from '@/repositories/orders-repository'
 
 import { convertToDecimal } from '@/core/entities/value-objects/convert-to-decimal'
+import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface UpsertOrderItemsUseCaseRequest {
   product_code: string
@@ -53,13 +54,18 @@ export class UpsertOrderItemsUseCase {
     order_code,
   }: UpsertOrderItemsUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(order_code)
+
+    if(!order) {
+      throw new ResourceNotFoundError()
+    }
+
     const orderItem =
       await this.orderItemsRepository.findByOrderCodeProductCode(
         order_code,
         product_code,
       )
 
-    if (order && orderItem) {
+    if (orderItem) {
       await this.orderItemsRepository.update({
         ...orderItem,
         product_code,
@@ -84,7 +90,7 @@ export class UpsertOrderItemsUseCase {
         order_id: order.id,
         updated_at: new Date(),
       })
-    } else if (order) {
+    } else {
       await this.orderItemsRepository.create({
         product_code,
         product_name,

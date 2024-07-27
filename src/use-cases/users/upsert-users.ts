@@ -57,7 +57,6 @@ export class UpsertUsersUseCase {
         ...user,
         updated_at: new Date(),
       })
-      console.log(`Sku ${name} updated.`)
     } else if (address && phone) {
       await this.usersRepository.create({
         code,

@@ -15,14 +15,15 @@ export class UpdateSkuAvailableStocksUseCase {
   }: UpdateSkuAvailableStocksUseCaseRequest) {
     const sku = await this.skusRepository.findByCode(code)
 
-    if (sku) {
-      await this.skusRepository.update({
-        ...sku,
-        stock_available,
-        updated_at: new Date(),
-      })
-    } else {
+    if (!sku) {
       throw new ResourceNotFoundError()
     }
+    
+    await this.skusRepository.update({
+      ...sku,
+      stock_available,
+      updated_at: new Date(),
+    })
+
   }
 }

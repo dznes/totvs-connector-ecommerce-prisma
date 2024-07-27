@@ -95,14 +95,15 @@ model Sku {
 
 model Product {
   id                    Int        @id @default(autoincrement())
+  code                  String     @unique
   status                Int        @default(200)
   title                 String     @unique
-  weight                Float
+  slug                  String     @unique
   ncm                   String
+  weight                Float?
   mpn                   String?
   ean                   String?
-  description           String
-  slug                  String     @unique
+  description           String?
   created_at            DateTime   @default(now())
   price_wholesale       Decimal?
   promo_price_wholesale Decimal?

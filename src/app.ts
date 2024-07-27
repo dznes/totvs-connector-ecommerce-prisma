@@ -7,6 +7,7 @@ import { OrderRoutes } from './http/controllers/orders/route'
 import { ColorRoutes } from './http/controllers/colors/route'
 import { SkuRoutes } from './http/controllers/sku/route'
 import { UserRoutes } from './http/controllers/users/route'
+import { ProductRoutes } from './http/controllers/products/route'
 
 export const app = fastify()
 
@@ -21,6 +22,7 @@ app.register(OrderRoutes)
 app.register(ColorRoutes)
 app.register(SkuRoutes)
 app.register(UserRoutes)
+app.register(ProductRoutes)
 
 // Ao adicionar o "_" na frente do parâmetro que não vai ser utilizado ou apenas o "_" no lugar do parâmetro, você informa que ele não vai ser utilizado.
 app.setErrorHandler((error, _request, reply) => {

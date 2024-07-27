@@ -13,16 +13,16 @@ export class UpdateSkuCostsUseCase {
   async execute({ code, cost }: UpdateSkuCostUseCaseRequest) {
     const sku = await this.skusRepository.findByCode(code)
 
-    if (sku) {
-      const decimalCost = convertToDecimal(cost ?? 0)
-
-      await this.skusRepository.update({
-        ...sku,
-        cost: decimalCost,
-        updated_at: new Date(),
-      })
-    } else {
+    if (!sku) {
       throw new ResourceNotFoundError()
     }
+
+    const decimalCost = convertToDecimal(cost ?? 0)
+
+    await this.skusRepository.update({
+      ...sku,
+      cost: decimalCost,
+      updated_at: new Date(),
+    })
   }
 }
