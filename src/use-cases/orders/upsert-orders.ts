@@ -87,7 +87,6 @@ export class UpsertOrdersUseCase {
         updated_at: new Date(),
       })
 
-      console.log(`Order ${code} updated.`)
     } else if (user) {
       await this.ordersRepository.create({
         code,
@@ -125,8 +124,6 @@ export class UpsertOrdersUseCase {
         user_code: user.code,
         user_id: user.id,
       })
-
-      console.log(`Order ${code} created.`)
     }
   }
 }

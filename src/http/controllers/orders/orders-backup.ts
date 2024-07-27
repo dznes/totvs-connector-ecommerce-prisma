@@ -16,7 +16,7 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
     // Fetch the authentication token
     const token = await fetchToken()
     const pageSize = 300
-    const daysStartFromToday = 2000
+    const daysStartFromToday = 10
     const daysEndFromToday = 0
     let page = 1
     let isLastPage = false
@@ -38,7 +38,7 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
         daysEndFromToday,
       })
 
-      // Upsert each SKU price into the database
+      // Upsert each Order with Shipping Address, Invoices and Order Items into the database
       items.map(async (item) => {
         await upsertOrdersUseCase.execute({
           code: item.orderCode.toString(),

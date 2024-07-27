@@ -41,7 +41,6 @@ export class UpsertColorUseCase {
         image_text: image_text ?? color.image_text,
         image_label: image_label ?? color.image_label,
       })
-      console.log(`Color ${title} updated.`)
     } else {
       await this.colorsRepository.create({
         code,
@@ -54,7 +53,6 @@ export class UpsertColorUseCase {
         image_text,
         image_label,
       })
-      console.log(`Color ${title} created.`)
     }
   }
 }

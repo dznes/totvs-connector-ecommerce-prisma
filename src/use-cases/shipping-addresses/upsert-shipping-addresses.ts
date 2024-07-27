@@ -26,8 +26,6 @@ export class UpsertShippingAddressesUseCase {
         ...old_shipping_address,
         updated_at: new Date(),
       })
-
-      console.log(`Order ${order_code} Shipping Address updated.`)
     } else if (order && !old_shipping_address) {
       await this.shippingAddressesRepository.create({
         bcb_country_code: shipping_address.bcbCountryCode ?? 0,
@@ -45,8 +43,6 @@ export class UpsertShippingAddressesUseCase {
         type: shipping_address.addressType,
         zip_code: shipping_address.cep,
       })
-
-      console.log(`Order ${order_code} Shipping Address created.`)
     }
   }
 }

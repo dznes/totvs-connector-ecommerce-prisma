@@ -38,7 +38,6 @@ export class UpdateSkuPricesUseCase {
         promo_price_wholesale: decimalPromoPriceWholesale,
         updated_at: new Date(),
       })
-      console.log(`Sku ${sku.title} updated.`)
     } else {
       throw new ResourceNotFoundError()
     }

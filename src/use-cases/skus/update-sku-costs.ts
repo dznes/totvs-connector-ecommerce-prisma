@@ -21,7 +21,6 @@ export class UpdateSkuCostsUseCase {
         cost: decimalCost,
         updated_at: new Date(),
       })
-      console.log(`Sku ${sku.title} updated.`)
     } else {
       throw new ResourceNotFoundError()
     }

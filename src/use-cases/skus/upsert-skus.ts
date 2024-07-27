@@ -138,7 +138,6 @@ export class UpsertSkuUseCase {
         is_blocked: is_blocked || sku.is_blocked,
         updated_at: new Date(),
       })
-      console.log(`Sku ${title} updated.`)
     } else {
       await this.skusRepository.create({
         code,
@@ -172,7 +171,6 @@ export class UpsertSkuUseCase {
           },
         },
       })
-      console.log(`Sku ${title} created.`)
     }
   }
 }

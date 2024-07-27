@@ -103,7 +103,6 @@ export class UpsertUsersUseCase {
           },
         },
       })
-      console.log(`Sku ${name} created.`)
     } else if (phone) {
       await this.usersRepository.create({
         code,

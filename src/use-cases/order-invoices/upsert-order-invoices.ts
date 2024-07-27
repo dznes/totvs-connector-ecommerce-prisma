@@ -54,8 +54,6 @@ export class UpsertOrderInvoicesUseCase {
         status: order_invoice.status ?? old_order_invoice.status,
         updated_at: new Date(),
       });
-
-      console.log(`Order Invoice ${old_order_invoice.code} updated.`);
     } else {
       try {
         await this.orderInvoicesRepository.create({
@@ -87,8 +85,6 @@ export class UpsertOrderInvoicesUseCase {
             },
           },
         });
-
-        console.log(`Order Invoice ${order_invoice.code} created.`);
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
           console.error(`Order Invoice with code ${order_invoice.code} already exists.`);
