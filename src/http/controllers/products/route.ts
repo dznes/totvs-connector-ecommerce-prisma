@@ -14,6 +14,7 @@ export async function ProductRoutes(app: FastifyInstance) {
             cost: true,
             price_wholesale: true,
             price_retail: true,
+            integration_code: true,
             is_finished_product: true,
           },
           where: {
@@ -27,8 +28,8 @@ export async function ProductRoutes(app: FastifyInstance) {
         });
     
     const groupedSkus = products.reduce((acc, sku) => {
-        const { reference_id, code, ncm, reference_name, cost, price_wholesale, price_retail } = sku;
-        if (reference_id && reference_name && ncm) {  // Filter out null reference_id
+        const { reference_id, code, ncm, reference_name, cost, price_wholesale, price_retail, integration_code } = sku;
+        if (reference_id && reference_name && ncm) {  // Filter out null reference_id, reference_name and ncm
             if (!acc[reference_id]) {
             acc[reference_id] = {
                 reference_id,
@@ -38,13 +39,14 @@ export async function ProductRoutes(app: FastifyInstance) {
                 cost: cost instanceof Decimal ? cost.toNumber() : cost,
                 price_wholesale: price_wholesale instanceof Decimal ? price_wholesale.toNumber() : price_wholesale,
                 price_retail: price_retail instanceof Decimal ? price_retail.toNumber() : price_retail,
+                integration_code,
                 skus: [],
             };
             }
             acc[reference_id].skus.push(code);
         }
         return acc;
-    }, {} as Record<string, { reference_id: string, title: string, slug: string, skus: string[], ncm: string, cost: number | null, price_wholesale: number | null, price_retail: number | null }>);
+    }, {} as Record<string, { reference_id: string, title: string, slug: string, skus: string[], ncm: string, cost: number | null, price_wholesale: number | null, price_retail: number | null, integration_code: string | null }>);
 
     reply.send(Object.values(groupedSkus));
     });

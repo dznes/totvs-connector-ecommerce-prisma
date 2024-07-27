@@ -42,7 +42,7 @@ export async function skuDetailsBackup(_: FastifyRequest, reply: FastifyReply) {
           mpn: item.productSku ?? '', // Use SKU if available
           reference_id: item.referenceId.toString(), // Convert referenceId to string
           reference_name: item.referenceName,
-          integration_code: 'TOTVS',
+          integration_code: item.lastReferenceCode,
           colorCode: item.colorCode,
           colorTitle: item.colorName,
           sizeCode: item.size,
