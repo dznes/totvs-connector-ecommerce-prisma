@@ -20,10 +20,10 @@ export class UpsertShippingAddressesUseCase {
   }: UpsertShippingAddressesUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(order_code)
 
-    if(!order) {
+    if (!order) {
       throw new ResourceNotFoundError()
     }
-    
+
     const old_shipping_address =
       await this.shippingAddressesRepository.findByOrderCode(order_code)
 

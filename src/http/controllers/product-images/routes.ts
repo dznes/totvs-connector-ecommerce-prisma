@@ -1,84 +1,92 @@
-import { productsInfo } from '@/http/lib/vtex';
-import { prisma } from '@/lib/prisma';
-import { FastifyInstance } from 'fastify';
+import { productsInfo } from '@/http/lib/vtex'
+import { prisma } from '@/lib/prisma'
+import { FastifyInstance } from 'fastify'
 
 export async function ProductImagesRoutes(app: FastifyInstance) {
   app.get('/vtex/products', async (request, reply) => {
-    const pageSize = 50; // Number of items per page
-    const images = [];
-    let totalResources = 0;
+    const pageSize = 50 // Number of items per page
+    const images = []
+    let totalResources = 0
 
     try {
       // Initial fetch to get totalResources
-      const { products, totalResources: initialTotalResources } = await productsInfo(0, pageSize - 1);
-      totalResources = parseInt(initialTotalResources, 10);
+      const { products, totalResources: initialTotalResources } =
+        await productsInfo(0, pageSize - 1)
+      totalResources = parseInt(initialTotalResources, 10)
 
       // Process initial page
-      images.push(...extractImages(products));
+      images.push(...extractImages(products))
 
       // Calculate total pages
-      const totalPages = Math.ceil(totalResources / pageSize);
+      const totalPages = Math.ceil(totalResources / pageSize)
 
       // Fetch and process remaining pages
       for (let page = 1; page < totalPages; page++) {
-        const from = page * pageSize;
-        const to = from + pageSize - 1;
-        const { products } = await productsInfo(from, to);
-        images.push(...extractImages(products));
+        const from = page * pageSize
+        const to = from + pageSize - 1
+        const { products } = await productsInfo(from, to)
+        images.push(...extractImages(products))
       }
 
       // Save images to the database
-      await Promise.all(images.map(async (image: any) => {
-        try {
-          const productImageExists = await prisma.productImage.findUnique({
-            where: {
-              code: image.code
-            }
-          });
-
-          if (productImageExists) {
-            await prisma.productImage.update({
-              data: {
-                code: image.code,
-                title: image.title,
-                file_key: image.file_key,
-                position: image.position,
-                sku: {
-                  connect: {
-                    code: image.sku_code
-                  }
-                }
-              },
+      await Promise.all(
+        images.map(async (image: any) => {
+          try {
+            const productImageExists = await prisma.productImage.findUnique({
               where: {
-                code: image.code
-              }
-            });
-          } else {
-            await prisma.productImage.create({
-              data: {
                 code: image.code,
-                title: image.title,
-                file_key: image.file_key,
-                position: image.position,
-                sku: {
-                  connect: {
-                    code: image.sku_code
-                  }
-                }
-              }
-            });
-          }
-        } catch (error) {
-          console.error(`Error processing image with code ${image.code}:`, error);
-        }
-      }));
+              },
+            })
 
-      reply.send({ images, totalResources });
+            if (productImageExists) {
+              await prisma.productImage.update({
+                data: {
+                  code: image.code,
+                  title: image.title,
+                  file_key: image.file_key,
+                  position: image.position,
+                  sku: {
+                    connect: {
+                      code: image.sku_code,
+                    },
+                  },
+                },
+                where: {
+                  code: image.code,
+                },
+              })
+            } else {
+              await prisma.productImage.create({
+                data: {
+                  code: image.code,
+                  title: image.title,
+                  file_key: image.file_key,
+                  position: image.position,
+                  sku: {
+                    connect: {
+                      code: image.sku_code,
+                    },
+                  },
+                },
+              })
+            }
+          } catch (error) {
+            console.error(
+              `Error processing image with code ${image.code}:`,
+              error,
+            )
+          }
+        }),
+      )
+
+      reply.send({ images, totalResources })
     } catch (error) {
-      console.error('Error fetching products info:', error);
-      reply.status(500).send({ error: 'An error occurred while processing the request' });
+      console.error('Error fetching products info:', error)
+      reply
+        .status(500)
+        .send({ error: 'An error occurred while processing the request' })
     }
-  });
+  })
 }
 
 // Helper function to extract images from products
@@ -91,7 +99,7 @@ function extractImages(products: any[]): any[] {
         file_key: image.imageUrl,
         title: image.imageText,
         position: index,
-      }))
-    )
-  );
+      })),
+    ),
+  )
 }

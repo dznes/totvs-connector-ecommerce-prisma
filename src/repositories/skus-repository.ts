@@ -12,4 +12,5 @@ export interface SkusRepository {
   delete(sku: Sku): Promise<void>
   list(): Promise<Sku[] | null>
   listByProductCode(productCode: string): Promise<Sku[] | null>
+  listByProductId(productId: number): Promise<Sku[] | null>
 }

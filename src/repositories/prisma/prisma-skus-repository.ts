@@ -124,6 +124,22 @@ export class PrismaSkusRepository implements SkusRepository {
       include: {
         color: true,
         size: true,
+        product_images: true,
+      },
+    })
+    return skus
+  }
+
+  async listByProductId(productId: number) {
+    const skus = await prisma.sku.findMany({
+      where: { product_id: productId },
+      orderBy: {
+        created_at: 'desc',
+      },
+      include: {
+        color: true,
+        size: true,
+        product_images: true,
       },
     })
     return skus

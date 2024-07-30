@@ -1,5 +1,5 @@
 import { fetchToken, getProductPrices } from '@/http/lib/totvs'
-import { makeUpdateSkuPricesUseCase } from '@/use-cases/factories/skus/make-update-sku-prices'
+import { makeUpdateSkuPricesUseCase } from '@/use-cases/factories/skus/make-update-sku-prices-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 /**

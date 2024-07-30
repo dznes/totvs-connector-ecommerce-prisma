@@ -1,8 +1,7 @@
 import { env } from '@/env'
 
-
 // VTEX Base URL and API variables
-const vtex_url = "https://zenoficial.vtexcommercestable.com.br/api"
+const vtex_url = 'https://zenoficial.vtexcommercestable.com.br/api'
 const VTEX_API_AppKey = env.VTEX_API_AppKey
 const VTEX_API_AppToken = env.VTEX_API_AppKey
 
@@ -26,16 +25,16 @@ export async function productsInfo(from: number, to: number): Promise<any> {
   const response = await fetch(url, {
     method: 'GET',
     headers: headerBuilder(),
-  });
+  })
 
-  const products = await response.json();
+  const products = await response.json()
 
-  const resourcesHeader = response.headers.get('resources');
-  let totalResources = null;
+  const resourcesHeader = response.headers.get('resources')
+  let totalResources = null
   if (resourcesHeader) {
-    const parts = resourcesHeader.split('/');
-    totalResources = parts.length > 1 ? parts[1] : null;
+    const parts = resourcesHeader.split('/')
+    totalResources = parts.length > 1 ? parts[1] : null
   }
 
-  return {products, totalResources}
+  return { products, totalResources }
 }

@@ -9,8 +9,8 @@ interface ListSkuByProductIdUseCaseResponse {
 export class ListSkuByProductIdUseCase {
   constructor(private skusRepository: SkusRepository) {}
 
-  async execute(productCode: string): Promise<ListSkuByProductIdUseCaseResponse> {
-    const skus = await this.skusRepository.listByProductCode(productCode)
+  async execute(productId: number): Promise<ListSkuByProductIdUseCaseResponse> {
+    const skus = await this.skusRepository.listByProductId(productId)
 
     if (!skus) {
       throw new ResourceNotFoundError()

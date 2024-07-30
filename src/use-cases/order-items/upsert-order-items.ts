@@ -55,7 +55,7 @@ export class UpsertOrderItemsUseCase {
   }: UpsertOrderItemsUseCaseRequest) {
     const order = await this.ordersRepository.findByCode(order_code)
 
-    if(!order) {
+    if (!order) {
       throw new ResourceNotFoundError()
     }
 

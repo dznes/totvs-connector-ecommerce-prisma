@@ -18,12 +18,11 @@ export class UpdateSkuAvailableStocksUseCase {
     if (!sku) {
       throw new ResourceNotFoundError()
     }
-    
+
     await this.skusRepository.update({
       ...sku,
       stock_available,
       updated_at: new Date(),
     })
-
   }
 }

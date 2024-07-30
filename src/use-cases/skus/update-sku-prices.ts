@@ -25,7 +25,7 @@ export class UpdateSkuPricesUseCase {
     if (!sku) {
       throw new ResourceNotFoundError()
     }
-    
+
     const decimalPriceRetail = convertToDecimal(price_retail ?? 0)
     const decimalPromoPriceRetail = convertToDecimal(promo_price_retail ?? 0)
     const decimalPriceWholesale = convertToDecimal(price_wholesale ?? 0)

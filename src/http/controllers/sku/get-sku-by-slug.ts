@@ -1,22 +1,22 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
-import { makeGetProductBySlugUseCase } from '@/use-cases/factories/products/make-get-product-by-slug-use-case'
+import { makeGetSkuBySlugUseCase } from '@/use-cases/factories/skus/make-get-sku-by-slug-use-case'
 
 export async function getBySlug(request: FastifyRequest, reply: FastifyReply) {
-  const GetProductBySlugParamsSchema = z.object({
-    productSlug: z.string(),
+  const GetSkuBySlugParamsSchema = z.object({
+    skuSlug: z.string(),
   })
 
-  const { productSlug } = GetProductBySlugParamsSchema.parse(request.params)
+  const { skuSlug } = GetSkuBySlugParamsSchema.parse(request.params)
 
   try {
-    const getProductBySlugUseCase = makeGetProductBySlugUseCase()
+    const getSkuBySlugUseCase = makeGetSkuBySlugUseCase()
 
-    const { product } = await getProductBySlugUseCase.execute({
-      productSlug,
+    const { sku } = await getSkuBySlugUseCase.execute({
+      skuSlug,
     })
-    return reply.status(201).send({ product })
+    return reply.status(200).send({ sku })
   } catch (err) {
     if (err instanceof ResourceNotFoundError) {
       return reply.status(409).send({ message: err.message })

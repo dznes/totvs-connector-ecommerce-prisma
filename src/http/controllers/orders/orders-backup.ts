@@ -3,7 +3,6 @@ import { makeUpsertOrderInvoicesUseCase } from '@/use-cases/factories/order-invo
 import { makeUpsertOrderItemsUseCase } from '@/use-cases/factories/order-items/make-upsert-order-items-use-case'
 import { makeUpsertOrdersUseCase } from '@/use-cases/factories/orders/make-upsert-orders-use-case'
 import { makeUpsertShippingAddressesUseCase } from '@/use-cases/factories/shipping-addresses/make-upsert-shipping-addresses-use-case'
-import { UpsertOrderItemsUseCase } from '@/use-cases/order-items/upsert-order-items'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 /**
@@ -115,7 +114,6 @@ export async function OrdersBackup(_: FastifyRequest, reply: FastifyReply) {
             })
           })
         }
-
       })
 
       // Check if there are more pages to fetch

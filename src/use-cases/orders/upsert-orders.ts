@@ -86,7 +86,6 @@ export class UpsertOrdersUseCase {
         ...order,
         updated_at: new Date(),
       })
-
     } else if (user) {
       await this.ordersRepository.create({
         code,
