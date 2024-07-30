@@ -51,22 +51,47 @@ export async function ProductRoutes(app: FastifyInstance) {
 
     const productsList = Object.values(groupedSkus);
     productsList.map(async (product) => {
-        await prisma.product.create({
-            data: {
-                    code: product.reference_id,
-                    ncm: product.ncm,
-                    title: product.title,
-                    slug: product.slug,
-                    cost: product.cost ?? 0,
-                    price_retail: product.price_retail ?? 0,
-                    price_wholesale: product.price_wholesale ?? 0,
-                    integration_code: product.integration_code,
-                    skus: {
-                        connect: product.skus.map((sku) => ({ code: sku })),
-                    },
-            }
+      const productExists = await prisma.product.findUnique({
+        where: {
+          slug: product.slug
+        }
+      })
+
+      if (productExists) {
+        await prisma.product.update({
+          data: {
+            code: product.reference_id,
+            ncm: product.ncm,
+            title: product.title,
+            cost: product.cost ?? 0,
+            price_retail: product.price_retail ?? 0,
+            price_wholesale: product.price_wholesale ?? 0,
+            integration_code: product.integration_code,
+            skus: {
+              connect: product.skus.map((sku) => ({ code: sku })),
+            },
+          },
+          where: {
+            slug: product.slug
+          }
         })
+      } else {
+        await prisma.product.create({
+          data: {
+            code: product.reference_id,
+            ncm: product.ncm,
+            title: product.title,
+            slug: product.slug,
+            cost: product.cost ?? 0,
+            price_retail: product.price_retail ?? 0,
+            price_wholesale: product.price_wholesale ?? 0,
+            integration_code: product.integration_code,
+            skus: {
+              connect: product.skus.map((sku) => ({ code: sku })),
+            },
+          }
+        })
+      }
     })
-    // reply.send(Object.values(groupedSkus));
     });
 }
