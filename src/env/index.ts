@@ -10,6 +10,8 @@ const envSchema = z.object({
   username: z.string(),
   password: z.string(),
   totvs_url: z.string(),
+  VTEX_API_AppKey: z.string(),
+  VTEX_API_AppToken: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)

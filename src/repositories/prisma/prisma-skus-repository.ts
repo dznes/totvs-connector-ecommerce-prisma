@@ -41,6 +41,7 @@ export class PrismaSkusRepository implements SkusRepository {
         slug,
       },
       include: {
+        product_images: true,
         color: true,
         size: true,
       },

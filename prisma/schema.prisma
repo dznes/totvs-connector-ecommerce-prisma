@@ -88,9 +88,28 @@ model Sku {
   size       Size   @relation(fields: [size_code], references: [code])
   size_code  String
 
-  categories Category[]
+  categories     Category[]
+  product_images ProductImage[]
 
   @@map("skus")
+}
+
+model ProductImage {
+  id           Int       @id @default(autoincrement())
+  code         String    @unique
+  title        String
+  file_key     String
+  slug         String?
+  content_type String?
+  position     Int?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime?
+
+  sku      Sku    @relation(fields: [sku_code], references: [code], onDelete: Cascade)
+  sku_code String
+
+  @@unique([position, sku_code])
+  @@map("product_images")
 }
 
 model Product {

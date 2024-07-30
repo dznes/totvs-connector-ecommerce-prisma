@@ -12,6 +12,7 @@ export class PrismaProductsRepository implements ProductsRepository {
       include: {
         skus: {
           include: {
+            product_images: true,
             color: true,
             size: true,
           },
@@ -38,6 +39,7 @@ export class PrismaProductsRepository implements ProductsRepository {
       include: {
         skus: {
           include: {
+            product_images: true,
             color: true,
             size: true,
           },
