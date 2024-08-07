@@ -362,6 +362,7 @@ export async function getProductCosts({
         startDate: formattedStartDate,
         endDate: formattedEndDate,
         inCost: true,
+        inProduct: true,
         branchCostCodeList: [1, 2],
         costCodeList: [2],
       },
@@ -424,10 +425,11 @@ export async function getProductPrices({
         inPrice: true,
         branchPriceCodeList: [1, 2],
         priceCodeList: [1, 2],
+        inProduct: true,
       },
     },
     option: {
-      branchCodeList: [1],
+      branchCodeList: [1,2],
       prices: [
         {
           branchCode: 1,

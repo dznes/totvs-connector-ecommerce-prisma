@@ -75,6 +75,7 @@ export class PrismaProductsRepository implements ProductsRepository {
           include: {
             color: true,
             size: true,
+            product_images: true,
           },
         },
       },

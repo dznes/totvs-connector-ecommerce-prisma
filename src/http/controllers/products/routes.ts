@@ -93,7 +93,7 @@ export async function ProductRoutes(app: FastifyInstance) {
     productsList.map(async (product) => {
       const productExists = await prisma.product.findUnique({
         where: {
-          slug: product.slug,
+          code: product.reference_id,
         },
       })
 
@@ -112,7 +112,7 @@ export async function ProductRoutes(app: FastifyInstance) {
             },
           },
           where: {
-            slug: product.slug,
+            code: product.reference_id,
           },
         })
       } else {

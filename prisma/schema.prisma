@@ -164,6 +164,7 @@ model User {
   status              Int       @default(200)
   name                String
   email               String?
+  password_hash       String?
   regitered_at        DateTime
   created_at          DateTime  @default(now())
   rg                  String?
