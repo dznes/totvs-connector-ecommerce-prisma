@@ -65,7 +65,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [X] Add orders with skus backup.
 - [ ] Create client and push it into TOTVS MODA API.
 - [ ] Create order and push it into TOTVS MODA API.
-- [ ] Add JWT and role-based authentication to access private routes.
+- [X] Add JWT and role-based authentication to access private routes.
 
 ### Scheduller using Google Console
 - [ ] Add update for product details in database every 1 minute updates from TOTVS.
