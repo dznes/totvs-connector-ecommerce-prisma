@@ -1,13 +1,13 @@
-import { ProductsRepository } from '@/repositories/products-repository'
-import { Product } from '@prisma/client'
+import { FindBySlugResponse, ProductsRepository } from '@/repositories/products-repository'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
+
 
 interface GetProductBySlugUseCaseRequest {
   productSlug: string
 }
 
 interface GetProductBySlugUseCaseResponse {
-  product: Product
+  product: FindBySlugResponse
 }
 
 export class GetProductBySlugUseCase {
