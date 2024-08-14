@@ -10,8 +10,8 @@ export async function ProductImagesRoutes(app: FastifyInstance) {
 
     try {
       // Initial fetch to get totalResources
-      const { products, totalResources: initialTotalResources } =
-        await productsInfo(0, pageSize - 1)
+      const { products, totalResources: initialTotalResources } = await productsInfo(0, pageSize - 1)
+
       totalResources = parseInt(initialTotalResources, 10)
 
       // Process initial page

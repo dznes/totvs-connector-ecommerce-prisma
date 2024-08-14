@@ -3,7 +3,7 @@ import { env } from '@/env'
 // VTEX Base URL and API variables
 const vtex_url = 'https://zenoficial.vtexcommercestable.com.br/api'
 const VTEX_API_AppKey = env.VTEX_API_AppKey
-const VTEX_API_AppToken = env.VTEX_API_AppKey
+const VTEX_API_AppToken = env.VTEX_API_AppToken
 
 /**
  * Builds the authorization header for API requests.
