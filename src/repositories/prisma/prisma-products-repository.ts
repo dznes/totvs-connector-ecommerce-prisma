@@ -135,9 +135,13 @@ export class PrismaProductsRepository implements ProductsRepository {
         id: {
           in: productIds,
         },
+        status: 200,
       },
       include: {
         skus: {
+          where: {
+            is_active: true,
+          },
           include: {
             color: true,
             size: true,
