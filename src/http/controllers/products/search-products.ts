@@ -6,7 +6,7 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
   const searchProductsQuerySchema = z.object({
     q: z.string(),
     page: z.coerce.number().min(1).default(1),
-    perPage: z.coerce.number().min(1).default(20),
+    perPage: z.coerce.number().min(1).default(21),
   })
 
   const { q, page, perPage } = searchProductsQuerySchema.parse(request.query)

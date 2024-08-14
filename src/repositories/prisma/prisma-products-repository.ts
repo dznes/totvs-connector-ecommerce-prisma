@@ -38,6 +38,11 @@ export class PrismaProductsRepository implements ProductsRepository {
       },
       include: {
         skus: {
+          // where: {
+          //   stock_available: {
+          //     gt: 0, // Filters SKUs with available_stock greater than 0
+          //   },
+          // },
           include: {
             product_images: {
               orderBy: {
@@ -53,26 +58,83 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product
   }
 
+  // async searchMany(query: string, page: number, perPage: number) {
+  //   const products = await prisma.product.findMany({
+  //     where: {
+  //       OR: [
+  //         {
+  //           title: {
+  //             contains: query,
+  //           },
+  //         },
+  //         {
+  //           slug: {
+  //             contains: query,
+  //           },
+  //         },
+  //         {
+  //           reference_id: {
+  //             contains: query,
+  //           },
+  //         },
+  //       ],
+  //     },
+  //     include: {
+  //       skus: {
+  //         include: {
+  //           color: true,
+  //           size: true,
+  //           product_images: true,
+  //         },
+  //       },
+  //     },
+  //     take: perPage,
+  //     skip: (page - 1) * perPage,
+  //   })
+  //   return products
+  // }
   async searchMany(query: string, page: number, perPage: number) {
+    // Step 1: Fetch the product IDs with stock_available > 0 using aggregation
+    const skuAggregations = await prisma.sku.groupBy({
+      by: ['product_id'],
+      _sum: {
+        stock_available: true,
+      },
+      where: {
+        product: {
+          OR: [
+            {
+              title: {
+                contains: query,
+              },
+            },
+            {
+              slug: {
+                contains: query,
+              },
+            },
+            {
+              reference_id: {
+                contains: query,
+              },
+            },
+          ],
+        },
+      },
+    });
+  
+    // Filter out null or undefined productIds and ensure stock_available is greater than 0
+    const productIds = skuAggregations
+      .filter((agg) => agg._sum.stock_available !== null && agg._sum.stock_available > 0)
+      .map((agg) => agg.product_id)
+      .filter((id): id is number => id !== null); // Filter out null values
+  
+    // Step 2: Fetch the full product data using the filtered product IDs
     const products = await prisma.product.findMany({
       where: {
-        OR: [
-          {
-            title: {
-              contains: query,
-            },
-          },
-          {
-            slug: {
-              contains: query,
-            },
-          },
-          {
-            reference_id: {
-              contains: query,
-            },
-          },
-        ],
+        id: {
+          in: productIds,
+        },
       },
       include: {
         skus: {
@@ -85,8 +147,9 @@ export class PrismaProductsRepository implements ProductsRepository {
       },
       take: perPage,
       skip: (page - 1) * perPage,
-    })
-    return products
+    });
+  
+    return products;
   }
 
   async listRecentProducts() {

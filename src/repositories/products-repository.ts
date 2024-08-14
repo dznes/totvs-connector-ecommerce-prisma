@@ -5,15 +5,15 @@ interface SkuWithVariants extends Sku {
   size: Size
   product_images: ProductImage[]
 }
-export interface FindBySlugResponse extends Product {
+export interface ProductWithSkuAndVariants extends Product {
   skus: SkuWithVariants[]
 }
 
 export interface ProductsRepository {
   findById(id: number): Promise<Product | null>
   findByTitle(title: string): Promise<Product | null>
-  findBySlug(slug: string): Promise<FindBySlugResponse | null>
-  searchMany(query: string, page: number, perPage: number): Promise<Product[]>
+  findBySlug(slug: string): Promise<ProductWithSkuAndVariants | null>
+  searchMany(query: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>
   listRecentProducts(): Promise<Product[] | null>
   count(query: string): Promise<number>
   create(data: Prisma.ProductCreateInput): Promise<Product>

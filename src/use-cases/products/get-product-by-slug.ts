@@ -1,4 +1,4 @@
-import { FindBySlugResponse, ProductsRepository } from '@/repositories/products-repository'
+import { ProductWithSkuAndVariants, ProductsRepository } from '@/repositories/products-repository'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 
@@ -7,7 +7,7 @@ interface GetProductBySlugUseCaseRequest {
 }
 
 interface GetProductBySlugUseCaseResponse {
-  product: FindBySlugResponse
+  product: ProductWithSkuAndVariants
 }
 
 export class GetProductBySlugUseCase {

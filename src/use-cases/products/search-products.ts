@@ -1,5 +1,4 @@
-import { ProductsRepository } from '@/repositories/products-repository'
-import { Product } from '@prisma/client'
+import { ProductsRepository, ProductWithSkuAndVariants } from '@/repositories/products-repository'
 
 interface SearchProductsUseCaseRequest {
   query: string
@@ -8,10 +7,22 @@ interface SearchProductsUseCaseRequest {
 }
 
 export interface SearchProductsUseCaseResponse {
-  products: Product[]
+  products: ProductWithSkuAndVariants [] 
   count: number
   totalPages: number
 }
+
+// function checkStock(products: ProductWithSkuAndVariants[]): (ProductWithSkuAndVariants & { in_stock: boolean })[] {
+//   return products.map(product => {
+//     const totalStock = product.skus.reduce((sum, sku) => sum + (sku.stock_available || 0), 0);
+//     const inStock = totalStock > 0;
+
+//     return {
+//       ...product,
+//       in_stock: inStock,
+//     };
+//   });
+// }
 
 export class SearchProductsUseCase {
   constructor(private productsRepository: ProductsRepository) {}
