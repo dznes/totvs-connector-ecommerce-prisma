@@ -166,7 +166,7 @@ model User {
   email               String?
   role                String?   @default("customer")
   password_hash       String?
-  regitered_at        DateTime
+  regitered_at        DateTime?
   created_at          DateTime  @default(now())
   rg                  String?
   birthDate           String?

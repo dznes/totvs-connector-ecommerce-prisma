@@ -2,9 +2,22 @@ import { FastifyInstance } from 'fastify'
 import { listTotvsUsers } from './list-totvs-users'
 import { retailUsersBackup } from './retail-users-backup'
 import { wholesaleUsersBackup } from './wholesale-users-backup'
+import { register } from './register'
+import { authenticate } from './authenticate'
+import { refresh } from './refresh'
+import { profile } from './profile'
+import { getById } from './get-user-by-id'
+import { verifyJwt } from '@/http/middlewares/verify-jwt'
 
 export async function UserRoutes(app: FastifyInstance) {
   app.get('/totvs/user', listTotvsUsers)
   app.get('/user/retail/backup', retailUsersBackup)
   app.get('/user/wholesale/backup', wholesaleUsersBackup)
+
+  app.post('/api/users', register)
+  app.post('/api/sessions', authenticate)
+  app.patch('/api/token/refresh', refresh)
+
+  app.get('/api/me', { onRequest: [verifyJwt] }, profile)
+  app.get('/api/users/:id', getById)
 }
