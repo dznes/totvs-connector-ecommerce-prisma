@@ -8,6 +8,8 @@ import { refresh } from './refresh'
 import { profile } from './profile'
 import { getById } from './get-user-by-id'
 import { verifyJwt } from '@/http/middlewares/verify-jwt'
+import { listUsers } from './list-users'
+import { search } from './search-user'
 
 export async function UserRoutes(app: FastifyInstance) {
   app.get('/totvs/user', listTotvsUsers)
@@ -20,4 +22,6 @@ export async function UserRoutes(app: FastifyInstance) {
 
   app.get('/api/me', { onRequest: [verifyJwt] }, profile)
   app.get('/api/users/:id', getById)
+  app.get('/api/users/all', listUsers)
+  app.get('/api/users/search', search)
 }
