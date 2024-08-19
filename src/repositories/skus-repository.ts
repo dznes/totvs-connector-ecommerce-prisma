@@ -13,4 +13,5 @@ export interface SkusRepository {
   list(): Promise<Sku[] | null>
   listByProductCode(productCode: string): Promise<Sku[] | null>
   listByProductId(productId: number): Promise<Sku[] | null>
+  searchMaterials(query: string, page: number, perPage: number): Promise<Sku[]>
 }

@@ -80,6 +80,40 @@ export class PrismaSkusRepository implements SkusRepository {
     return sku
   }
 
+  async searchMaterials(query: string, page: number) {
+    const sku = await prisma.sku.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+            },
+          },
+          {
+            slug: {
+              contains: query,
+            },
+          },
+          {
+            reference_id: {
+              contains: query,
+            },
+          },
+          {
+            is_finished_product: false,
+          }
+        ],
+      },
+      include: {
+        color: true,
+        size: true,
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+    return sku
+  }
+
   async count(query: string) {
     const sku = await prisma.sku.count({
       where: {
@@ -94,6 +128,8 @@ export class PrismaSkusRepository implements SkusRepository {
     })
     return sku
   }
+
+  
 
   async create(data: Prisma.SkuCreateInput) {
     const sku = await prisma.sku.create({
