@@ -87,6 +87,14 @@ export class PrismaOrdersRepository implements OrdersRepository {
           },
         ],
       },
+      include: {
+        order_items: true,
+        user: true,
+        shipping_address: true,
+      },
+      orderBy: {
+        totvs_creation_date: 'desc',
+      },
       take: perPage,
       skip: (page - 1) * perPage,
     })
