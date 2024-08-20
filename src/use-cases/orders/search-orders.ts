@@ -3,6 +3,7 @@ import { Order } from '@prisma/client'
 
 interface SearchOrdersUseCaseRequest {
   query: string
+  totvsStatus: string
   page: number
   perPage: number
   operationCode: string
@@ -19,12 +20,13 @@ export class SearchOrdersUseCase {
 
   async execute({
     query,
+    totvsStatus,
     page,
     perPage,
     operationCode,
   }: SearchOrdersUseCaseRequest): Promise<SearchOrdersUseCaseResponse> {
-    const orders = await this.ordersRepository.searchMany(query, page, perPage, operationCode)
-    const count = await this.ordersRepository.count(query)
+    const orders = await this.ordersRepository.searchMany(query, totvsStatus, operationCode, page, perPage)
+    const count = await this.ordersRepository.count(query, totvsStatus, operationCode)
     const totalPages = Math.ceil(count / perPage)
 
     return {
