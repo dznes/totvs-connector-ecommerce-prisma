@@ -115,33 +115,49 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return orders
   }
 
-  async count(query: string) {
+  async count(query: string, totvsStatus: string, operationCode: string) {
     const order = await prisma.order.count({
       where: {
-        OR: [
+        AND: [
           {
-            user: {
-              email: {
-                contains: query,
+            OR: [
+              {
+                user: {
+                  email: {
+                    contains: query,
+                  },
+                },
               },
+              {
+                id: {
+                  contains: query,
+                },
+              },
+              {
+                shipping_address: {
+                  zip_code: {
+                    contains: query,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            operation_code: {
+              contains: operationCode,
             },
           },
           {
-            id: { contains: query },
-          },
-          {
-            shipping_address: {
-              zip_code: {
-                contains: query,
-              },
+            totvs_order_status: {
+              contains: totvsStatus,
             },
           },
         ],
       },
-    })
-    return order
+    });
+    return order;
   }
-
+  
   async update(order: Order) {
     await prisma.order.update({
       where: { id: order.id },
