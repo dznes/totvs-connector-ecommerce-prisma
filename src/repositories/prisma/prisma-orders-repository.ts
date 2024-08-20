@@ -64,25 +64,34 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return orders
   }
 
-  async searchMany(query: string, page: number, perPage: number) {
+  async searchMany(query: string, page: number, perPage: number, operationCode: string) {
     const orders = await prisma.order.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            user: {
-              email: {
-                contains: query,
+            OR: [
+              {
+                user: {
+                  email: {
+                    contains: query,
+                  },
+                },
               },
-            },
+              {
+                id: { contains: query },
+              },
+              {
+                shipping_address: {
+                  zip_code: {
+                    contains: query,
+                  },
+                },
+              },
+            ],
           },
           {
-            id: { contains: query },
-          },
-          {
-            shipping_address: {
-              zip_code: {
-                contains: query,
-              },
+            operation_code: {
+              contains: operationCode,
             },
           },
         ],

@@ -5,16 +5,18 @@ import { makeSearchProductsUseCase } from '@/use-cases/factories/products/make-s
 export async function search(request: FastifyRequest, reply: FastifyReply) {
   const searchProductsQuerySchema = z.object({
     q: z.string(),
+    productCode: z.string().default(''),
     page: z.coerce.number().min(1).default(1),
     perPage: z.coerce.number().min(1).default(21),
   })
 
-  const { q, page, perPage } = searchProductsQuerySchema.parse(request.query)
+  const { q, productCode, page, perPage } = searchProductsQuerySchema.parse(request.query)
 
   const searchProductsUseCase = makeSearchProductsUseCase()
 
   const { products, count, totalPages } = await searchProductsUseCase.execute({
     query: q,
+    productCode,
     page,
     perPage,
   })

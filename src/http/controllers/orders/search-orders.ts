@@ -7,9 +7,10 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     q: z.string(),
     page: z.coerce.number().min(1).default(1),
     perPage: z.coerce.number().min(1).default(20),
+    operationCode: z.string().optional().default(''),
   })
 
-  const { q, page, perPage } = searchOrdersQuerySchema.parse(request.query)
+  const { q, page, perPage, operationCode } = searchOrdersQuerySchema.parse(request.query)
 
   const searchOrdersUseCase = makeSearchOrdersUseCase()
 
@@ -17,6 +18,7 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     query: q,
     page,
     perPage,
+    operationCode,
   })
 
   return reply.status(200).send({

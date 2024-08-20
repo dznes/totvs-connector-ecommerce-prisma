@@ -6,6 +6,15 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 
 [TOTVS API Documentation](https://tdn.totvs.com.br/pages/releaseview.action?pageId=532385018)
 
+## Order Codes:
+ 1911           | [S] REMESSA EM BONIFICACAO MARKETING
+ 510            | [S] VENDA E-COMMERCE (B2C)
+ 701            | [S] VENDA EXPORTACAO (B2B)
+ 500            | [S] VENDA ATACADO (B2B) (SHOW ROOW)
+ 702            | [S] VENDA EXPORTACAO (B2C)
+ 752            | 5501- REMESSA COM FIM ESPECIFICO PARA EXPORTACAO
+ 704            | [S] VENDA EXPORTACAO (ATACADO)
+
 ## TODO
 
 ### Use Cases

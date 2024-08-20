@@ -93,33 +93,47 @@ export class PrismaProductsRepository implements ProductsRepository {
   //   })
   //   return products
   // }
-  async searchMany(query: string, page: number, perPage: number) {
-    // Step 1: Fetch the product IDs with stock_available > 0 using aggregation
+  async searchMany(query: string, productCode: string, page: number, perPage: number) {
+    // Step 1: Fetch the product IDs with stock_available > 0 and matching productCode using aggregation
     const skuAggregations = await prisma.sku.groupBy({
       by: ['product_id'],
       _sum: {
         stock_available: true,
       },
       where: {
-        product: {
-          OR: [
-            {
-              title: {
-                contains: query,
-              },
+        AND: [
+          {
+            product: {
+              OR: [
+                {
+                  title: {
+                    contains: query,
+                  },
+                },
+                {
+                  slug: {
+                    contains: query,
+                  },
+                },
+                {
+                  reference_id: {
+                    contains: query,
+                  },
+                },
+                {
+                  code: {
+                    contains: productCode,
+                  },
+                },
+              ],
             },
-            {
-              slug: {
-                contains: query,
-              },
+          },
+          {
+            stock_available: {
+              gt: 0, // Ensure stock_available is greater than 0
             },
-            {
-              reference_id: {
-                contains: query,
-              },
-            },
-          ],
-        },
+          },
+        ],
       },
     });
   
@@ -129,13 +143,40 @@ export class PrismaProductsRepository implements ProductsRepository {
       .map((agg) => agg.product_id)
       .filter((id): id is number => id !== null); // Filter out null values
   
+    // If no products matched the criteria, return an empty array
+    if (productIds.length === 0) {
+      return [];
+    }
+  
     // Step 2: Fetch the full product data using the filtered product IDs
     const products = await prisma.product.findMany({
       where: {
-        id: {
-          in: productIds,
-        },
-        status: 200,
+        AND: [
+          {
+            OR: [
+              {
+                title: {
+                  contains: query,
+                },
+              },
+              {
+                slug: {
+                  contains: query,
+                },
+              },
+              {
+                reference_id: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+          {
+            code: {
+              contains: productCode,
+            },
+          },
+        ],
       },
       include: {
         skus: {
@@ -155,6 +196,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   
     return products;
   }
+  
 
   async listRecentProducts() {
     const product = await prisma.product.findMany({
@@ -165,29 +207,38 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product
   }
 
-  async count(query: string) {
+  async count(query: string, productCode: string) {
     const product = await prisma.product.count({
       where: {
-        OR: [
+        AND: [
           {
-            title: {
-              contains: query,
-            },
+            OR: [
+              {
+                title: {
+                  contains: query,
+                },
+              },
+              {
+                slug: {
+                  contains: query,
+                },
+              },
+              {
+                reference_id: {
+                  contains: query,
+                },
+              },
+            ],
           },
           {
-            slug: {
-              contains: query,
-            },
-          },
-          {
-            reference_id: {
-              contains: query,
+            code: {
+              contains: productCode,
             },
           },
         ],
       },
-    })
-    return product
+    });
+    return product;
   }
 
   async create(data: Prisma.ProductCreateInput) {

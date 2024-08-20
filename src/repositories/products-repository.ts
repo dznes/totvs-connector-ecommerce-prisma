@@ -13,9 +13,9 @@ export interface ProductsRepository {
   findById(id: number): Promise<Product | null>
   findByTitle(title: string): Promise<Product | null>
   findBySlug(slug: string): Promise<ProductWithSkuAndVariants | null>
-  searchMany(query: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>
+  searchMany(query: string, productCode: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>
   listRecentProducts(): Promise<Product[] | null>
-  count(query: string): Promise<number>
+  count(query: string, productCode: string): Promise<number>
   create(data: Prisma.ProductCreateInput): Promise<Product>
   updateInfo(product: Product): Promise<void>
   delete(product: Product): Promise<void>

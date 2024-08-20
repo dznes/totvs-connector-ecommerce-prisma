@@ -5,6 +5,7 @@ interface SearchOrdersUseCaseRequest {
   query: string
   page: number
   perPage: number
+  operationCode: string
 }
 
 export interface SearchOrdersUseCaseResponse {
@@ -20,8 +21,9 @@ export class SearchOrdersUseCase {
     query,
     page,
     perPage,
+    operationCode,
   }: SearchOrdersUseCaseRequest): Promise<SearchOrdersUseCaseResponse> {
-    const orders = await this.ordersRepository.searchMany(query, page, perPage)
+    const orders = await this.ordersRepository.searchMany(query, page, perPage, operationCode)
     const count = await this.ordersRepository.count(query)
     const totalPages = Math.ceil(count / perPage)
 
