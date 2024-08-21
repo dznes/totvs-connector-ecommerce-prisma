@@ -4,7 +4,6 @@ interface SearchProductsUseCaseRequest {
   query: string
   productCode: string
   integrationCode: string
-  productTitle: string
   page: number
   perPage: number
 }
@@ -22,7 +21,6 @@ export class SearchProductsUseCase {
     query,
     productCode,
     integrationCode,
-    productTitle,
     page,
     perPage,
   }: SearchProductsUseCaseRequest): Promise<SearchProductsUseCaseResponse> {
@@ -30,11 +28,10 @@ export class SearchProductsUseCase {
       query,
       productCode,
       integrationCode,
-      productTitle,
       page,
       perPage,
     )
-    const count = await this.productsRepository.count(query, productCode, integrationCode, productTitle)
+    const count = await this.productsRepository.count(query, productCode, integrationCode)
     const totalPages = Math.ceil(count / perPage)
 
     return {

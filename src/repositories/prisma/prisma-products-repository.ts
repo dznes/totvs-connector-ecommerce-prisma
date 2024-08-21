@@ -93,7 +93,7 @@ export class PrismaProductsRepository implements ProductsRepository {
   //   })
   //   return products
   // }
-  async searchMany(query: string, productCode: string, productTitle: string, integrationCode: string, page: number, perPage: number) {
+  async searchMany(query: string, productCode: string, integrationCode: string, page: number, perPage: number) {
     // Step 1: Fetch the product IDs with stock_available > 0 and matching productCode using aggregation
     const skuAggregations = await prisma.sku.groupBy({
       by: ['product_id'],
@@ -123,11 +123,6 @@ export class PrismaProductsRepository implements ProductsRepository {
                 {
                   code: {
                     contains: productCode,
-                  },
-                },
-                {
-                  title: {
-                    contains: productTitle,
                   },
                 },
                 {
@@ -187,11 +182,6 @@ export class PrismaProductsRepository implements ProductsRepository {
             },
           },
           {
-            title: {
-              contains: productTitle,
-            },
-          },
-          {
             integration_code: {
               contains: integrationCode,
             },
@@ -227,7 +217,7 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product
   }
 
-  async count(query: string, productCode: string, integrationCode: string, productTitle: string) {
+  async count(query: string, productCode: string, integrationCode: string) {
     const product = await prisma.product.count({
       where: {
         AND: [
@@ -253,11 +243,6 @@ export class PrismaProductsRepository implements ProductsRepository {
           {
             code: {
               contains: productCode,
-            },
-          },
-          {
-            title: {
-              contains: productTitle,
             },
           },
           {

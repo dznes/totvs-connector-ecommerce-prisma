@@ -7,12 +7,11 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     q: z.string(),
     productCode: z.string().default(''),
     integrationCode: z.string().default(''),
-    productTitle: z.string().default(''),
     page: z.coerce.number().min(1).default(1),
     perPage: z.coerce.number().min(1).default(21),
   })
 
-  const { q, productCode, integrationCode, productTitle, page, perPage } = searchProductsQuerySchema.parse(request.query)
+  const { q, productCode, integrationCode, page, perPage } = searchProductsQuerySchema.parse(request.query)
 
   const searchProductsUseCase = makeSearchProductsUseCase()
 
@@ -20,10 +19,11 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     query: q,
     productCode,
     integrationCode,
-    productTitle,
     page,
     perPage,
   })
+
+  console.log(products)
 
   return reply.status(200).send({
     products,
