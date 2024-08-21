@@ -3,6 +3,8 @@ import { ProductsRepository, ProductWithSkuAndVariants } from '@/repositories/pr
 interface SearchProductsUseCaseRequest {
   query: string
   productCode: string
+  integrationCode: string
+  productTitle: string
   page: number
   perPage: number
 }
@@ -19,16 +21,20 @@ export class SearchProductsUseCase {
   async execute({
     query,
     productCode,
+    integrationCode,
+    productTitle,
     page,
     perPage,
   }: SearchProductsUseCaseRequest): Promise<SearchProductsUseCaseResponse> {
     const products = await this.productsRepository.searchMany(
       query,
       productCode,
+      integrationCode,
+      productTitle,
       page,
       perPage,
     )
-    const count = await this.productsRepository.count(query, productCode)
+    const count = await this.productsRepository.count(query, productCode, integrationCode, productTitle)
     const totalPages = Math.ceil(count / perPage)
 
     return {
