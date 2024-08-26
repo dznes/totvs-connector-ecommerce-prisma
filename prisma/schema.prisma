@@ -90,6 +90,7 @@ model Sku {
 
   categories     Category[]
   product_images ProductImage[]
+  // production_orders ProductionOrder[]
 
   @@map("skus")
 }
@@ -402,3 +403,38 @@ model Transaction {
 
   @@map("transactions")
 }
+
+// model ProductionOrder {
+//   id                      Int       @id @default(autoincrement())
+//   location_code           String?
+//   location_name           String?
+//   product_code            String?
+//   product_name            String?
+//   reference_code          String?
+//   reference_name          String?
+//   location_quantity       Int       @default(0)
+//   pending_quantity_sku    Int       @default(0)
+//   entry_date              DateTime
+//   branch_code             String?
+//   cycle_code              String?
+//   order_code              String?
+//   order_bar_code          String?
+//   quantity                Int?
+//   finished_quantity       Int?
+//   pending_quantity        Int?
+//   status                  String?
+//   priority                String?
+//   estimated_delivery_date DateTime?
+//   insert_date             DateTime
+//   last_change_date        DateTime?
+//   end_date                DateTime?
+//   start_moviment_date     DateTime?
+//   customer_code           String?
+//   customer_cpf_cnpj       String?
+//   customer_name           String?
+
+//   sku      Sku    @relation(fields: [sku_code], references: [code])
+//   sku_code String
+
+//   @@index([order_code])
+// }

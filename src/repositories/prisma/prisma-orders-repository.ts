@@ -103,7 +103,11 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       include: {
         order_items: true,
-        user: true,
+        user: {
+          include: {
+            phones: true,
+          }
+        },
         shipping_address: true,
       },
       orderBy: {

@@ -80,6 +80,14 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         ],
       },
+      include: {
+        addresses: true,
+        phones: true,
+        Order: true,
+      },
+      orderBy: {
+        regitered_at: 'desc',
+      },
       take: perPage,
       skip: (page - 1) * perPage,
     })

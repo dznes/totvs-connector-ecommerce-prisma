@@ -59,8 +59,122 @@ export class PrismaOrderItemsRepository implements OrderItemsRepository {
       orderBy: {
         created_at: 'desc',
       },
+      include: {
+        order: {
+          include: {
+            user: true,
+          },
+        }
+      }
     })
     return orders
+  }
+
+  async searchMany(query: string, totvsStatus: string, operationCode: string, page: number, perPage: number) {
+    const orderItems = await prisma.orderItem.findMany({
+      where: {
+        order: {
+          AND: [
+            {
+              OR: [
+                {
+                  user: {
+                    email: {
+                      contains: query,
+                    },
+                  },
+                },
+                {
+                  id: { contains: query },
+                },
+                {
+                  shipping_address: {
+                    zip_code: {
+                      contains: query,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              operation_code: {
+                contains: operationCode,
+              },
+            },
+            {
+              totvs_order_status: {
+                contains: totvsStatus,
+              },
+            }
+          ],
+        }
+
+      },
+      include: {
+        order: {
+          include: {
+            user: {
+              include: {
+                phones: true,
+              }
+            },
+            shipping_address: true,
+          }
+        }
+      },
+      orderBy: {
+        totvs_created_at: 'desc',
+      },
+      take: perPage,
+      skip: (page - 1) * perPage,
+    })
+    return orderItems
+  }
+
+  async count(query: string, totvsStatus: string, operationCode: string) {
+    const orderItem = await prisma.orderItem.count({
+
+      where: {
+        order: {
+          AND: [
+            {
+              OR: [
+                {
+                  user: {
+                    email: {
+                      contains: query,
+                    },
+                  },
+                },
+                {
+                  id: {
+                    contains: query,
+                  },
+                },
+                {
+                  shipping_address: {
+                    zip_code: {
+                      contains: query,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              operation_code: {
+                contains: operationCode,
+              },
+            },
+            {
+              totvs_order_status: {
+                contains: totvsStatus,
+              },
+            },
+          ],
+        }
+      },
+    });
+    return orderItem;
   }
 
   async update(orderItem: OrderItem) {
