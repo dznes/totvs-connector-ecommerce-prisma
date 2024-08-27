@@ -46,56 +46,54 @@ export async function VtexProductImagesBackup(
         images.push(...extractImages(products))
       }
 
-      // Save images to the database
-      await Promise.all(
-        images.map(async (image: any) => {
-          try {
-            const productImageExists = await prisma.productImage.findUnique({
+      // Save images to the database sequentially to reduce concurrency
+      for (const image of images) {
+        try {
+          const productImageExists = await prisma.productImage.findUnique({
+            where: {
+              code: image.code,
+            },
+          })
+
+          if (productImageExists) {
+            await prisma.productImage.update({
+              data: {
+                code: image.code,
+                title: image.title,
+                file_key: image.file_key,
+                position: image.position,
+                sku: {
+                  connect: {
+                    code: image.sku_code,
+                  },
+                },
+              },
               where: {
                 code: image.code,
               },
             })
-
-            if (productImageExists) {
-              await prisma.productImage.update({
-                data: {
-                  code: image.code,
-                  title: image.title,
-                  file_key: image.file_key,
-                  position: image.position,
-                  sku: {
-                    connect: {
-                      code: image.sku_code,
-                    },
+          } else {
+            await prisma.productImage.create({
+              data: {
+                code: image.code,
+                title: image.title,
+                file_key: image.file_key,
+                position: image.position,
+                sku: {
+                  connect: {
+                    code: image.sku_code,
                   },
                 },
-                where: {
-                  code: image.code,
-                },
-              })
-            } else {
-              await prisma.productImage.create({
-                data: {
-                  code: image.code,
-                  title: image.title,
-                  file_key: image.file_key,
-                  position: image.position,
-                  sku: {
-                    connect: {
-                      code: image.sku_code,
-                    },
-                  },
-                },
-              })
-            }
-          } catch (error) {
-            console.error(
-              `Error processing image with code ${image.code}:`,
-              error,
-            )
+              },
+            })
           }
-        }),
-      )
+        } catch (error) {
+          console.error(
+            `Error processing image with code ${image.code}:`,
+            error,
+          )
+        }
+      }
 
       reply.send({ images, totalResources })
     } catch (error) {
