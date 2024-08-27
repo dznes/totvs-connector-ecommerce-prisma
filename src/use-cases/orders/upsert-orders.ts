@@ -83,6 +83,7 @@ export class UpsertOrdersUseCase {
     // Check if user exists
     const user = await this.usersRepository.findByCode(user_code)
     if (!user) {
+      console.log(user_code)
       throw new ResourceNotFoundError()
     }
 

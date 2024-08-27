@@ -1,6 +1,5 @@
 import { OrderItemsRepository } from '@/repositories/order-items-repository'
 import { OrdersRepository } from '@/repositories/orders-repository'
-import { SkusRepository } from '@/repositories/skus-repository'
 
 import { convertToDecimal } from '@/core/entities/value-objects/convert-to-decimal'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
@@ -30,7 +29,6 @@ interface UpsertOrderItemsUseCaseRequest {
 export class UpsertOrderItemsUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
-    private skusRepository: SkusRepository,
     private orderItemsRepository: OrderItemsRepository,
   ) {}
 
@@ -58,12 +56,6 @@ export class UpsertOrderItemsUseCase {
     // Check if the order exists
     const order = await this.ordersRepository.findByCode(order_code)
     if (!order) {
-      throw new ResourceNotFoundError()
-    }
-    
-    // Check if the SKU exists
-    const sku = await this.skusRepository.findByCode(product_code)
-    if (!sku) {
       throw new ResourceNotFoundError()
     }
 
