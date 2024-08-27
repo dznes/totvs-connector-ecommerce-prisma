@@ -34,8 +34,8 @@ export class SearchProductsUseCase {
     const count = await this.productsRepository.count(query, productCode, integrationCode)
     const totalPages = Math.ceil(count / perPage)
 
-      // Define the custom order for the sizes
-  const sizeOrder = ["PP", "P", "M", "G", "GG", "UN", "U", "36", "38", "40", "42", "44"];
+    // Define the custom order for the sizes
+    const sizeOrder = ["PP", "P", "M", "G", "GG", "UN", "U", "36", "38", "40", "42", "44"];
 
     // Sort the SKUs within each product by color.title, then by size.title according to sizeOrder
     products.forEach(product => {
