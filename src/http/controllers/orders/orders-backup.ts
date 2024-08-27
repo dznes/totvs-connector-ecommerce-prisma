@@ -38,7 +38,7 @@ export async function OrdersBackup(_request: FastifyRequest, reply: FastifyReply
       })
 
       // Upsert each Order with Shipping Address, Invoices and Order Items into the database
-      items.map(async (item) => {
+      for (const item of items) {
         await upsertOrdersUseCase.execute({
           code: item.orderCode.toString(),
           order_vtex_id: item.orderId,
@@ -114,7 +114,7 @@ export async function OrdersBackup(_request: FastifyRequest, reply: FastifyReply
             })
           })
         }
-      })
+      }
 
       // Check if there are more pages to fetch
       if (!hasNext) {
