@@ -11,8 +11,17 @@ export class PrismaProductsRepository implements ProductsRepository {
       },
       include: {
         skus: {
+          // where: {
+          //   stock_available: {
+          //     gt: 0, // Filters SKUs with available_stock greater than 0
+          //   },
+          // },
           include: {
-            product_images: true,
+            product_images: {
+              orderBy: {
+                position: 'asc', // Sorts the images in ascending order by position
+              },
+            },
             color: true,
             size: true,
           },

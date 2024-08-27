@@ -10,7 +10,7 @@ export interface ProductWithSkuAndVariants extends Product {
 }
 
 export interface ProductsRepository {
-  findById(id: number): Promise<Product | null>
+  findById(id: number): Promise<ProductWithSkuAndVariants | null>
   findByTitle(title: string): Promise<Product | null>
   findBySlug(slug: string): Promise<ProductWithSkuAndVariants | null>
   searchMany(query: string, productCode: string, integrationCode: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>

@@ -1,4 +1,4 @@
-import { ProductsRepository } from '@/repositories/products-repository'
+import { ProductsRepository, ProductWithSkuAndVariants } from '@/repositories/products-repository'
 import { Product } from '@prisma/client'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
@@ -7,7 +7,7 @@ interface GetProductByIdUseCaseRequest {
 }
 
 interface GetProductByIdUseCaseResponse {
-  product: Product
+  product: ProductWithSkuAndVariants
 }
 
 export class GetProductByIdUseCase {
