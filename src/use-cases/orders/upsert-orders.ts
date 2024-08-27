@@ -1,5 +1,6 @@
 import { OrdersRepository } from '@/repositories/orders-repository'
 import { UsersRepository } from '@/repositories/users-repository'
+import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface UpsertOrdersUseCaseRequest {
   code: string
@@ -78,15 +79,21 @@ export class UpsertOrdersUseCase {
     totvs_order_status,
     user_code,
   }: UpsertOrdersUseCaseRequest) {
-    const order = await this.ordersRepository.findByCode(code)
+
+    // Check if user exists
     const user = await this.usersRepository.findByCode(user_code)
+    if (!user) {
+      throw new ResourceNotFoundError()
+    }
+
+    const order = await this.ordersRepository.findByCode(code)
 
     if (order) {
       await this.ordersRepository.update({
         ...order,
         updated_at: new Date(),
       })
-    } else if (user) {
+    } else {
       await this.ordersRepository.create({
         code,
         status,
