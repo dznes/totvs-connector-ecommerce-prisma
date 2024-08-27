@@ -55,6 +55,6 @@ export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
   } catch (err) {
     console.error(err)
     // Return an HTTP error response in case of failure
-    return reply.status(500).send({ error: 'Failed to fetch product details' })
+    return reply.status(500).send({ error: 'Failed to fetch SKU prices' })
   }
 }
