@@ -3,6 +3,9 @@ import { z } from 'zod'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 import { makeGetProductBySlugUseCase } from '@/use-cases/factories/products/make-get-product-by-slug-use-case'
 
+// Define the custom order for the sizes
+const sizeOrder = ["PP", "P", "M", "G", "GG", "UN", "U", "36", "38", "40", "42", "44"];
+
 export async function getBySlug(request: FastifyRequest, reply: FastifyReply) {
   const GetProductBySlugParamsSchema = z.object({
     productSlug: z.string(),
@@ -16,14 +19,31 @@ export async function getBySlug(request: FastifyRequest, reply: FastifyReply) {
     const { product } = await getProductBySlugUseCase.execute({
       productSlug,
     })
+
+    product.skus.sort((a, b) => {
+      // First, compare by color title
+      const colorComparison = a.color.title.localeCompare(b.color.title);
+      if (colorComparison !== 0) {
+        return colorComparison;
+      }
+
+      // Then, compare by size title using the custom order
+      const aSizeIndex = sizeOrder.indexOf(a.size.title);
+      const bSizeIndex = sizeOrder.indexOf(b.size.title);
+
+      // If size is not found in sizeOrder, consider it as larger
+      if (aSizeIndex === -1) return 1;
+      if (bSizeIndex === -1) return -1;
+
+      return aSizeIndex - bSizeIndex;
+    });
+
     const colorsRepetition = product.skus.map((sku) => sku.color)
     const colors = [
       ...new Map(colorsRepetition.map(obj => [obj.id, obj])).values()
     ];
 
     const sizesRepetition = product.skus.map((sku) => sku.size)
-    // Define the custom order for the sizes
-    const sizeOrder = ["PP", "P", "M", "G", "GG", "UN", "U", "36", "38", "40", "42", "44"];
 
     // Remove duplicate sizes
     const uniqueSizes = [
