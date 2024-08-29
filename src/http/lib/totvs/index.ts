@@ -6,7 +6,7 @@ import { SkuPrice } from './interfaces/sku-price'
 import { SkuAvailableStock } from './interfaces/sku-available-stock'
 import { ProductionOrder } from './interfaces/sku-production-order'
 import { Order } from './interfaces/orders'
-import { User } from './interfaces/user-info'
+import { CreateUserRequest, User } from './interfaces/user-info'
 
 interface TotvsProps {
   token: string
@@ -57,6 +57,7 @@ interface RetailClients extends TotvsResponse {
 
 // TOTVS Base URL
 const totvs_url = env.totvs_url
+const totvs_test_url = process.env.TOTVS_TEST_URL
 
 // HELPER FUNCTIONS
 /**
@@ -663,4 +664,69 @@ export async function getWholesaleClients({
   }).then((response) => response.json())
 
   return data
+}
+
+// CREATION ROUTE FUNCTIONS
+export async function createRetailClient({
+  token,
+  name,
+  cpf,
+  rg,
+  birthDate,
+  gender,
+  nationality,
+  homeTown,
+  address,
+  phoneNumber,
+  email,
+}: CreateUserRequest): Promise<RetailClients> {
+  const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`;
+
+  const headers = headerBuilder(token);
+
+  const body = {
+    branchInsertCode: 1,
+    insertDate: new Date(),
+    name,
+    cpf,
+    rg,
+    birthDate,
+    gender,
+    isInactive: false,
+    nationality,
+    homeTown,
+    registrationStatus: "Normal",
+    isBloqued: false,
+    isCustomer: true,
+    isSupplier: false,
+    isRepresentative: false,
+    isPurchasingGuide: false,
+    isShippingCompany: false,
+    isEmployee: false,
+    employeeStatus: "Ativo",
+    customerStatus: "Ativo",
+    addresses: [
+      {...address}
+    ],
+    phones: [{
+      typeCode: 1,
+      number: phoneNumber,
+      isDefault: true,
+    }],
+    emails: [{
+      sequence: 1,
+			typeCode: 1,
+			typeName: "COMERCIAL",
+			email: email,
+			"isDefault": true
+    }]
+  }
+
+  const { customerCode } = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return customerCode
 }

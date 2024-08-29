@@ -10,6 +10,7 @@ import { getById } from './get-user-by-id'
 import { verifyJwt } from '@/http/middlewares/verify-jwt'
 import { listUsers } from './list-users'
 import { search } from './search-user'
+import { registerTotvsUser } from './retail-user-register'
 
 export async function UserRoutes(app: FastifyInstance) {
   app.get('/totvs/user', listTotvsUsers)
@@ -17,6 +18,7 @@ export async function UserRoutes(app: FastifyInstance) {
   app.get('/user/wholesale/backup', wholesaleUsersBackup)
 
   app.post('/api/users', register)
+  app.post('/api/users-totvs', registerTotvsUser)
   app.post('/api/sessions', authenticate)
   app.patch('/api/token/refresh', refresh)
 

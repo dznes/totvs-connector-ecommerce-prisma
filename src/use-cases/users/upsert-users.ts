@@ -48,7 +48,7 @@ export class UpsertUsersUseCase {
     is_employee,
     is_active,
     employee_status,
-    totvs_branch_code, // Typecasting from number to string
+    totvs_branch_code,
   }: UpsertUsersUseCaseRequest) {
     const user = await this.usersRepository.findByCode(code)
 
@@ -81,11 +81,11 @@ export class UpsertUsersUseCase {
           create: {
             status: 200,
             type: address.addressType,
-            country: address.contryName ?? 'BRASIL',
+            country: address.countryName ?? 'BRASIL',
             state: address.stateAbbreviation,
             city: address.cityName,
             zip_code: address.cep,
-            neighborhood: address.neiborhood,
+            neighborhood: address.neighborhood,
             street: address.address,
             number: address.addressNumber ?? 0,
             complement: address.complement,
