@@ -31,7 +31,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
   - [X] UPSERT orders with skus.
   - [X] LIST skus with query params.
   - [ ] LIST clients with query params.
-  - [ ] LIST orders with query params.
+  - [X] LIST orders with query params.
   - [ ] LIST orders with skus with query params.
   - [ ] CREATE and PUSH User in TOTVS.
   - [ ] CREATE and PUSH Order in TOTVS.
@@ -55,8 +55,8 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
     - [ ] CREATE customer account.
     - [ ] UPDATE customer account information.
     ##### ORDERS
-    - [ ] GET order information by order ID.
-    - [ ] LIST orders using query params and pagination.
+    - [X] GET order information by order ID.
+    - [X] LIST orders using query params and pagination.
     - [ ] CREATE order.
     - [ ] UPDATE order specific informations.
     - [ ] UPDATE order status with webhooks.
@@ -77,20 +77,22 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [X] Add JWT and role-based authentication to access private routes.
 
 ### Scheduller using Google Console
-- [ ] Add update for product details in database every 1 minute updates from TOTVS.
-- [ ] Add update for product balance in database every 1 minute updates from TOTVS.
-- [ ] Add update for product prices and cost in database every 1 minute updates from TOTVS.
-- [ ] Add update for clients in database every 1 minute updates from TOTVS.
-- [ ] Add update for orders in database every 1 minute updates from TOTVS.
-- [ ] Add update for orders with skus in database every 1 minute updates from TOTVS.
-- [ ] Make scheduler to run updates every 1 minute in all update endpoints, in the right order:
+- [X] Add update for product details in database every 15 minutes updates from TOTVS.
+- [X] Add update for product balance in database every 15 minutes updates from TOTVS.
+- [X] Add update for product prices and cost in database every 15 minutes updates from TOTVS.
+- [X] Add update for clients in database every 15 minutes updates from TOTVS.
+- [X] Add update for orders in database every 15 minutes updates from TOTVS.
+- [X] Add update for orders with skus in database every 15 minutes updates from TOTVS.
+- [X] Make scheduler to run updates every 15 minutes in all update endpoints, in the right order:
+  Sku and Products:
   1. Colors
   2. Sizes
   3. Product Info
-  4. Product Balances/Prices/OPs
-  5. Clients
-  6. Orders
-  7. Orders with Products
+  4. Product Balances/Prices/Costs
+  Users and Orders:
+  1. Clients
+  2. Orders
+  3. Orders with Products
 
 #### CORRECTIONS AFTER IMPLEMENTATION:
 PERFORM CROSS-ANALYSIS OF THE INTERNAL DATABASE AND TOTVS.
