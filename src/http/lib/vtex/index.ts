@@ -22,19 +22,28 @@ function headerBuilder() {
 export async function productsInfo(from: number, to: number): Promise<any> {
   const url = `${vtex_url}/catalog_system/pub/products/search?_from=${from}&_to=${to}`
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headerBuilder(),
-  })
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headerBuilder(),
+    })
 
-  const products = await response.json()
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.statusText}`)
+    }
 
-  const resourcesHeader = response.headers.get('resources')
-  let totalResources = null
-  if (resourcesHeader) {
-    const parts = resourcesHeader.split('/')
-    totalResources = parts.length > 1 ? parts[1] : null
+    const products = await response.json()
+
+    const resourcesHeader = response.headers.get('resources')
+    let totalResources = null
+    if (resourcesHeader) {
+      const parts = resourcesHeader.split('/')
+      totalResources = parts.length > 1 ? parts[1] : null
+    }
+
+    return { products, totalResources }
+  } catch (error) {
+    console.error('Error fetching products info:', error)
+    throw new Error('Failed to fetch products information')
   }
-
-  return { products, totalResources }
 }
