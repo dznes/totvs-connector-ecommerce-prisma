@@ -83,7 +83,11 @@ export class PrismaUsersRepository implements UsersRepository {
       include: {
         addresses: true,
         phones: true,
-        Order: true,
+        Order: {
+          include: {
+            order_items: true,
+          }
+        },
       },
       orderBy: {
         regitered_at: 'desc',
