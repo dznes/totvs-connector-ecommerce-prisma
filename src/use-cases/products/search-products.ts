@@ -9,7 +9,7 @@ interface SearchProductsUseCaseRequest {
 }
 
 export interface SearchProductsUseCaseResponse {
-  products: ProductWithSkuAndVariants [] 
+  products: ProductWithSkuAndVariants[] 
   count: number
   totalPages: number
 }
@@ -37,8 +37,9 @@ export class SearchProductsUseCase {
     // Define the custom order for the sizes
     const sizeOrder = ["PP", "P", "M", "G", "GG", "UN", "U", "36", "38", "40", "42", "44"];
 
-    // Sort the SKUs within each product by color.title, then by size.title according to sizeOrder
-    products.forEach(product => {
+    // Process each product
+    const productsWithColorsAndSizes = products.map(product => {
+      // Sort the SKUs within each product by color.title, then by size.title according to sizeOrder
       product.skus.sort((a, b) => {
         // First, compare by color title
         const colorComparison = a.color.title.localeCompare(b.color.title);
@@ -56,10 +57,34 @@ export class SearchProductsUseCase {
 
         return aSizeIndex - bSizeIndex;
       });
+
+      // Extract and deduplicate colors
+      const colorsRepetition = product.skus.map((sku) => sku.color);
+      const colors = [
+        ...new Map(colorsRepetition.map(obj => [obj.id, obj])).values()
+      ];
+
+      // Extract and deduplicate sizes
+      const sizesRepetition = product.skus.map((sku) => sku.size);
+      const uniqueSizes = [
+        ...new Map(sizesRepetition.map(obj => [obj.id, obj])).values()
+      ];
+
+      // Sort the sizes based on the custom order
+      const sortedSizes = uniqueSizes.sort((a, b) => {
+        return sizeOrder.indexOf(a.code) - sizeOrder.indexOf(b.code);
+      });
+
+      // Return the product with added colors and sizes attributes
+      return {
+        ...product,
+        colors,
+        sizes: sortedSizes,
+      };
     });
 
     return {
-      products,
+      products: productsWithColorsAndSizes,
       count,
       totalPages,
     }
