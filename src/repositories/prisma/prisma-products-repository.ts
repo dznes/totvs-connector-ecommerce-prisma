@@ -215,6 +215,139 @@ export class PrismaProductsRepository implements ProductsRepository {
   
     return products;
   }
+
+  async searchOnlyWithImageAndStock(query: string, productCode: string, integrationCode: string, page: number, perPage: number) {
+    // Step 1: Fetch the product IDs with stock_available > 0 and matching productCode using aggregation
+    const skuAggregations = await prisma.sku.groupBy({
+      by: ['product_id'],
+      _sum: {
+        stock_available: true,
+      },
+      where: {
+        AND: [
+          {
+            product: {
+              OR: [
+                {
+                  title: {
+                    contains: query,
+                  },
+                },
+                {
+                  slug: {
+                    contains: query,
+                  },
+                },
+                {
+                  reference_id: {
+                    contains: query,
+                  },
+                },
+                {
+                  code: {
+                    contains: productCode,
+                  },
+                },
+                {
+                  integration_code: {
+                    contains: integrationCode,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            stock_available: {
+              gt: 0, // Ensure stock_available is greater than 0
+            },
+          },
+          {
+            product_images: {
+              some: {}, // Ensure at least one product_image is linked to the SKU
+            },
+          },
+        ],
+      },
+    });
+    
+    // Filter out null or undefined productIds
+    const productIds = skuAggregations
+      .filter((agg) => agg._sum.stock_available !== null && agg._sum.stock_available > 0)
+      .map((agg) => agg.product_id)
+      .filter((id): id is number => id !== null);
+    
+    // If no products matched the criteria, return an empty array
+    if (productIds.length === 0) {
+      return [];
+    }
+  
+    // Step 2: Fetch the full product data using the filtered product IDs
+    const products = await prisma.product.findMany({
+      where: {
+        AND: [
+          {
+            id: {
+              in: productIds,
+            },
+          },
+          {
+            OR: [
+              {
+                title: {
+                  contains: query,
+                },
+              },
+              {
+                slug: {
+                  contains: query,
+                },
+              },
+              {
+                reference_id: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+          {
+            code: {
+              contains: productCode,
+            },
+          },
+          {
+            integration_code: {
+              contains: integrationCode,
+            },
+          },
+        ],
+      },
+      include: {
+        skus: {
+          where: {
+            AND: [
+              {
+                is_active: true,
+              },
+              {
+                product_images: {
+                  some: {}, // Ensure at least one product_image is linked to the SKU
+                },
+              },
+            ],
+          },
+          include: {
+            color: true,
+            size: true,
+            product_images: true,
+          },
+        },
+      },
+      take: perPage,
+      skip: (page - 1) * perPage,
+    });
+
+    return products
+  }
   
 
   async listRecentProducts() {

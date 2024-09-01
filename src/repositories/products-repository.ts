@@ -14,6 +14,7 @@ export interface ProductsRepository {
   findByTitle(title: string): Promise<Product | null>
   findBySlug(slug: string): Promise<ProductWithSkuAndVariants | null>
   searchMany(query: string, productCode: string, integrationCode: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>
+  searchOnlyWithImageAndStock(query: string, productCode: string, integrationCode: string, page: number, perPage: number): Promise<ProductWithSkuAndVariants[]>
   listRecentProducts(): Promise<Product[] | null>
   count(query: string, productCode: string, integrationCode: string): Promise<number>
   create(data: Prisma.ProductCreateInput): Promise<Product>
