@@ -23,6 +23,10 @@ export async function searchWithImageAndStock(request: FastifyRequest, reply: Fa
     perPage,
   });
 
+  console.log(count)
+  console.log(perPage)
+  console.log(totalPages)
+
   return reply.status(200).send({
     products,
     count,

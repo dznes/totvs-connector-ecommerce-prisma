@@ -358,6 +358,48 @@ export class PrismaProductsRepository implements ProductsRepository {
     })
     return product
   }
+  
+  async listByTitleProductsWithImageAndStock(title: string) {
+    const product = await prisma.product.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              {
+                title: {
+                  contains: title,
+                },
+              },
+            ],
+          },
+          {
+            // Only include products where there's at least one SKU with available stock > 0 and a linked product_image
+            skus: {
+              some: {
+                AND: [
+                  {
+                    stock_available: {
+                      gt: 0,
+                    },
+                  },
+                  {
+                    product_images: {
+                      some: {}, // Ensure at least one product_image is linked to the SKU
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+      
+    })
+    return product
+  }
 
   async count(query: string, productCode: string, integrationCode: string) {
     const product = await prisma.product.count({
@@ -396,6 +438,65 @@ export class PrismaProductsRepository implements ProductsRepository {
       },
     });
     return product;
+  }
+
+  async countWithImageAndStock(query: string, productCode: string, integrationCode: string) {
+    const productCount = await prisma.product.count({
+      where: {
+        AND: [
+          {
+            OR: [
+              {
+                title: {
+                  contains: query,
+                },
+              },
+              {
+                slug: {
+                  contains: query,
+                },
+              },
+              {
+                reference_id: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+          {
+            code: {
+              contains: productCode,
+            },
+          },
+          {
+            integration_code: {
+              contains: integrationCode,
+            },
+          },
+          {
+            // Only include products where there's at least one SKU with available stock > 0 and a linked product_image
+            skus: {
+              some: {
+                AND: [
+                  {
+                    stock_available: {
+                      gt: 0,
+                    },
+                  },
+                  {
+                    product_images: {
+                      some: {}, // Ensure at least one product_image is linked to the SKU
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    });
+  
+    return productCount;
   }
 
   async create(data: Prisma.ProductCreateInput) {

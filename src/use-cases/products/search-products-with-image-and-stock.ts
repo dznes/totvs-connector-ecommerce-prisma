@@ -31,7 +31,7 @@ export class SearchOnlyWithImageAndStockUseCase {
       page,
       perPage,
     )
-    const count = products.length
+    const count = await this.productsRepository.countWithImageAndStock(query, productCode, integrationCode)
     const totalPages = Math.ceil(count / perPage)
 
     // Define the custom order for the sizes
