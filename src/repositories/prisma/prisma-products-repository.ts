@@ -417,13 +417,18 @@ export class PrismaProductsRepository implements ProductsRepository {
           include: {
             color: true,
             size: true,
-            product_images: true,
+            product_images: {
+              orderBy: {
+                position: 'asc', // Sorts the images in ascending order by position
+              },
+            },
           },
         },
       },
       take: perPage,
       skip: (page - 1) * perPage,
     })
+    console.log(products)
     return products
   }
 
