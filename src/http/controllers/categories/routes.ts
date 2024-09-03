@@ -12,7 +12,10 @@ export async function CategoriesRoutes(app: FastifyInstance) {
   app.post('/api/categories', create)
   app.get('/api/categories/:slug', getBySlug)
   app.post('/api/categories/add-products/:id', addCategoryProducts)
-  app.post('/api/categories/add-products-by-title/:id', addProductsByCategoryTitle)
+  app.post(
+    '/api/categories/add-products-by-title/:id',
+    addProductsByCategoryTitle,
+  )
   app.get('/api/categories/all', listCategories)
   app.get('/api/categories/search', search)
   app.delete('/api/categories/:id', deleteCategory)

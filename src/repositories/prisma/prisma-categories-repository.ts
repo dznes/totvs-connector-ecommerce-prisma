@@ -42,18 +42,6 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
     return category
   }
 
-  async listProductsByCategorySlug(slug: string) {
-    const categoryWithProducts = await prisma.category.findUnique({
-      where: {
-        slug,
-      },
-      include: {
-        products: true, // Include the products in the result
-      },
-    })
-    return categoryWithProducts
-  }
-
   async count(query: string) {
     const category = await prisma.category.count({
       where: {
@@ -94,7 +82,7 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
       skip: (page - 1) * perPage,
       orderBy: {
         created_at: 'desc',
-      }
+      },
     })
     return categories
   }

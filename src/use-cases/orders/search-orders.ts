@@ -25,8 +25,18 @@ export class SearchOrdersUseCase {
     perPage,
     operationCode,
   }: SearchOrdersUseCaseRequest): Promise<SearchOrdersUseCaseResponse> {
-    const orders = await this.ordersRepository.searchMany(query, totvsStatus, operationCode, page, perPage)
-    const count = await this.ordersRepository.count(query, totvsStatus, operationCode)
+    const orders = await this.ordersRepository.searchMany(
+      query,
+      totvsStatus,
+      operationCode,
+      page,
+      perPage,
+    )
+    const count = await this.ordersRepository.count(
+      query,
+      totvsStatus,
+      operationCode,
+    )
     const totalPages = Math.ceil(count / perPage)
 
     return {

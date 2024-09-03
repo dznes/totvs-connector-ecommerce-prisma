@@ -10,7 +10,6 @@ export async function OrderRoutes(app: FastifyInstance) {
   app.get('/totvs/orders', ListOrders)
   app.get('/order/backup', OrdersBackup)
 
-
   app.get('/api/orders/all', listOrders)
   app.get('/api/orders/users/:id', listByUserId)
   app.get('/api/orders/search', search)

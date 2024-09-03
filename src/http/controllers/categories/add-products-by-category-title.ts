@@ -17,7 +17,8 @@ export async function addProductsByCategoryTitle(
   const { id } = addCategoryProducts.parse(request.params)
 
   try {
-    const addProductsByCategoryTitleProducts = makeAddProductsByCategoryTitleProductsUseCase()
+    const addProductsByCategoryTitleProducts =
+      makeAddProductsByCategoryTitleProductsUseCase()
 
     await addProductsByCategoryTitleProducts.execute({
       categoryId: id,

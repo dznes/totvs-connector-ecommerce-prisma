@@ -79,7 +79,6 @@ export class UpsertOrdersUseCase {
     totvs_order_status,
     user_code,
   }: UpsertOrdersUseCaseRequest) {
-
     // Check if user exists
     const user = await this.usersRepository.findByCode(user_code)
     if (!user) {

@@ -64,7 +64,13 @@ export class PrismaOrdersRepository implements OrdersRepository {
     return orders
   }
 
-  async searchMany(query: string, totvsStatus: string, operationCode: string, page: number, perPage: number) {
+  async searchMany(
+    query: string,
+    totvsStatus: string,
+    operationCode: string,
+    page: number,
+    perPage: number,
+  ) {
     const orders = await prisma.order.findMany({
       where: {
         AND: [
@@ -98,7 +104,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
             totvs_order_status: {
               contains: totvsStatus,
             },
-          }
+          },
         ],
       },
       include: {
@@ -106,7 +112,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
         user: {
           include: {
             phones: true,
-          }
+          },
         },
         shipping_address: true,
       },
@@ -158,10 +164,10 @@ export class PrismaOrdersRepository implements OrdersRepository {
           },
         ],
       },
-    });
-    return order;
+    })
+    return order
   }
-  
+
   async update(order: Order) {
     await prisma.order.update({
       where: { id: order.id },

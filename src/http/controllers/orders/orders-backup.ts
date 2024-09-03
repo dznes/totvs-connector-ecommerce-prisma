@@ -10,7 +10,10 @@ import { FastifyReply, FastifyRequest } from 'fastify'
  * @param _: FastifyRequest - The incoming request object (not used).
  * @param reply: FastifyReply - The response object to send the response.
  */
-export async function OrdersBackup(_request: FastifyRequest, reply: FastifyReply) {
+export async function OrdersBackup(
+  _request: FastifyRequest,
+  reply: FastifyReply,
+) {
   try {
     // Fetch the authentication token
     const token = await fetchToken()

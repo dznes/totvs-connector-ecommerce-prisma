@@ -43,7 +43,7 @@ export interface User {
   insertDate: Date
   isEmployee: boolean
   isInactive: boolean
-  isBloqued?: boolean 
+  isBloqued?: boolean
   isCustomer?: boolean
   isPurchasingGuide?: boolean
   employeeStatus: string | null
@@ -86,7 +86,7 @@ export interface CreateUserRequest {
   insertDate?: Date
   isEmployee?: boolean
   isInactive?: boolean
-  isBloqued?: boolean 
+  isBloqued?: boolean
   isCustomer?: boolean
   isPurchasingGuide?: boolean
   employeeStatus?: string
@@ -96,4 +96,3 @@ export interface CreateUserRequest {
   phoneNumber: string
   email: string
 }
-

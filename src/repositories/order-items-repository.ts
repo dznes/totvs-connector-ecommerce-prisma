@@ -10,8 +10,18 @@ export interface OrderItemsRepository {
   list(): Promise<OrderItem[] | null>
   listByOrderId(orderId: string): Promise<OrderItem[] | null>
   listByOrderCode(orderCode: string): Promise<OrderItem[] | null>
-  searchMany(query: string, totvsStatus: string, operationCode: string, page: number, perPage: number): Promise<OrderItem[]>
-  count(query: string, totvsStatus: string, operationCode: string): Promise<number>
+  searchMany(
+    query: string,
+    totvsStatus: string,
+    operationCode: string,
+    page: number,
+    perPage: number,
+  ): Promise<OrderItem[]>
+  count(
+    query: string,
+    totvsStatus: string,
+    operationCode: string,
+  ): Promise<number>
   update(orderItem: OrderItem): Promise<void>
   delete(orderItem: OrderItem): Promise<void>
 }

@@ -1,7 +1,7 @@
 import { Prisma, Category, Product } from '@prisma/client'
 
 export interface CategoryWithProducts extends Category {
-    products: Product[]
+  products: Product[]
 }
 
 export interface CategoriesRepository {
@@ -14,7 +14,6 @@ export interface CategoriesRepository {
     productIds: number[],
   ): Promise<Category>
   list(): Promise<Category[] | null>
-  listProductsByCategorySlug(slug: string): Promise<CategoryWithProducts | null>
   searchMany(query: string, page: number, perPage: number): Promise<Category[]>
   count(query: string): Promise<number>
   update(category: Category): Promise<void>

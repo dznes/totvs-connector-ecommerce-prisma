@@ -101,7 +101,7 @@ export class PrismaSkusRepository implements SkusRepository {
           },
           {
             is_finished_product: false,
-          }
+          },
         ],
       },
       include: {
@@ -128,8 +128,6 @@ export class PrismaSkusRepository implements SkusRepository {
     })
     return sku
   }
-
-  
 
   async create(data: Prisma.SkuCreateInput) {
     const sku = await prisma.sku.create({
@@ -179,6 +177,74 @@ export class PrismaSkusRepository implements SkusRepository {
       },
     })
     return skus
+  }
+
+  async listProductIdWithAvailableStockAndImage(
+    query: string,
+    productCode: string,
+    integrationCode: string,
+  ) {
+    const skuAggregations = await prisma.sku.groupBy({
+      by: ['product_id'],
+      _sum: {
+        stock_available: true,
+      },
+      where: {
+        AND: [
+          {
+            product: {
+              OR: [
+                {
+                  title: {
+                    contains: query,
+                  },
+                },
+                {
+                  slug: {
+                    contains: query,
+                  },
+                },
+                {
+                  reference_id: {
+                    contains: query,
+                  },
+                },
+                {
+                  code: {
+                    contains: productCode,
+                  },
+                },
+                {
+                  integration_code: {
+                    contains: integrationCode,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            stock_available: {
+              gt: 0, // Ensure stock_available is greater than 0
+            },
+          },
+        ],
+      },
+    })
+    // Filter out null or undefined productIds and ensure stock_available is greater than 0
+    const productIds = skuAggregations
+      .filter(
+        (agg) =>
+          agg._sum.stock_available !== null && agg._sum.stock_available > 0,
+      )
+      .map((agg) => agg.product_id)
+      .filter((id): id is number => id !== null) // Filter out null values
+
+    // If no products matched the criteria, return an empty array
+    if (productIds.length === 0) {
+      return []
+    }
+
+    return productIds
   }
 
   async update(sku: Sku) {

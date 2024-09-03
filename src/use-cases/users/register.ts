@@ -45,16 +45,16 @@ export class RegisterUseCase {
     }
 
     const user = await this.usersRepository.create({
-        code: code ?? randomUUID(),
-        name,
-        email,
-        role,
-        password_hash,
-        gender,
-        birthDate: birth_date,
-        cpf,
-        cnpj,
-        is_customer,
+      code: code ?? randomUUID(),
+      name,
+      email,
+      role,
+      password_hash,
+      gender,
+      birthDate: birth_date,
+      cpf,
+      cnpj,
+      is_customer,
     })
 
     return { user }

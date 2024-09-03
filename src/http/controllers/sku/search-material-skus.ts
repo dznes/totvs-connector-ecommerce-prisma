@@ -2,7 +2,10 @@ import { makeSearchMaterialSkusUseCase } from '@/use-cases/factories/skus/make-s
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
-export async function searchMaterials(request: FastifyRequest, reply: FastifyReply) {
+export async function searchMaterials(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const searchSkusQuerySchema = z.object({
     q: z.string(),
     page: z.coerce.number().min(1).default(1),

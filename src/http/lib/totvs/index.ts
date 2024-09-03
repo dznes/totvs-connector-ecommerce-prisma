@@ -430,7 +430,7 @@ export async function getProductPrices({
       },
     },
     option: {
-      branchCodeList: [1,2],
+      branchCodeList: [1, 2],
       prices: [
         {
           branchCode: 1,
@@ -680,9 +680,9 @@ export async function createRetailClient({
   phoneNumber,
   email,
 }: CreateUserRequest): Promise<RetailClients> {
-  const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`;
+  const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`
 
-  const headers = headerBuilder(token);
+  const headers = headerBuilder(token)
 
   const body = {
     branchInsertCode: 1,
@@ -695,7 +695,7 @@ export async function createRetailClient({
     isInactive: false,
     nationality,
     homeTown,
-    registrationStatus: "Normal",
+    registrationStatus: 'Normal',
     isBloqued: false,
     isCustomer: true,
     isSupplier: false,
@@ -703,23 +703,25 @@ export async function createRetailClient({
     isPurchasingGuide: false,
     isShippingCompany: false,
     isEmployee: false,
-    employeeStatus: "Ativo",
-    customerStatus: "Ativo",
-    addresses: [
-      {...address}
+    employeeStatus: 'Ativo',
+    customerStatus: 'Ativo',
+    addresses: [{ ...address }],
+    phones: [
+      {
+        typeCode: 1,
+        number: phoneNumber,
+        isDefault: true,
+      },
     ],
-    phones: [{
-      typeCode: 1,
-      number: phoneNumber,
-      isDefault: true,
-    }],
-    emails: [{
-      sequence: 1,
-			typeCode: 1,
-			typeName: "COMERCIAL",
-			email: email,
-			"isDefault": true
-    }]
+    emails: [
+      {
+        sequence: 1,
+        typeCode: 1,
+        typeName: 'COMERCIAL',
+        email,
+        isDefault: true,
+      },
+    ],
   }
 
   const { customerCode } = await fetch(url, {

@@ -11,7 +11,8 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     operationCode: z.string().optional().default(''),
   })
 
-  const { q, totvsStatus, operationCode, page, perPage } = searchOrdersQuerySchema.parse(request.query)
+  const { q, totvsStatus, operationCode, page, perPage } =
+    searchOrdersQuerySchema.parse(request.query)
 
   const searchOrdersUseCase = makeSearchOrderItemsUseCase()
 

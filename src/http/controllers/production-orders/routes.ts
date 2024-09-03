@@ -1,7 +1,6 @@
 // import { fetchToken, getProductionOrders } from '@/http/lib/totvs'
 // import { FastifyInstance } from 'fastify'
 
-
 // export async function ProductionOrderRoutes(app: FastifyInstance) {
 //   app.get('/production-order/backup', async(request, reply) => {
 //     try {
@@ -12,11 +11,11 @@
 //       let page = 1
 //       let isLastPage = false
 
-//       // const { items, hasNext } = await getProductionOrders({ 
-//       //   token: token.access_token, 
+//       // const { items, hasNext } = await getProductionOrders({
+//       //   token: token.access_token,
 //       //   page,
-//       //   pageSize, 
-//       //   daysStartFromToday, 
+//       //   pageSize,
+//       //   daysStartFromToday,
 //       //   daysEndFromToday,
 //       // })
 
@@ -24,14 +23,14 @@
 
 //       while (!isLastPage) {
 //         // Fetch the product prices from the API with the specified parameters
-//         const { items, hasNext } = await getProductionOrders({ 
-//           token: token.access_token, 
+//         const { items, hasNext } = await getProductionOrders({
+//           token: token.access_token,
 //           page,
-//           pageSize, 
-//           daysStartFromToday, 
+//           pageSize,
+//           daysStartFromToday,
 //           daysEndFromToday,
 //         })
-  
+
 //         // Upsert each SKU price into the database
 //         items.map(async (lines: any) => {
 //           if (lines.locations.length > 0 && lines.orderCode) {
@@ -101,7 +100,7 @@
 //               });
 //           }
 //         });
-  
+
 //         // Check if there are more pages to fetch
 //         if (!hasNext) {
 //           isLastPage = true
@@ -109,7 +108,6 @@
 //           page++
 //         }
 //       }
-
 
 //       return reply.status(200).send(JSON.stringify(productionOrderItems))
 //     } catch (err) {

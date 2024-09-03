@@ -1,4 +1,7 @@
-import { CategoriesRepository, CategoryWithProducts } from '@/repositories/categories-repository'
+import {
+  CategoriesRepository,
+  CategoryWithProducts,
+} from '@/repositories/categories-repository'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface GetCategoryBySlugUseCaseRequest {

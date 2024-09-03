@@ -26,17 +26,16 @@ export class AddProductsByCategoryTitleProductsUseCase {
     if (!checkCategoryExists) {
       throw new ResourceNotFoundError()
     }
-    
-    const title = checkCategoryExists.title.toUpperCase();
 
-    const products = await this.productsRepository.listByTitleProductsWithImageAndStock(
-        title,
-    )
+    const title = checkCategoryExists.title.toUpperCase()
+
+    const products =
+      await this.productsRepository.listByTitleProductsWithImageAndStock(title)
     if (!products) {
       throw new ResourceNotFoundError()
     }
-    
-    const productIds = products.map(product => product.id)
+
+    const productIds = products.map((product) => product.id)
 
     const category = await this.categoriesRepository.addProductsToCategory(
       categoryId,

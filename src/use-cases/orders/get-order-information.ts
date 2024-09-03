@@ -22,7 +22,7 @@ interface GetOrderInformationUseCaseRequest {
 // }
 
 interface GetOrderInformationUseCaseResponse {
-    order: Order
+  order: Order
 }
 
 export class GetOrderInformationUseCase {
