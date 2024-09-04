@@ -223,6 +223,9 @@ export class PrismaProductsRepository implements ProductsRepository {
           },
         },
       },
+      orderBy: {
+        created_at: 'desc',
+      },
       take: perPage,
       skip: (page - 1) * perPage,
     })
@@ -365,6 +368,9 @@ export class PrismaProductsRepository implements ProductsRepository {
           },
         },
       },
+      orderBy: {
+        created_at: 'desc',
+      },
       take: perPage,
       skip: (page - 1) * perPage,
     })
@@ -424,6 +430,9 @@ export class PrismaProductsRepository implements ProductsRepository {
             },
           },
         },
+      },
+      orderBy: {
+        created_at: 'desc',
       },
       take: perPage,
       skip: (page - 1) * perPage,

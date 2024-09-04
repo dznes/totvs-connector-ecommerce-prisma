@@ -35,6 +35,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
   - [ ] LIST orders with skus with query params.
   - [ ] CREATE and PUSH User in TOTVS.
   - [ ] CREATE and PUSH Order in TOTVS.
+  - [ ] BACKUP PRODUCT IMAGES THAT ARE BASE64 FROM TOTVS.
 
   #### FrontEnd End-Points 
     ##### PRODUCTS
