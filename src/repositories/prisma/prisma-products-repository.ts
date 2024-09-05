@@ -437,7 +437,6 @@ export class PrismaProductsRepository implements ProductsRepository {
       take: perPage,
       skip: (page - 1) * perPage,
     })
-    console.log(products)
     return products
   }
 
