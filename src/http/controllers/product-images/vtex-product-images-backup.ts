@@ -11,6 +11,7 @@ function extractImages(products: any[]): any[] {
         code: image.imageId,
         file_key: image.imageUrl,
         title: image.imageText,
+        color: sku.Cor[0],
         position: index,
       })),
     ),
@@ -60,6 +61,7 @@ export async function VtexProductImagesBackup(
             data: {
               code: image.code,
               title: image.title,
+              color: image.color,
               file_key: image.file_key,
               position: image.position,
               sku: {
@@ -77,6 +79,7 @@ export async function VtexProductImagesBackup(
             data: {
               code: image.code,
               title: image.title,
+              color: image.color,
               file_key: image.file_key,
               position: image.position,
               sku: {
