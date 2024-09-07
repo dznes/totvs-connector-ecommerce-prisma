@@ -219,7 +219,11 @@ export class PrismaProductsRepository implements ProductsRepository {
           include: {
             color: true,
             size: true,
-            product_images: true,
+            product_images: {
+              orderBy: {
+                position: 'desc', // Sorts the images in ascending order by position
+              },
+            },
           },
         },
       },
@@ -364,7 +368,11 @@ export class PrismaProductsRepository implements ProductsRepository {
           include: {
             color: true,
             size: true,
-            product_images: true,
+            product_images: {
+              orderBy: {
+                position: 'desc', // Sorts the images in ascending order by position
+              },
+            },
           },
         },
       },
@@ -425,7 +433,7 @@ export class PrismaProductsRepository implements ProductsRepository {
             size: true,
             product_images: {
               orderBy: {
-                position: 'asc', // Sorts the images in ascending order by position
+                position: 'desc', // Sorts the images in ascending order by position
               },
             },
           },
