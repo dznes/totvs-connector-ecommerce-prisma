@@ -12,6 +12,8 @@ const envSchema = z.object({
   totvs_url: z.string(),
   VTEX_API_AppKey: z.string(),
   VTEX_API_AppToken: z.string(),
+  PAGARME_PUBLIC_KEY: z.string(),
+  PAGARME_PRIVATE_KEY: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)
