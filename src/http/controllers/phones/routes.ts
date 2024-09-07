@@ -7,7 +7,7 @@ import { deletePhone } from './delete-phone'
 import { listByUserId } from './list-phones-by-user-id'
 import { checkoutCreate } from './create-phone-user-cookie'
 
-export async function phonesRoutes(app: FastifyInstance) {
+export async function PhonesRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJwt)
   app.post('/api/phone', create)
   app.post(
