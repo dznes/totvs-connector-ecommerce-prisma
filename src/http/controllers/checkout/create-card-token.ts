@@ -1,4 +1,4 @@
-import { CreateCardToken } from '@/http/lib/pagarme'
+import { createCardToken } from '@/http/lib/pagarme'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 
@@ -18,8 +18,8 @@ export async function createCardCheckout(request: FastifyRequest, reply: Fastify
 
   try {
 
-    const cardToken = await CreateCardToken({ type, card })
-    return reply.status(201).send({ cardToken })
+    const { id, created_at, expires_at } = await createCardToken({ type, card })
+    return reply.status(201).send({ token:id , created_at, expires_at })
 
   } catch (err) {
 
