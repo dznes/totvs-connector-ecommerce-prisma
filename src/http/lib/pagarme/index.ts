@@ -55,11 +55,9 @@ export async function createOrderPayment({ customer, shipping, payments, items }
 
     if (response.ok) {
         const jsonResponse = await response.json()
-        console.log(jsonResponse)
-        return { jsonResponse }
+        return jsonResponse
     } else {
         const error = await response.json()
-        console.log(error)
         return { error }
     }
 }
