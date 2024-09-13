@@ -2,8 +2,8 @@ import { PrismaOrdersRepository } from '@/repositories/prisma/prisma-orders-repo
 import { ListOrdersUseCase } from '../../orders/list-orders'
 
 export function makeListOrdersUseCase() {
-  const categoryRepository = new PrismaOrdersRepository()
-  const listOrdersUseCase = new ListOrdersUseCase(categoryRepository)
+  const ordersRepository = new PrismaOrdersRepository()
+  const listOrdersUseCase = new ListOrdersUseCase(ordersRepository)
 
   return listOrdersUseCase
 }

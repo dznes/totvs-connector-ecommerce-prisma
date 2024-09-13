@@ -1,5 +1,10 @@
 import { Prisma, Order } from '@prisma/client'
 
+export interface SalesByDay {
+  date: string; // The formatted date (YYYY-MM-DD)
+  [operationCode: string]: number | string; // Operation codes with their corresponding total values or other string properties
+}
+
 export interface OrdersRepository {
   findById(id: string): Promise<Order | null>
   findByCode(code: string): Promise<Order | null>
@@ -21,4 +26,8 @@ export interface OrdersRepository {
   ): Promise<number>
   update(order: Order): Promise<void>
   delete(order: Order): Promise<void>
+
+  // Dashboard queries
+
+  getSalesByDayAndOperationCode(startDate: Date, endDate: Date): Promise<SalesByDay[]>
 }
