@@ -12,8 +12,8 @@ const getDefaultStartDate = () => {
 
 export async function getSalesByDay(request: FastifyRequest, reply: FastifyReply) {
   const getSalesByDayQuerySchema = z.object({
-    startDate: z.date().default(getDefaultStartDate), // Default to 30 days ago
-    endDate: z.date().default(new Date())  // Default to today
+    startDate: z.date().optional().default(getDefaultStartDate), // Default to 30 days ago
+    endDate: z.date().optional().default(new Date())  // Default to today
   })
 
   const { startDate, endDate } =
