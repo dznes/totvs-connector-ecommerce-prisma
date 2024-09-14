@@ -1,7 +1,6 @@
 import { OrdersRepository, SalesByDayAndOperationCode } from '@/repositories/orders-repository'
 import { Decimal } from '@prisma/client/runtime/library';
 
-
 interface SalesByDate {
   date: string;
   [operationCode: string]: number | string;
@@ -22,8 +21,11 @@ export class GetSalesByDayUseCase {
   async execute({ startDate, endDate }: GetSalesByDayUseCaseRequest): Promise<GetSalesByDayUseCaseResponse> {
     const orders = await this.ordersRepository.getSalesByDayAndOperationCode(startDate, endDate)
 
-        // Get a unique list of all operation codes that exist in the period
+    // Get a unique list of all operation codes that exist in the period
     const operationCodes = [...new Set(orders.map(order => order.operation_code))];
+
+    // Initialize a variable to store the total sum of all total_value
+    let total = 0;
 
     // Format the result into the desired structure
     const formattedOrders = orders.reduce<Record<string, SalesByDate>>((acc, order) => {
@@ -33,7 +35,7 @@ export class GetSalesByDayUseCase {
         // Initialize the date object if it doesn't exist
         if (!acc[date]) {
           acc[date] = { date };
-          
+
           // Initialize all operation codes with 0 for the date
           operationCodes.forEach(code => {
             if (code) acc[date][code] = 0;
@@ -43,12 +45,20 @@ export class GetSalesByDayUseCase {
         // Ensure operation_code is not null, then add the sales value
         if (order.operation_code) {
           const totalValue = (order._sum.total_value as Decimal).toNumber(); // Convert Decimal to number
-          acc[date][order.operation_code] = totalValue;
+
+          // Sum the sales value instead of overwriting it
+          acc[date][order.operation_code] = (acc[date][order.operation_code] as number) + totalValue;
+
+          // Add the totalValue to the total sum
+          total += totalValue;
         }
       }
 
       return acc;
     }, {});
+
+    // Log the total to the console
+    console.log('Total sales value:', total);
 
     // Convert the object into an array of objects
     const result = Object.values(formattedOrders);
