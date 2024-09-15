@@ -194,6 +194,9 @@ export class PrismaOrdersRepository implements OrdersRepository {
           gte: startDate,
           lte: endDate,
         },
+        totvs_order_status: {
+          in: ['PartiallyAnswered', 'Attended'], // Only include orders with specific totvs_order_status values
+        },
       },
       _sum: {
         total_value: true,
