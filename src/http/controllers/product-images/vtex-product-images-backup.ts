@@ -68,25 +68,22 @@ export async function VtexProductImagesBackup(
           continue; // Skip this image if the sku_code is invalid
         }
 
-        const imageData = {
-          code: image.code,
-          title: image.title,
-          color: image.color ?? null, // Ensure nullability for color
-          file_key: image.file_key,
-          position: image.position ?? null, // Ensure nullability for position
-          updated_at: new Date(),
-          slug: productImageExists?.slug ?? null,
-          content_type: productImageExists?.content_type ?? null,
-          sku: {
-            connect: {
-              code: image.sku_code,
-            },
-          },
-        };
-
         if (productImageExists) {
           await prisma.productImage.update({
-            data: imageData,
+            data: {
+              title: image.title,
+              color: image.color ?? null,
+              file_key: image.file_key,
+              position: image.position ?? null,
+              updated_at: new Date(),
+              slug: productImageExists?.slug ?? null,
+              content_type: productImageExists?.content_type ?? null,
+              sku: {
+                connect: {
+                  code: image.sku_code,
+                },
+              },
+            },
             where: {
               code: image.code,
             },
