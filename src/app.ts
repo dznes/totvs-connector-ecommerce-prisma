@@ -19,6 +19,7 @@ import { PhonesRoutes } from './http/controllers/phones/routes'
 import { CheckoutRoutes } from './http/controllers/checkout/routes'
 import { DashboardRoutes } from './http/controllers/dashboards/routes'
 import { CorreiosRoutes } from './http/controllers/correios/routes'
+import { ClassificationsRoutes } from './http/controllers/classifications/routes'
 // import { ProductionOrderRoutes } from './http/controllers/production-orders/routes'
 
 export const app = fastify()
@@ -54,6 +55,7 @@ app.register(ProductImagesRoutes)
 app.register(SizesRoutes)
 app.register(OrderItemsRoutes)
 app.register(CategoriesRoutes)
+app.register(ClassificationsRoutes)
 // app.register(ProductionOrderRoutes)
 app.register(CheckoutRoutes)
 app.register(DashboardRoutes)
