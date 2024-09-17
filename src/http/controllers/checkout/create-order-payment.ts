@@ -52,7 +52,7 @@ export async function orderPayment(request: FastifyRequest, reply: FastifyReply)
         ]),
         credit_card: z
           .object({
-            recurrence: z.boolean(),
+            recurrence: z.boolean().optional().default(false),
             installments: z.number(),
             statement_descriptor: z.string(),
             card_token: z.string().optional(),

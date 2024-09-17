@@ -61,9 +61,13 @@ export async function VtexProductImagesBackup(
             data: {
               code: image.code,
               title: image.title,
-              color: image.color,
+              color: image.color ?? null,
               file_key: image.file_key,
               position: image.position,
+              created_at: productImageExists.created_at,
+              updated_at: new Date(),
+              slug: productImageExists.slug ?? null,
+              content_type: productImageExists.content_type ?? null,
               sku: {
                 connect: {
                   code: image.sku_code,
