@@ -108,7 +108,7 @@ export async function VtexProductImagesBackup(
           })
         }
       } catch (error) {
-        console.error(`Error processing image with code ${image.code}:`, error)
+        console.error(`Error processing image with code ${image.code}:`, JSON.stringify(error, null, 2))
       }
     }
 
