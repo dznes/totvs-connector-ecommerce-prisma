@@ -56,24 +56,37 @@ export async function VtexProductImagesBackup(
           },
         })
 
+        // Ensure that the sku_code exists in the related Sku table
+        const skuExists = await prisma.sku.findUnique({
+          where: {
+            code: image.sku_code,
+          },
+        });
+
+        if (!skuExists) {
+          console.error(`SKU with code ${image.sku_code} not found`);
+          continue; // Skip this image if the sku_code is invalid
+        }
+
+        const imageData = {
+          code: image.code,
+          title: image.title,
+          color: image.color ?? null, // Ensure nullability for color
+          file_key: image.file_key,
+          position: image.position ?? null, // Ensure nullability for position
+          updated_at: new Date(),
+          slug: productImageExists?.slug ?? null,
+          content_type: productImageExists?.content_type ?? null,
+          sku: {
+            connect: {
+              code: image.sku_code,
+            },
+          },
+        };
+
         if (productImageExists) {
           await prisma.productImage.update({
-            data: {
-              code: image.code,
-              title: image.title,
-              color: image.color ?? null,
-              file_key: image.file_key,
-              position: image.position,
-              created_at: productImageExists.created_at,
-              updated_at: new Date(),
-              slug: productImageExists.slug ?? null,
-              content_type: productImageExists.content_type ?? null,
-              sku: {
-                connect: {
-                  code: image.sku_code,
-                },
-              },
-            },
+            data: imageData,
             where: {
               code: image.code,
             },
