@@ -8,7 +8,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     code: z.string().optional(),
     type_code: z.string(),
     type_name: z.string(),
-    status: z.number(),
+    status: z.number().optional().default(200),
     title: z.string(),
     slug: z.string().optional(),
   })

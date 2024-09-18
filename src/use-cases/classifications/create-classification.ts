@@ -29,17 +29,21 @@ export class CreateClassificationUseCase {
     title,
     slug,
   }: CreateClassificationUseCaseRequest): Promise<CreateClassificationUseCaseResponse> {
-    const classificationWithSameTitle =
-      await this.classificationsRepository.findByTitle(title)
+    if (!code) {
+      code = randomUUID()
+    }
 
-    if (classificationWithSameTitle) {
+    const classificationWithSameCode =
+      await this.classificationsRepository.findByCode(code)
+
+    if (classificationWithSameCode) {
       throw new ResourceAlreadyExistsError()
     }
 
     const systemSlug = Slug.createFromText(title).value
 
     const classification = await this.classificationsRepository.create({
-      code: code ?? randomUUID(),
+      code,
       type_code,
       type_name,
       status,

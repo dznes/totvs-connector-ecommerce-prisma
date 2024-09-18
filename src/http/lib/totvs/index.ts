@@ -7,6 +7,7 @@ import { SkuAvailableStock } from './interfaces/sku-available-stock'
 import { ProductionOrder } from './interfaces/sku-production-order'
 import { Order } from './interfaces/orders'
 import { CreateUserRequest, User } from './interfaces/user-info'
+import { Classification } from './interfaces/classifications'
 
 interface TotvsProps {
   token: string
@@ -53,6 +54,13 @@ interface ProductBalanceList extends TotvsResponse {
 }
 interface RetailClients extends TotvsResponse {
   items: User[]
+}
+interface ClassificationsList extends TotvsResponse {
+  items: Classification[]
+}
+interface GetClassificationsProps {
+  token: string
+  typeCodeList?: number[]
 }
 
 // TOTVS Base URL
@@ -661,6 +669,26 @@ export async function getWholesaleClients({
     method: 'POST',
     headers,
     body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return data
+}
+
+export async function getClassifications({
+  token,
+  typeCodeList,
+}: GetClassificationsProps): Promise<ClassificationsList> {
+  const typeCodeParams = typeCodeList?.length
+    ? typeCodeList.map((typeCode) => `TypeCodeList=${typeCode}`).join('&')
+    : '';
+
+  const url = `${totvs_url}/api/totvsmoda/product/v2/classifications${typeCodeParams ? `?${typeCodeParams}` : ''}`;
+
+  const headers = headerBuilder(token)
+
+  const data = await fetch(url, {
+    method: 'GET',
+    headers,
   }).then((response) => response.json())
 
   return data

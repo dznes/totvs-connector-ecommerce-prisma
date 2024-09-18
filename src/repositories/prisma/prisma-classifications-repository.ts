@@ -13,14 +13,15 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
     return classification
   }
 
-  async findByTitle(title: string) {
+  async findByCode(code: string) {
     const classification = await prisma.classification.findUnique({
       where: {
-        title,
+        code,
       },
     })
     return classification
   }
+
 
   async findBySlug(slug: string) {
     const classification = await prisma.classification.findUnique({

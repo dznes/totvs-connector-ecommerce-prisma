@@ -6,8 +6,11 @@ import { listClassifications } from './list-classifications'
 import { deleteClassification } from './delete-classification'
 import { search } from './search-classifications'
 import { getBySlug } from './get-classification-by-slug'
+import { upsertTotvsClassifications } from './totvs-classification-backup'
 
 export async function ClassificationsRoutes(app: FastifyInstance) {
+  app.post('/api/classifications/totvs/backup', upsertTotvsClassifications)
+  
   app.post('/api/classifications', create)
   app.get('/api/classifications/:slug', getBySlug)
   app.post('/api/classifications/add-products/:id', addClassificationProducts)

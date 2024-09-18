@@ -6,7 +6,7 @@ export interface ClassificationWithProducts extends Classification {
 
 export interface ClassificationsRepository {
   findById(id: number): Promise<Classification | null>
-  findByTitle(title: string): Promise<Classification | null>
+  findByCode(code: string): Promise<Classification | null>
   findBySlug(slug: string): Promise<ClassificationWithProducts | null>
   create(data: Prisma.ClassificationCreateInput): Promise<Classification>
   addProductsToClassification(
