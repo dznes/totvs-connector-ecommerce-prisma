@@ -57,8 +57,6 @@ export class AddClassificationBySkuCodesProductsUseCase {
         .map((product) => product.id as number)
     ))
 
-    console.log(JSON.stringify(existingProductIds))
-
     const classification = await this.classificationsRepository.addProductsToClassification(
       classificationId,
       existingProductIds,

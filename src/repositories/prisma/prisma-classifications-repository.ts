@@ -24,6 +24,7 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
     })
     return classification
   }
+
   async findBySlug(slug: string) {
     const classification = await prisma.classification.findUnique({
       where: {
