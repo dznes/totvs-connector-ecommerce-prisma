@@ -164,7 +164,7 @@ model Category {
 
 model Classification {
   id         Int       @id @default(autoincrement())
-  code       String    @unique
+  code       String
   type_code  String
   type_name  String
   status     Int       @default(200)
@@ -176,6 +176,7 @@ model Classification {
   products Product[]
   skus     Sku[]
 
+  @@unique([code, type_code])
   @@map("classifications")
 }
 

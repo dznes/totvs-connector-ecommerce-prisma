@@ -24,16 +24,13 @@ export class UpsertClassificationUseCase {
     slug,
   }: UpsertClassificationUseCaseRequest) {
 
-    const classification = await this.classificationsRepository.findByCode(code)
+    const classification = await this.classificationsRepository.findByCodeAndTypeCode(code, type_code)
 
     if (classification) {
-      classification.title = title
-      classification.slug = Slug.createFromText(title + code).value
       await this.classificationsRepository.update({
         ...classification,
-        code,
         status: status || classification.status,
-        title,
+        title: title || classification.title,
         slug: Slug.createFromText(title + code).value,
         type_code: type_code || classification.type_code,
         type_name: type_name || classification.type_name,

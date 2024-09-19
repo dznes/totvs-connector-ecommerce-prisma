@@ -67,6 +67,19 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product
   }
 
+  async findBySkuCode(skuCode: string) {
+    const product = await prisma.product.findFirst({
+      where: {
+        skus: {
+          some: {
+            code: skuCode,
+          },
+        },
+      },
+    })
+    return product
+  }
+
   // async searchMany(query: string, page: number, perPage: number) {
   //   const products = await prisma.product.findMany({
   //     where: {

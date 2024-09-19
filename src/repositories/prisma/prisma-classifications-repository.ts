@@ -13,16 +13,17 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
     return classification
   }
 
-  async findByCode(code: string) {
+  async findByCodeAndTypeCode(code: string, type_code: string) {
     const classification = await prisma.classification.findUnique({
       where: {
-        code,
+        code_type_code: {  // Composite key lookup
+          code,
+          type_code,
+        },
       },
     })
     return classification
   }
-
-
   async findBySlug(slug: string) {
     const classification = await prisma.classification.findUnique({
       where: {
@@ -118,6 +119,24 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
       },
     })
     return classification
+  }
+
+  async listByTypeCode(typeCode: string) {
+    const classifications = await prisma.classification.findMany({
+      where: {
+        OR: [
+          {
+            type_code: {
+              contains: typeCode,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        code: 'desc',
+      },
+    })
+    return classifications
   }
 
   async update(classification: Classification) {

@@ -13,6 +13,7 @@ export interface ProductsRepository {
   findById(id: number): Promise<ProductWithSkuAndVariants | null>
   findByTitle(title: string): Promise<Product | null>
   findBySlug(slug: string): Promise<ProductWithSkuAndVariants | null>
+  findBySkuCode(skuCode: string): Promise<Product | null>
   searchMany(
     query: string,
     productCode: string,

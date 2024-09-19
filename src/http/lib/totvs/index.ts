@@ -694,6 +694,82 @@ export async function getClassifications({
   return data
 }
 
+interface GetProductCodesByClassificationProps extends TotvsProps {
+  classificationTypeCode: number
+  classificationCode: string
+}
+interface GetProductCodesByClassificationResponse extends TotvsResponse{
+  items: {
+    productCode: number
+    maxChangeFilterDate: Date
+  }[]
+}
+export async function getProductCodesByClassification({
+  token,
+  page,
+  pageSize,
+  daysStartFromToday,
+  daysEndFromToday,
+  classificationTypeCode,
+  classificationCode,
+}: GetProductCodesByClassificationProps): Promise<GetProductCodesByClassificationResponse> {
+  const currentDate = new Date()
+  const daysStart = daysStartFromToday ?? 1080
+  const daysEnd = daysEndFromToday ?? 0
+
+  const startDate = new Date(currentDate.getTime())
+  startDate.setDate(currentDate.getDate() - daysStart)
+
+  const endDate = new Date(currentDate.getTime())
+  endDate.setDate(currentDate.getDate() - daysEnd)
+
+  const formattedStartDate = formatISODateWithMillis(startDate)
+  const formattedEndDate = formatISODateWithMillis(endDate)
+
+  const url = `${totvs_url}/api/totvsmoda/product/v2/product-codes/search`
+
+  const headers = headerBuilder(token)
+
+  const body = {
+    filter: {
+      change: {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        inProduct: true,
+        inBranchInfo: true,
+        branchInfoCodeList: [1, 2],
+        inCost: true,
+        branchCostCodeList: [1, 2],
+        costCodeList: [2],
+        inPrice: true,
+        inDigitalPromotionPrice: true,
+        branchPriceCodeList: [1, 2],
+        priceCodeList: [1, 2],
+      },
+    },
+    classifications: [
+      {
+        type: classificationTypeCode,
+        codeList: [classificationCode],
+      }
+    ],
+    option: {
+      branchInfoCode: 1,
+    },
+    page,
+    pageSize: pageSize ?? 100000,
+    order: 'productCode',
+  }
+  const data = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return data
+}
+
+
 // CREATION ROUTE FUNCTIONS
 export async function createRetailClient({
   token,
