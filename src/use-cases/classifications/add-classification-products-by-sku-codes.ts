@@ -29,14 +29,22 @@ export class AddClassificationBySkuCodesProductsUseCase {
       throw new ResourceNotFoundError()
     }
 
-    // Assuming productIds is an array of numbers, each representing a productId
+    // // Assuming productIds is an array of numbers, each representing a productId
+    // const checkProductsExistPromises = skuCodes.map((skuCode) =>
+    //   this.productsRepository
+    //     .findBySkuCode(skuCode.toString())
+    //     .then((result) => ({ id: result?.id, exists: result != null })),
+    // )
+
     const checkProductsExistPromises = skuCodes.map((skuCode) =>
       this.productsRepository
         .findBySkuCode(skuCode.toString())
-        .then((result) => ({ id: result?.id, exists: result != null })),
-    )
-
-    console.log(skuCodes)
+        .then((result) => ({ id: result?.id, exists: result != null }))
+        .catch((error) => {
+          console.error(`Error checking SKU: ${skuCode}`, error);
+          return { id: null, exists: false };
+        })
+    );
 
     // This will return an array of objects with productId and exists properties
     const productsExistence = await Promise.all(checkProductsExistPromises)
@@ -49,7 +57,7 @@ export class AddClassificationBySkuCodesProductsUseCase {
         .map((product) => product.id as number)
     ))
 
-    console.log('existingProductIds', existingProductIds)
+    console.log(JSON.stringify(existingProductIds))
 
     const classification = await this.classificationsRepository.addProductsToClassification(
       classificationId,

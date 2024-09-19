@@ -36,15 +36,12 @@ export async function linkProductsByClassificationTypeCode(
           classificationCode: classification.code
         })
 
-
         const skuCodes = items.map((item) => item.productCode)
-        console.log(skuCodes)
 
-
-        // await addClassificationProductsBySkuCodesUseCase.execute({
-        //   classificationId: classification.id,
-        //   skuCodes,
-        // })
+        await addClassificationProductsBySkuCodesUseCase.execute({
+          classificationId: classification.id,
+          skuCodes,
+        })
         
       //   // Check if there are more pages to fetch
       //   if (!hasNext) {

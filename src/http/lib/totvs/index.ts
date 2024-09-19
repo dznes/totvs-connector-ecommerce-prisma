@@ -737,22 +737,17 @@ export async function getProductCodesByClassification({
         endDate: formattedEndDate,
         inProduct: true,
         inBranchInfo: true,
-        branchInfoCodeList: [1, 2],
-        inCost: true,
-        branchCostCodeList: [1, 2],
-        costCodeList: [2],
-        inPrice: true,
-        inDigitalPromotionPrice: true,
-        branchPriceCodeList: [1, 2],
-        priceCodeList: [1, 2],
+        branchInfoCodeList: [
+          1,2
+        ]
       },
+      classifications: [
+        {
+          type: classificationTypeCode,
+          codeList: [classificationCode],
+        }
+      ],
     },
-    classifications: [
-      {
-        type: classificationTypeCode,
-        codeList: [classificationCode],
-      }
-    ],
     option: {
       branchInfoCode: 1,
     },
@@ -760,6 +755,7 @@ export async function getProductCodesByClassification({
     pageSize: pageSize ?? 100000,
     order: 'productCode',
   }
+
   const data = await fetch(url, {
     method: 'POST',
     headers,
