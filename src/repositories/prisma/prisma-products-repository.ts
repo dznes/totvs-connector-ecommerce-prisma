@@ -496,6 +496,16 @@ export class PrismaProductsRepository implements ProductsRepository {
               },
             ],
           },
+          // Ensure that at least one SKU has at least one product_image linked
+          {
+            skus: {
+              some: {
+                product_images: {
+                  some: {}, // This ensures there's at least one image
+                },
+              },
+            },
+          },
         ],
       },
       include: {
