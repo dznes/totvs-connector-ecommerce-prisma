@@ -34,6 +34,12 @@ export interface ProductsRepository {
     page: number,
     perPage: number,
   ): Promise<ProductWithSkuAndVariants[]>
+  searchProductsByClassificationId(
+    classificationId: number,
+    query: string,
+    page: number,
+    perPage: number,
+  ): Promise<ProductWithSkuAndVariants[]>
   listRecentProducts(): Promise<Product[] | null>
   listByTitleProductsWithImageAndStock(title: string): Promise<Product[] | null>
   count(
@@ -47,6 +53,7 @@ export interface ProductsRepository {
     integrationCode: string,
   ): Promise<number>
   countProductsByCategoryId(categoryId: number): Promise<number>
+  countProductsByClassificationId(classificationId: number): Promise<number>
   create(data: Prisma.ProductCreateInput): Promise<Product>
   updateInfo(product: Product): Promise<void>
   delete(product: Product): Promise<void>

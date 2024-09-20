@@ -461,6 +461,68 @@ export class PrismaProductsRepository implements ProductsRepository {
     return products
   }
 
+  async searchProductsByClassificationId(
+    classificationId: number,
+    query: string,
+    page: number,
+    perPage: number,
+  ) {
+    const products = await prisma.product.findMany({
+      where: {
+        AND: [
+          {
+            classifications: {
+              some: {
+                id: classificationId,
+              },
+            },
+          },
+          {
+            OR: [
+              {
+                title: {
+                  contains: query,
+                },
+              },
+              {
+                slug: {
+                  contains: query,
+                },
+              },
+              {
+                reference_id: {
+                  contains: query,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      include: {
+        skus: {
+          where: {
+            is_active: true,
+          },
+          include: {
+            color: true,
+            size: true,
+            product_images: {
+              orderBy: {
+                position: 'asc', // Sorts the images in ascending order by position
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+      take: perPage,
+      skip: (page - 1) * perPage,
+    })
+    return products
+  }
+
   async listRecentProducts() {
     const product = await prisma.product.findMany({
       orderBy: {
@@ -619,6 +681,19 @@ export class PrismaProductsRepository implements ProductsRepository {
         categories: {
           some: {
             id: categoryId,
+          },
+        },
+      },
+    })
+    return count
+  }
+
+  async countProductsByClassificationId(classificationId: number) {
+    const count = prisma.product.count({
+      where: {
+        classifications: {
+          some: {
+            id: classificationId,
           },
         },
       },
