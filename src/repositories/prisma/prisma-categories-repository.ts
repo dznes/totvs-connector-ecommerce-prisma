@@ -32,7 +32,11 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
           include: {
             skus: {
               include: {
-                product_images: true,
+                product_images: {
+                  orderBy: {
+                    position: 'asc', // Sorts the images in ascending order by position
+                  },
+                },
               },
             },
           },
