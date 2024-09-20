@@ -33,25 +33,25 @@ export interface Payment {
     boleto?: {
       bank: string
       instructions: string
-      due_at: Date
+      due_at: string
       nosso_numero: string
       type: string
       document_number: string
-      interest: {
+      interest?: {
         days: number
         type: string
         amount: string // in percentage or cents
       }
-      fine: {
+      fine?: {
         days: number
         type: string
-        amount: string // in percentage or cents
+        amount: number // in percentage or cents
       }
     }
     pix?: {
       expires_in?: number
       expires_at?: Date // expires_at is required if expires_in is not provided
-      additional_information: {
+      additional_information?: {
         name: string
         value: string
       }

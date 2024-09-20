@@ -76,7 +76,7 @@ export async function orderPayment(request: FastifyRequest, reply: FastifyReply)
           .object({
             bank: z.string(),
             instructions: z.string(),
-            due_at: z.date(),
+            due_at: z.string(),
             nosso_numero: z.string(),
             type: z.string(),
             document_number: z.string(),
@@ -84,34 +84,36 @@ export async function orderPayment(request: FastifyRequest, reply: FastifyReply)
               days: z.number(),
               type: z.string(),
               amount: z.string(),
-            }),
+            }).optional(),
             fine: z.object({
               days: z.number(),
               type: z.string(),
-              amount: z.string(),
-            }),
+              amount: z.number(),
+            }).optional(),
           })
           .optional(),
-        pix: z
-          .union([
-            z.object({
-              expires_in: z.number(),
-              expires_at: z.never(),
-              additional_information: z.object({
+        pix:z
+        .union([
+          z.object({
+            expires_in: z.number(),
+            additional_information: z
+              .object({
                 name: z.string(),
                 value: z.string(),
-              }),
-            }),
-            z.object({
-              expires_in: z.never(),
-              expires_at: z.date(),
-              additional_information: z.object({
+              })
+              .optional(),
+          }),
+          z.object({
+            expires_at: z.date(),
+            additional_information: z
+              .object({
                 name: z.string(),
                 value: z.string(),
-              }),
-            }),
-          ])
-          .optional(),
+              })
+              .optional(),
+          }),
+        ])
+        .optional(),
         amount: z.number().optional(),
         split: z
           .array(
