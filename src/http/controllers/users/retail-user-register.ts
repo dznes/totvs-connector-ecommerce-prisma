@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { createRetailClient, fetchToken } from '@/http/lib/totvs'
+import { createRetailClient, fetchTestEnvToken } from '@/http/lib/totvs'
 import { makeRegisterTotvsUserUseCase } from '@/use-cases/factories/users/make-register-totvs-user-use-case'
 
 export async function registerTotvsUser(
@@ -9,19 +9,16 @@ export async function registerTotvsUser(
   reply: FastifyReply,
 ) {
   const addressSchema = z.object({
-    sequenceCode: z.number(),
+    sequence: z.number().optional(),
     addressType: z.string(),
-    publicPlace: z.string(),
+    publicPlace: z.string().optional(),
     address: z.string(),
     number: z.number(),
     complement: z.string().optional(),
     neighborhood: z.string(),
-    ibgeCityCode: z.number(),
     cityName: z.string(),
     stateAbbreviation: z.string(),
     cep: z.string(),
-    bcbCountryCode: z.number(),
-    countryName: z.string(),
   })
 
   const registerBodySchema = z.object({
@@ -56,7 +53,7 @@ export async function registerTotvsUser(
 
   try {
     // Fetch the authentication token
-    const token = await fetchToken()
+    const token = await fetchTestEnvToken()
     const registerTotvsUserUseCase = makeRegisterTotvsUserUseCase()
 
     const customerCode = await createRetailClient({
@@ -74,7 +71,7 @@ export async function registerTotvsUser(
       email,
     })
 
-    await registerTotvsUserUseCase.execute({
+    const { user } = await registerTotvsUserUseCase.execute({
       code: customerCode.toString(),
       name,
       email,
@@ -87,6 +84,9 @@ export async function registerTotvsUser(
       gender,
       password,
     })
+
+    return { user }
+
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: err.message })

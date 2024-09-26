@@ -55,17 +55,18 @@ export interface User {
 }
 
 export interface CreateUserAddress {
+  cep: string
+  sequence?: number
   addressType: string
   address: string
   number: number
   complement?: string | null
   neighborhood: string | null
-  ibgeCityCode: number
-  cityName: string
-  stateAbbreviation: string
-  cep: string
-  bcbCountryCode: number
-  countryName: string
+  ibgeCityCode?: number
+  cityName?: string
+  stateAbbreviation?: string
+  bcbCountryCode?: number
+  countryName?: string
 }
 
 export interface CreateUserRequest {

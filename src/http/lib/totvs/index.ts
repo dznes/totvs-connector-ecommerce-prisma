@@ -65,7 +65,7 @@ interface GetClassificationsProps {
 
 // TOTVS Base URL
 const totvs_url = env.totvs_url
-const totvs_test_url = process.env.TOTVS_TEST_URL
+const totvs_test_url = process.env.totvs_test_url
 
 // HELPER FUNCTIONS
 /**
@@ -105,6 +105,29 @@ export async function fetchToken(): Promise<Token> {
     client_secret: env.client_secret,
     username: env.username,
     password: env.password,
+  }
+
+  const { access_token, token_type, expires_in, refresh_token }: Token =
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(body).toString(),
+    }).then((response) => response.json())
+
+  return { access_token, token_type, expires_in, refresh_token }
+}
+
+export async function fetchTestEnvToken(): Promise<Token> {
+  const url = `${totvs_test_url}/api/totvsmoda/authorization/v2/token`
+
+  const body = {
+    grant_type: 'password',
+    client_id: process.env.test_client_id ?? '',
+    client_secret: process.env.test_client_secret ?? '',
+    username: process.env.test_username ?? '',
+    password: process.env.test_password ?? '',
   }
 
   const { access_token, token_type, expires_in, refresh_token }: Token =
@@ -831,4 +854,83 @@ export async function createRetailClient({
   }).then((response) => response.json())
 
   return customerCode
+}
+
+export async function createOrder({
+  token,
+  order,
+  client,
+  payment,
+  shipping,
+}: any): Promise<any> {
+  // const url = `${totvs_url}/api/totvsmoda/sales-order/v2/b2c-orders`
+  // URL DE TREINO TROCAR APÓS TESTES
+  const url = `${totvs_test_url}/api/totvsmoda/sales-order/v2/b2c-orders`
+
+  const headers = headerBuilder(token)
+  const body = {
+    "orderId": order.id,
+    "branchCode": 1,
+    "customerOrderCode": order.id,
+    "integrationCode": order.id,
+    "orderDate": order.created_at,
+    "customerCode": client.code,
+    "representativeCode": 100000008,
+    "sellerCode": 50,
+    "operationCode": order.operationCode,
+    "paymentConditionCode": 1,
+    "paymentBaseDate": payment.created_at,
+    "priorityCode": 99,
+    "arrivalDate": "2024-09-04T13:36:45.040Z",
+    "shippingCompanyCode": 64,
+    "billingForecastDate": payment.created_at,
+    "freightType": 1,
+    "freightValue": order.freight_value,
+    "statusOrder": "Blocked",
+    "shippingService": "03220",
+    "experienceType": "Ecommerce",
+    "totalAmountOrder": order.total_value,
+    "items": order.items,
+    "classifications": [
+      {
+        "classificationTypeCode": 1,
+        "classificationCode": "02"
+      }
+    ],
+    "payments": [
+      {
+        "documentType": "InvoiceMarketplace",
+        "nsu": payment.nsu,
+        "authorizationCode": payment.authorization_code,
+        "creditCardOperator": payment.card_brand,
+        "creditCardBrand": payment.card_brand,
+        "assignorCode": 1,
+        "installment": payment.installments,
+        "paymentValue": order.total_value,
+        "currentAccountCode": 1,
+        "paymentType": "Normal",
+        "paymentBranch": 1
+      }
+    ],
+    "observations": [
+      {
+        "observation": "SEM BRINDE"
+      }
+    ],
+    "shippingAddress": {
+      "cep": shipping.zip_code,
+      "address": shipping.street,
+      "number": shipping.number,
+      "complement": shipping.complement
+    }
+  }
+  
+  const data = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+  .then((response) => response.json())
+
+  return data
 }

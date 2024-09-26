@@ -51,13 +51,14 @@ export async function createOrderPayment({ customer, shipping, payments, items }
             Authorization: `Basic ${Buffer.from(`${app_sk}:`).toString('base64')}`,
         },
         body: JSON.stringify({ customer, shipping, payments, items }),
-      })
+    })
 
     if (response.ok) {
         const jsonResponse = await response.json()
         return jsonResponse
     } else {
         const error = await response.json()
+        console.log(error)
         return { error }
     }
 }

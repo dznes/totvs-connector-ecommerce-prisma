@@ -18,11 +18,11 @@ export interface Payment {
       statement_descriptor: string
       card_token?: string
       card?: {
-        number: string
-        holder_name: string
-        cvv: string
+        number?: string
+        holder_name?: string
+        cvv?: string
         billing_address: {
-          street: string
+          line_1: string
           zip_code: string
           city: string
           state: string

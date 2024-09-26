@@ -33,8 +33,8 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
   - [ ] LIST clients with query params.
   - [X] LIST orders with query params.
   - [ ] LIST orders with skus with query params.
-  - [ ] CREATE and PUSH User in TOTVS.
-  - [ ] CREATE and PUSH Order in TOTVS.
+  - [X] CREATE and PUSH User in TOTVS.
+  - [X] CREATE and PUSH Order in TOTVS.
   - [ ] BACKUP PRODUCT IMAGES THAT ARE BASE64 FROM TOTVS.
 
   #### FrontEnd End-Points 
@@ -58,7 +58,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
     ##### ORDERS
     - [X] GET order information by order ID.
     - [X] LIST orders using query params and pagination.
-    - [ ] CREATE order.
+    - [X] CREATE order.
     - [ ] UPDATE order specific informations.
     - [ ] UPDATE order status with webhooks.
 
@@ -73,8 +73,8 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
 - [X] Add clients backup.
 - [X] Add orders backup.
 - [X] Add orders with skus backup.
-- [ ] Create client and push it into TOTVS MODA API.
-- [ ] Create order and push it into TOTVS MODA API.
+- [X] Create client and push it into TOTVS MODA API.
+- [X] Create order and push it into TOTVS MODA API.
 - [X] Add JWT and role-based authentication to access private routes.
 
 ### Scheduller using Google Console

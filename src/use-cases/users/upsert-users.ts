@@ -97,8 +97,9 @@ export class UpsertUsersUseCase {
           create: {
             status: 200,
             type: phone.typeName,
-            ddd_code: phone.number,
-            number: phone.number,
+            // Remove any non-numeric characters from the phone number
+            ddd_code: phone.number.replace(/\D/g, '').substring(0, 2), // Get the first 2 digits as DDD
+            number: phone.number.replace(/\D/g, '').substring(2), // Get the rest of the number
           },
         },
       })
@@ -126,8 +127,9 @@ export class UpsertUsersUseCase {
           create: {
             status: 200,
             type: phone.typeName,
-            ddd_code: phone.number,
-            number: phone.number,
+            // Remove any non-numeric characters from the phone number
+            ddd_code: phone.number.replace(/\D/g, '').substring(0, 2), // Get the first 2 digits as DDD
+            number: phone.number.replace(/\D/g, '').substring(2), // Get the rest of the number
           },
         },
       })

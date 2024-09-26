@@ -11,6 +11,7 @@ import { verifyJwt } from '@/http/middlewares/verify-jwt'
 import { listUsers } from './list-users'
 import { search } from './search-user'
 import { registerTotvsUser } from './retail-user-register'
+import { updateUserPassword } from './update-user-password'
 
 export async function UserRoutes(app: FastifyInstance) {
   app.get('/totvs/user', listTotvsUsers)
@@ -21,6 +22,7 @@ export async function UserRoutes(app: FastifyInstance) {
   app.post('/api/users-totvs', registerTotvsUser)
   app.post('/api/sessions', authenticate)
   app.patch('/api/token/refresh', refresh)
+  app.post('/api/user/update-password', updateUserPassword)
 
   app.get('/api/me', { onRequest: [verifyJwt] }, profile)
   app.get('/api/users/:id', getById)
