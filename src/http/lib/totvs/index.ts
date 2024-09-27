@@ -856,81 +856,149 @@ export async function createRetailClient({
   return customerCode
 }
 
+interface OrderItem {
+  productCode: number;
+  price: number;
+  quantity: number;
+  billingForecastDate: string;
+}
+
+interface OrderCreation {
+  id: string;
+  created_at: string;
+  operationCode: number;
+  freight_value: number;
+  total_value: number;
+  items: OrderItem[];
+}
+
+interface Client {
+  code: string;
+  cpf: string;
+}
+
+interface Payment {
+  transaction_id: string;
+  nsu: string;
+  authorization_code: string;
+  card_brand: string;
+  installments: number;
+  total_value: number;
+  created_at: string;
+}
+
+interface ShippingAddress {
+  cep: string;
+  address: string;
+  number: number;
+  complement?: string;
+}
+
+interface Shipping {
+  zip_code: string;
+  street: string;
+  number: number;
+  complement?: string;
+}
+
+interface CreateOrderRequest {
+  token: string;
+  order: OrderCreation;
+  client: Client;
+  payment: Payment;
+  shipping: Shipping;
+}
+
 export async function createOrder({
   token,
   order,
   client,
   payment,
   shipping,
-}: any): Promise<any> {
-  // const url = `${totvs_url}/api/totvsmoda/sales-order/v2/b2c-orders`
-  // URL DE TREINO TROCAR APÓS TESTES
-  const url = `${totvs_test_url}/api/totvsmoda/sales-order/v2/b2c-orders`
+}: CreateOrderRequest): Promise<any> {
+  const url = `${totvs_test_url}/api/totvsmoda/sales-order/v2/b2c-orders`;
 
-  const headers = headerBuilder(token)
+  const headers = headerBuilder(token);
   const body = {
-    "orderId": order.id,
-    "branchCode": 1,
-    "customerOrderCode": order.id,
-    "integrationCode": order.id,
-    "orderDate": order.created_at,
-    "customerCode": client.code,
-    "representativeCode": 100000008,
-    "sellerCode": 50,
-    "operationCode": order.operationCode,
-    "paymentConditionCode": 1,
-    "paymentBaseDate": payment.created_at,
-    "priorityCode": 99,
-    "arrivalDate": "2024-09-04T13:36:45.040Z",
-    "shippingCompanyCode": 64,
-    "billingForecastDate": payment.created_at,
-    "freightType": 1,
-    "freightValue": order.freight_value,
-    "statusOrder": "Blocked",
-    "shippingService": "03220",
-    "experienceType": "Ecommerce",
-    "totalAmountOrder": order.total_value,
-    "items": order.items,
-    "classifications": [
+    orderId: order.id,
+    branchCode: 1,
+    customerOrderCode: order.id,
+    integrationCode: order.id,
+    orderDate: order.created_at,
+    customerCode: client.code,
+    representativeCode: 100000008,
+    sellerCode: 50,
+    operationCode: order.operationCode,
+    paymentConditionCode: 1,
+    paymentBaseDate: payment.created_at,
+    priorityCode: 99,
+    arrivalDate: "2024-09-04T13:36:45.040Z",
+    shippingCompanyCode: 64,
+    billingForecastDate: payment.created_at,
+    freightType: 1,
+    freightValue: order.freight_value,
+    statusOrder: "Blocked",
+    shippingService: "03220",
+    experienceType: "Ecommerce",
+    totalAmountOrder: order.total_value,
+    items: order.items,
+    classifications: [
       {
-        "classificationTypeCode": 1,
-        "classificationCode": "02"
-      }
+        classificationTypeCode: 1,
+        classificationCode: "02",
+      },
     ],
-    "payments": [
+    payments: [
       {
-        "documentType": "InvoiceMarketplace",
-        "nsu": payment.nsu,
-        "authorizationCode": payment.authorization_code,
-        "creditCardOperator": payment.card_brand,
-        "creditCardBrand": payment.card_brand,
-        "assignorCode": 1,
-        "installment": payment.installments,
-        "paymentValue": order.total_value,
-        "currentAccountCode": 1,
-        "paymentType": "Normal",
-        "paymentBranch": 1
-      }
+        documentType: "InvoiceMarketplace",
+        nsu: payment.nsu,
+        authorizationCode: payment.authorization_code,
+        creditCardOperator: payment.card_brand,
+        creditCardBrand: payment.card_brand,
+        assignorCode: 1,
+        installment: payment.installments,
+        paymentValue: order.total_value,
+        currentAccountCode: 1,
+        paymentType: "Normal",
+        paymentBranch: 1,
+      },
     ],
-    "observations": [
+    observations: [
       {
-        "observation": "SEM BRINDE"
-      }
+        observation: "SEM BRINDE",
+      },
     ],
-    "shippingAddress": {
-      "cep": shipping.zip_code,
-      "address": shipping.street,
-      "number": shipping.number,
-      "complement": shipping.complement
+    shippingAddress: {
+      cep: shipping.zip_code,
+      address: shipping.street,
+      number: shipping.number,
+      complement: shipping.complement,
+    },
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      // Handle non-2xx HTTP status codes
+      const errorResponse = await response.json();
+      throw new Error(`API request failed with status ${response.status}: ${errorResponse.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // Check if error is an instance of Error to safely access its properties
+    if (error instanceof Error) {
+      console.error('Error creating order:', error.message);
+      throw new Error(`Failed to create order: ${error.message}`);
+    } else {
+      console.error('An unknown error occurred:', error);
+      throw new Error('Failed to create order: An unknown error occurred');
     }
   }
-  
-  const data = await fetch(url, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-  })
-  .then((response) => response.json())
-
-  return data
 }

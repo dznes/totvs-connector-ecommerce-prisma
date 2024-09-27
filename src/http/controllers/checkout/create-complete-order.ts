@@ -173,6 +173,9 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
     const { id, code, amount, currency, closed, status, charges } = await createOrderPayment({ customer, shipping: pagarmeShipping, items, payments })
 
     // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "charges" PROPERTY
+    if (!charges) {
+      return reply.status(500).send({ message: 'Pagar.me did not return charges property.' });
+    }
 
     const orderId = randomUUID()
 
@@ -225,6 +228,10 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       payment, 
       shipping: totvsShipping
     })
+
+    if (!totvsOrder.orderCode) {
+      return reply.status(500).send({ message: 'TOTVS API did not return orderCode property.' });
+    }
 
     // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "orderCode" PROPERTY
 
