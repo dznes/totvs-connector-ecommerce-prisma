@@ -21,11 +21,11 @@ interface CreateOrderWithShippingAddressUseCaseRequest {
   total_items: number
   discount_value: number
   total_value: number
-  utm_campaign: string | null
-  utm_source: string | null
-  utm_medium: string | null
-  utm_content: string | null
-  utm_term: string | null
+  utm_campaign?: string | null
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_content?: string | null
+  utm_term?: string | null
   fiscal_code: string | null
   gateway_id: string | null
   arrival_date: string | null

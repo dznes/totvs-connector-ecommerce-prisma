@@ -36,7 +36,7 @@ export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
         await updateSkuPricesUseCase.execute({
           code: item.productCode.toString(), // Convert productCode to string as it is a number in the API response
           price_retail: item.prices[0].price, // Retail price
-          promo_price_retail: item.prices[0].promotionalPrice, // Retail promotional price
+          promo_price_retail: item.prices[2].price, // Retail promotional price
           price_wholesale: item.prices[1].price, // Wholesale price
           promo_price_wholesale: item.prices[1].promotionalPrice, // Wholesale promotional price
         })
