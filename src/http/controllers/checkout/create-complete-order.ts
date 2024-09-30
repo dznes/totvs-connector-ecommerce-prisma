@@ -150,10 +150,17 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
         }
       )
     ),
+    utm_source: z.string().optional(),
+    utm_medium: z.string().optional(),
+    utm_campaign: z.string().optional(),
+    utm_term: z.string().optional(),
+    utm_content: z.string().optional(),
   });
         
-  const { customer, customerCode, shipping, items, payments } = createOrderPaymentBodySchema.parse(request.body);
+  const { customer, customerCode, shipping, items, payments, utm_source, utm_medium, utm_campaign, utm_term, utm_content } = createOrderPaymentBodySchema.parse(request.body);
 
+  console.log(utm_campaign, utm_content, utm_medium, utm_source, utm_term)
+  
   try {
     const pagarmeShipping = {
       address: {
