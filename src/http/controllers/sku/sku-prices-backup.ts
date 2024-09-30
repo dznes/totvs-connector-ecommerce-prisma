@@ -38,7 +38,7 @@ export async function skuPricesBackup(_: FastifyRequest, reply: FastifyReply) {
           price_retail: item.prices[0].price, // Retail price
           promo_price_retail: item.prices[2].price, // Retail promotional price
           price_wholesale: item.prices[1].price, // Wholesale price
-          promo_price_wholesale: item.prices[1].promotionalPrice, // Wholesale promotional price
+          promo_price_wholesale: item.prices[3].price, // Wholesale promotional price
         })
       })
 

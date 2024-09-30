@@ -465,7 +465,7 @@ export async function getProductPrices({
       prices: [
         {
           branchCode: 1,
-          priceCodeList: [1, 2, 3],
+          priceCodeList: [1, 2, 3, 4],
         },
       ],
     },
