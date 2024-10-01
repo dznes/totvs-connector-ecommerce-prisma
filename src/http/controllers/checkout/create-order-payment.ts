@@ -76,7 +76,7 @@ export async function orderPayment(request: FastifyRequest, reply: FastifyReply)
           .optional(),
         boleto: z
           .object({
-            bank: z.string(),
+            bank: z.string().optional(),
             instructions: z.string(),
             due_at: z.string(),
             nosso_numero: z.string(),

@@ -878,10 +878,12 @@ interface Client {
 }
 
 interface Payment {
+  document_type: string
   transaction_id: string;
-  nsu: string;
-  authorization_code: string;
-  card_brand: string;
+  nsu?: string;
+  authorization_code?: string
+  credit_card_operator?: string
+  card_brand?: string;
   installments: number;
   total_value: number;
   created_at: string;
@@ -950,10 +952,10 @@ export async function createOrder({
     ],
     payments: [
       {
-        documentType: "InvoiceMarketplace",
+        documentType: payment.document_type,
         nsu: payment.nsu,
         authorizationCode: payment.authorization_code,
-        creditCardOperator: payment.card_brand,
+        creditCardOperator: payment.credit_card_operator,
         creditCardBrand: payment.card_brand,
         assignorCode: 1,
         installment: payment.installments,

@@ -79,7 +79,7 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
           .optional(),
         boleto: z
           .object({
-            bank: z.string(),
+            bank: z.string().optional(),
             instructions: z.string(),
             due_at: z.string(),
             nosso_numero: z.string(),
@@ -157,9 +157,18 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
     utm_content: z.string().optional(),
   });
         
-  const { customer, customerCode, shipping, items, payments, utm_source, utm_medium, utm_campaign, utm_term, utm_content } = createOrderPaymentBodySchema.parse(request.body);
+  const { customer,
+    customerCode,
+    shipping,
+    items,
+    payments,
+    // utm_source,
+    // utm_medium,
+    // utm_campaign,
+    // utm_term,
+    // utm_content 
 
-  console.log(utm_campaign, utm_content, utm_medium, utm_source, utm_term)
+  } = createOrderPaymentBodySchema.parse(request.body);
   
   try {
     const pagarmeShipping = {
@@ -209,15 +218,6 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       cpf: customer.document,
     }
 
-    const payment = {
-      transaction_id: charges[0].last_transaction.id,
-      nsu: charges[0].last_transaction.acquirer_nsu,
-      authorization_code: charges[0].last_transaction.acquirer_auth_code,
-      card_brand: charges[0].last_transaction.card.brand,
-      installments: charges[0].last_transaction.installments,
-      total_value: charges[0].last_transaction.amount / 100,
-      created_at: charges[0].last_transaction.created_at,
-    }
     const totvsShipping = {
       street: shipping.address.street,
       zip_code: shipping.address.zip_code,
@@ -228,21 +228,55 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       complement: shipping.address.complement,
     }
 
-    const totvsOrder = await createOrder({
-      token: token.access_token, 
-      order, 
-      client, 
-      payment, 
-      shipping: totvsShipping
-    })
-
-    if (!totvsOrder.orderCode) {
-      return reply.status(500).send({ message: 'TOTVS API did not return orderCode property.' });
+    if (payments[0].payment_method === 'credit_card') {  
+      const payment = {
+        document_type: "CreditCard",
+        transaction_id: charges[0].last_transaction.id,
+        nsu: charges[0].last_transaction.acquirer_nsu,
+        authorization_code: charges[0].last_transaction.acquirer_auth_code,
+        credit_card_operator: "PAGAR.ME",
+        card_brand: charges[0].last_transaction.card.brand,
+        installments: charges[0].last_transaction.installments,
+        total_value: charges[0].last_transaction.amount / 100,
+        created_at: charges[0].last_transaction.created_at,
+      }
+  
+      const totvsOrder = await createOrder({
+        token: token.access_token, 
+        order, 
+        client, 
+        payment, 
+        shipping: totvsShipping
+      })
+  
+      if (!totvsOrder.orderCode) {
+        return reply.status(500).send({ message: 'TOTVS API did not return orderCode property.' });
+      }
+  
+      // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "orderCode" PROPERTY
+  
+      return reply.status(201).send({ totvsOrder })
     }
 
-    // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "orderCode" PROPERTY
+    if (payments[0].payment_method === 'boleto') {
+      const payment = {
+        document_type: "Boleto",
+        transaction_id: charges[0].last_transaction.id,
+        installments: charges[0].last_transaction.installments,
+        total_value: charges[0].last_transaction.amount / 100,
+        created_at: charges[0].last_transaction.created_at,
+      }
+  
+      const totvsOrder = await createOrder({
+        token: token.access_token, 
+        order, 
+        client, 
+        payment, 
+        shipping: totvsShipping
+      })
+    }
 
-    return reply.status(201).send({ totvsOrder })
+
 
   } catch (err) {
     if (err) {

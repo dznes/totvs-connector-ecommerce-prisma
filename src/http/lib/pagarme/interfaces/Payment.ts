@@ -31,7 +31,7 @@ export interface Payment {
       }
     }
     boleto?: {
-      bank: string
+      bank?: string
       instructions: string
       due_at: string
       nosso_numero: string

@@ -15,6 +15,25 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
  752            | 5501- REMESSA COM FIM ESPECIFICO PARA EXPORTACAO
  704            | [S] VENDA EXPORTACAO (ATACADO)
 
+## Credit Card Operators:
+OPERATOR - PAGAR.ME
+ 6000 - PAGAR.ME - MAESTRO (D)
+ 6001 - PAGAR.ME - VISA ELECTRON (D)
+ 6002 - PAGAR.ME - CABAL (D)
+ 6003 - PAGAR.ME - ELO (D)
+ 6004 - PAGAR.ME - BANESCARD (D)
+ 6005 - PAGARME - HIPERCARD (D)
+ 6006 - PAGAR.ME - SICREDI (D)
+ 6007 - PAGAR.ME - VISA (C)
+ 6008 - PAGAR.ME - MASTERCARD (C)
+ 6009 - PAGARME - DINERS (C)
+ 6010 - PAGAR.ME - AMEX (C)
+ 6011 - PAGAR.ME - HIPERCARD (C)
+ 6012 - PAGAR.ME - CABAL (C)
+ 6013 - PAGAR.ME - ELO (C)
+ 6014 - PAGAR.ME - BANESCARD (C)
+ 6015 - PAGAR.ME - SICREDI (C)
+
 ## TODO
 
 ### Use Cases
@@ -53,7 +72,7 @@ This project connects and keeps a SQL Relational Database synced with TOTVS MODA
     - [X] GET customer information by client ID.
     - [X] LIST customer orders by client ID.
     - [X] LIST customer orders.
-    - [ ] CREATE customer account.
+    - [X] CREATE customer account.
     - [ ] UPDATE customer account information.
     ##### ORDERS
     - [X] GET order information by order ID.
