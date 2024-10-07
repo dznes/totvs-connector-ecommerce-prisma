@@ -13,6 +13,18 @@ export class PrismaAddressesRepository implements AddressesRepository {
     return address
   }
 
+  async findByUserIdZipCode(userId: string, zipCode: string) {
+    const address = await prisma.address.findFirst({
+      where: {
+        user: {
+          id: userId,
+        },
+        zip_code: zipCode,
+      },
+    })
+    return address
+  }
+
   async create(data: Prisma.AddressUncheckedCreateInput) {
     const address = await prisma.address.create({
       data,

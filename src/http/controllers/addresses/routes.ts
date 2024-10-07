@@ -8,7 +8,7 @@ import { checkoutCreate } from './create-address-user-cookie'
 
 export async function AddressesRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJwt)
-  app.post('/api/addresses/', create)
+  app.post('/api/addresses', { onRequest: [verifyJwt] }, create)
   app.post('/api/checkout/address', { onRequest: [verifyJwt] }, checkoutCreate)
   app.get('/api/addresses/all', listAddresses)
   app.get('/api/addresses/:id', listAddressesByUserId)

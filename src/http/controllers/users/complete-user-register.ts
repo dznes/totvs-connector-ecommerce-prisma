@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { createRetailClient, fetchTestEnvToken } from '@/http/lib/totvs'
+import { createRetailClient, createWholesaleClient, fetchTestEnvToken } from '@/http/lib/totvs'
 import { makeRegisterTotvsUserUseCase } from '@/use-cases/factories/users/make-register-totvs-user-use-case'
 
 export async function registerTotvsUser(
@@ -23,8 +23,9 @@ export async function registerTotvsUser(
 
   const registerBodySchema = z.object({
     name: z.string(),
-    cpf: z.string(),
+    cpf: z.string().optional(),
     rg: z.string().optional(),
+    cnpj: z.string().optional(),
     birthDate: z.string(),
     gender: z.string(),
     isInactive: z.boolean(),
@@ -40,6 +41,7 @@ export async function registerTotvsUser(
     name,
     cpf,
     rg,
+    cnpj,
     birthDate,
     gender,
     isInactive,
@@ -56,36 +58,71 @@ export async function registerTotvsUser(
     const token = await fetchTestEnvToken()
     const registerTotvsUserUseCase = makeRegisterTotvsUserUseCase()
 
-    const customerCode = await createRetailClient({
-      token: token.access_token,
-      name,
-      cpf,
-      rg,
-      birthDate,
-      gender,
-      isInactive,
-      nationality,
-      homeTown,
-      address,
-      phoneNumber,
-      email,
-    })
+    if (cpf?.length === 11) {
+      const customerCode = await createRetailClient({
+        token: token.access_token,
+        name,
+        cpf,
+        rg,
+        birthDate,
+        gender,
+        isInactive,
+        nationality,
+        homeTown,
+        address,
+        phoneNumber,
+        email,
+      })
+  
+      const { user } = await registerTotvsUserUseCase.execute({
+        code: customerCode.toString(),
+        name,
+        email,
+        phone_number: phoneNumber,
+        regitered_at: new Date(),
+        rg: rg ?? '',
+        birthDate,
+        address,
+        cpf,
+        cnpj: '',
+        gender,
+        password,
+      })
+  
+      return reply.status(201).send({ user })
+    }
 
-    const { user } = await registerTotvsUserUseCase.execute({
-      code: customerCode.toString(),
-      name,
-      email,
-      phone_number: phoneNumber,
-      regitered_at: new Date(),
-      rg: rg ?? '',
-      birthDate,
-      address,
-      cpf,
-      gender,
-      password,
-    })
-
-    return { user }
+    if (cnpj?.length === 14) {
+      const customerCode = await createWholesaleClient({
+        token: token.access_token,
+        name,
+        cpf,
+        rg,
+        birthDate,
+        gender,
+        isInactive,
+        nationality,
+        homeTown,
+        address,
+        phoneNumber,
+        email,
+      })
+      const { user } = await registerTotvsUserUseCase.execute({
+        code: customerCode.toString(),
+        name,
+        email,
+        phone_number: phoneNumber,
+        regitered_at: new Date(),
+        birthDate,
+        cpf: '',
+        cnpj,
+        address,
+        gender,
+        password,
+      })
+  
+      return reply.status(201).send({ user })
+    }
 
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {
@@ -94,5 +131,5 @@ export async function registerTotvsUser(
     throw err
   }
 
-  return reply.status(201).send()
+  
 }

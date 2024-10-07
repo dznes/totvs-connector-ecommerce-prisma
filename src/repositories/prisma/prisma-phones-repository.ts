@@ -13,6 +13,18 @@ export class PrismaPhonesRepository implements PhonesRepository {
     return phone
   }
 
+  async findByUserIdPhoneType(userId: string, phoneType: string) {
+    const phone = await prisma.phone.findFirst({
+      where: {
+        user: {
+          id: userId,
+        },
+        type: phoneType,
+      },
+    })
+    return phone
+  }
+
   async create(data: Prisma.PhoneUncheckedCreateInput) {
     const phone = await prisma.phone.create({
       data,

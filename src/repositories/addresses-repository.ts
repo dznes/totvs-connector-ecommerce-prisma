@@ -2,6 +2,7 @@ import { Address, Prisma } from '@prisma/client'
 
 export interface AddressesRepository {
   findById(id: string): Promise<Address | null>
+  findByUserIdZipCode(userId: string, zipCode: string): Promise<Address | null>
   create(data: Prisma.AddressUncheckedCreateInput): Promise<Address>
   list(): Promise<Address[] | null>
   listByUserId(userId: string): Promise<Address[] | null>

@@ -1,7 +1,7 @@
 import { AddressesRepository } from '@/repositories/addresses-repository'
 import { UsersRepository } from '@/repositories/users-repository'
-import { Address } from '@prisma/client'
-import { ResourceNotFoundError } from '../errors/resource-not-found-error'
+import { Address, User } from '@prisma/client'
+import { UserNotFoundError } from '../errors/user-not-found-error'
 
 interface CreateAddressUseCaseRequest {
   status?: number
@@ -19,6 +19,7 @@ interface CreateAddressUseCaseRequest {
 
 interface CreateAddressUseCaseResponse {
   address: Address
+  user: User
 }
 
 export class CreateAddressUseCase {
@@ -43,7 +44,7 @@ export class CreateAddressUseCase {
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
     if (!user) {
-        throw new ResourceNotFoundError()
+        throw new UserNotFoundError()
     }
 
     const address = await this.addressesRepository.create({
@@ -61,6 +62,6 @@ export class CreateAddressUseCase {
       user_code: user.code,
     })
 
-    return { address }
+    return { address, user }
   }
 }

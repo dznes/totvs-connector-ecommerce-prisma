@@ -856,6 +856,159 @@ export async function createRetailClient({
   return customerCode
 }
 
+export async function createWholesaleClient({
+  token,
+  name,
+  cnpj,
+  birthDate,
+  gender,
+  nationality,
+  homeTown,
+  address,
+  phoneNumber,
+  email,
+}: CreateUserRequest): Promise<RetailClients> {
+  const url = `${totvs_test_url}/api/totvsmoda/person/v2/legal-customers`
+
+  const headers = headerBuilder(token)
+
+  const body = {
+    branchInsertCode: 1,
+    insertDate: new Date(),
+    name,
+    cnpj,
+    birthDate,
+    gender,
+    isInactive: false,
+    nationality,
+    homeTown,
+    registrationStatus: 'Normal',
+    isBloqued: false,
+    isCustomer: true,
+    isSupplier: false,
+    isRepresentative: false,
+    isPurchasingGuide: false,
+    isShippingCompany: false,
+    isEmployee: false,
+    employeeStatus: 'Ativo',
+    customerStatus: 'Ativo',
+    addresses: [{ ...address }],
+    phones: [
+      {
+        typeCode: 1,
+        number: phoneNumber,
+        isDefault: true,
+      },
+    ],
+    emails: [
+      {
+        sequence: 1,
+        typeCode: 1,
+        typeName: 'COMERCIAL',
+        email,
+        isDefault: true,
+      },
+    ],
+  }
+
+  const { customerCode } = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return customerCode
+}
+
+interface createRetailClientAddressProps {
+  token: string;
+  cpf: string;
+  type: string;
+  zip_code: string;
+  street: string;
+  number: number;
+  complement?: string;
+}
+
+export async function createRetailClientAddress({
+  token,
+  cpf,
+  type,
+  zip_code,
+  street,
+  number,
+  complement,
+}: createRetailClientAddressProps): Promise<RetailClients> {
+  const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`
+
+  const headers = headerBuilder(token)
+
+  const body = {
+    branchInsertCode: 1,
+    cpf: cpf,
+    addresses: [
+      {
+        addressTypeCode: 5,
+        addressType: type,
+        address: street,
+        cep: zip_code,
+        number,
+        complement,
+      }
+    ],
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  return response
+}
+
+interface createRetailClientPhoneProps {
+  token: string
+  type: string
+  cpf: string
+  ddd: string
+  number: string
+}
+
+export async function createRetailClientPhone({
+  token,
+  cpf,
+  type,
+  ddd,
+  number,
+}: createRetailClientPhoneProps): Promise<RetailClients> {
+  const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`
+
+  const headers = headerBuilder(token)
+  const typeCode = type === 'COMERCIAL' ? 1 : 2
+
+  const body = {
+    branchInsertCode: 1,
+    cpf: cpf,
+    phones: [
+      {
+        typeCode,
+        number: `${ddd}${number}`,
+      }
+    ],
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }).then((response) => response.json())
+
+  console.log(response)
+
+  return response
+}
+
 interface OrderItem {
   productCode: number;
   price: number;

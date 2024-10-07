@@ -1,7 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import { makeCreateAddressUseCase } from '@/use-cases/factories/addresses/make-create-address-use-case'
-import { ResourceAlreadyExistsError } from '@/use-cases/errors/resource-already-exists-error'
+import { createRetailClientAddress, fetchTestEnvToken } from '@/http/lib/totvs'
+import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createAddressBodySchema = z.object({
@@ -35,7 +36,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   try {
     const createAddressUseCase = makeCreateAddressUseCase()
 
-    await createAddressUseCase.execute({
+    const {address, user} = await createAddressUseCase.execute({
       userId,
       status,
       type,
@@ -48,13 +49,33 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
       neighborhood,
       complement,
     })
+
+    if (user?.cpf) {
+      // Fetch the authentication token
+      const token = await fetchTestEnvToken()
+
+      await createRetailClientAddress({
+        token: token.access_token,
+        cpf: user.cpf,
+        type,
+        zip_code,
+        street,
+        number,
+        complement,
+      })
+    }
+
+    // if (user?.cnpj) {
+      
+    // }
+
+    return reply.status(201).send({ address })
+
   } catch (err) {
-    if (err instanceof ResourceAlreadyExistsError) {
+    if (err instanceof UserNotFoundError) {
       return reply.status(409).send({ message: err.message })
     }
     // return reply.status(500).send() // FIX ME
     throw err
   }
-
-  return reply.status(201).send()
 }

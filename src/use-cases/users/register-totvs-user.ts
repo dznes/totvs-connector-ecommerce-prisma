@@ -27,6 +27,7 @@ interface RegisterTotvsUserUseCaseRequest {
   rg?: string | null
   birthDate: string | null
   cpf: string | null
+  cnpj: string | null
   gender: string | null
   is_customer?: boolean
   is_supplier?: boolean
@@ -57,6 +58,7 @@ export class RegisterTotvsUserUseCase {
     birthDate,
     address,
     cpf,
+    cnpj,
     gender,
     is_customer,
     is_supplier,
@@ -86,6 +88,7 @@ export class RegisterTotvsUserUseCase {
         rg,
         birthDate: birthDate ?? null,
         cpf,
+        cnpj: cnpj ?? null,
         gender,
         is_customer: is_customer ?? false,
         is_supplier: is_supplier ?? false,

@@ -10,7 +10,7 @@ import { getById } from './get-user-by-id'
 import { verifyJwt } from '@/http/middlewares/verify-jwt'
 import { listUsers } from './list-users'
 import { search } from './search-user'
-import { registerTotvsUser } from './retail-user-register'
+import { registerTotvsUser } from './complete-user-register'
 import { updateUserPassword } from './update-user-password'
 
 export async function UserRoutes(app: FastifyInstance) {
