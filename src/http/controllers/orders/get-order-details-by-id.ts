@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
+import { makeGetOrderByIdUseCase } from '@/use-cases/factories/orders/make-get-order-by-id-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -14,23 +14,11 @@ export async function getOrderDetailsById(
   const { id } = GetOrderDetailsByIdParamsSchema.parse(request.params)
 
   try {
-    const orderDetails = prisma.order.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        user: true,
-        order_items: true,
-        shipping_address: true,
-        transactions: true,
-      },
-    })
+    const listOrdersByUserId = makeGetOrderByIdUseCase()
+    const { order } = await listOrdersByUserId.execute({id})
 
-    if (!orderDetails) {
-      throw new ResourceNotFoundError()
-    }
+    return reply.status(200).send({ order })
 
-    return reply.status(200).send({ orderDetails })
   } catch (err) {
     if (err instanceof ResourceNotFoundError) {
       return reply.status(409).send({ message: err.message })

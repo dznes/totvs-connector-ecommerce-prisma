@@ -13,5 +13,5 @@ export async function OrderRoutes(app: FastifyInstance) {
   app.get('/api/orders/all', listOrders)
   app.get('/api/orders/users/:id', listByUserId)
   app.get('/api/orders/search', search)
-  app.get('/api/orders/details/:id', getOrderDetailsById)
+  app.get('/api/orders/:id', getOrderDetailsById)
 }

@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma'
 import { Prisma, Order } from '@prisma/client'
 
 import { OrdersRepository } from '../orders-repository'
-import { Decimal } from '@prisma/client/runtime/library'
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async findById(id: string) {
