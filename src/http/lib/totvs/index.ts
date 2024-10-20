@@ -1054,6 +1054,8 @@ interface Shipping {
   street: string;
   number: number;
   complement?: string;
+  service_code: string
+  service_name: string
 }
 
 interface CreateOrderRequest {
@@ -1093,7 +1095,8 @@ export async function createOrder({
     freightType: 1,
     freightValue: order.freight_value,
     statusOrder: "Blocked",
-    shippingService: "03220",
+    shippingService: shipping.service_code,
+    shippingServiceName: shipping.service_name,
     experienceType: "Ecommerce",
     totalAmountOrder: order.total_value,
     items: order.items,
@@ -1141,7 +1144,8 @@ export async function createOrder({
     if (!response.ok) {
       // Handle non-2xx HTTP status codes
       const errorResponse = await response.json();
-      throw new Error(`API request failed with status ${response.status}: ${errorResponse.message || 'Unknown error'}`);
+      console.log('Error response:', errorResponse);
+      throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(errorResponse) || 'Unknown error'}`);
     }
 
     const data = await response.json();

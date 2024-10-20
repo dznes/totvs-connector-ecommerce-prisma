@@ -13,6 +13,13 @@ interface ShippingAddress {
   complement?: string
 }
 
+interface Items {
+  code: string
+  amount: number
+  description: string
+  quantity: number
+}
+
 interface CreateOrderWithShippingAddressUseCaseRequest {
   code: string
   status: number
@@ -26,31 +33,31 @@ interface CreateOrderWithShippingAddressUseCaseRequest {
   utm_medium?: string | null
   utm_content?: string | null
   utm_term?: string | null
-  fiscal_code: string | null
+  fiscal_code?: string | null
   gateway_id: string | null
-  arrival_date: string | null
-  order_vtex_id: string | null
-  totvs_branch_code: number
-  totvs_creation_date: Date
-  representative_code: string
-  representative_name: string
-  operation_code: string
-  operation_name: string
-  payment_condition_code: string
-  payment_condition_name: string
+  arrival_date?: string | null
+  order_vtex_id?: string | null
+  totvs_branch_code?: number
+  totvs_creation_date?: Date
+  representative_code?: string
+  representative_name?: string
+  operation_code?: string
+  operation_name?: string
+  payment_condition_code?: string
+  payment_condition_name?: string
   freight_type: number
   freight_value: number
-  shipping_company_code: string
-  shipping_company_cnpj: string
-  shipping_company_name: string
-  shipping_service_code: string
-  shipping_service_name: string
-  totvs_order_status: string
+  shipping_company_code?: string
+  shipping_company_cnpj?: string
+  shipping_company_name?: string
+  shipping_service_code?: string
+  shipping_service_name?: string
+  totvs_order_status?: string
   user_code: string
   shippingAddress: ShippingAddress
 }
 
-export class UpsertOrdersUseCase {
+export class CreateOrderWithShippingAddressUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
     private usersRepository: UsersRepository,
@@ -90,7 +97,7 @@ export class UpsertOrdersUseCase {
     shipping_service_name,
     totvs_order_status,
     user_code,
-    shippingAddress,
+    shippingAddress
   }: CreateOrderWithShippingAddressUseCaseRequest) {
     // Check if user exists
     const user = await this.usersRepository.findByCode(user_code)

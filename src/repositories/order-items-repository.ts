@@ -6,6 +6,7 @@ export interface OrderItemsRepository {
     orderCode: string,
     productCode: string,
   ): Promise<OrderItem | null>
+  findByOrderIdProductCode(orderId: string, productCode: string): Promise<OrderItem | null>
   create(data: Prisma.OrderItemUncheckedCreateInput): Promise<OrderItem>
   list(): Promise<OrderItem[] | null>
   listByOrderId(orderId: string): Promise<OrderItem[] | null>

@@ -1,4 +1,4 @@
-import { AddressInfoByCEP, authenticateHeaderBuilder, getTokenWithPostageCard } from '@/http/lib/correios'
+import { AddressInfoByCEP } from '@/http/lib/correios'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 

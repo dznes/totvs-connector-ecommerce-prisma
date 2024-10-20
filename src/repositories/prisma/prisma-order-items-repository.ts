@@ -23,6 +23,16 @@ export class PrismaOrderItemsRepository implements OrderItemsRepository {
     return orderItem
   }
 
+  async findByOrderIdProductCode(orderId: string, productCode: string) {
+    const orderItem = await prisma.orderItem.findFirst({
+      where: {
+        order_id: orderId,
+        product_code: productCode,
+      },
+    })
+    return orderItem
+  }
+
   async create(data: Prisma.OrderItemUncheckedCreateInput) {
     const orderItem = await prisma.orderItem.create({
       data,

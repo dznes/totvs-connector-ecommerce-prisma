@@ -66,7 +66,7 @@ export async function OrdersBackup(
           shipping_company_code: item.shippingCompanyCode?.toString() ?? '',
           shipping_company_cnpj: item.shippingCompanyCpfCnpj ?? '',
           shipping_company_name: item.shippingCompanyName ?? '',
-          shipping_service_code: item.shippingCompanyCode?.toString() ?? '',
+          shipping_service_code: item.shippingService?.toString() ?? '',
           fiscal_code: '',
           status: 200,
           type: 1,

@@ -2,6 +2,7 @@ import { createOrderPayment } from '@/http/lib/pagarme'
 import { createOrder, fetchTestEnvToken } from '@/http/lib/totvs';
 import { makeCreateOrderItemUseCase } from '@/use-cases/factories/order-items/make-create-order-item-use-case';
 import { makeCreateOrderWithShippingAddressUseCase } from '@/use-cases/factories/orders/make-create-order-with-shipping-address-use-case';
+import { makeUpdateOrderCodeUseCase } from '@/use-cases/factories/orders/make-update-order-code-use-case';
 import { randomUUID } from 'crypto';
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
@@ -174,44 +175,24 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
   } = createOrderPaymentBodySchema.parse(request.body);
   
   try {
-    const pagarmeShipping = {
-      address: {
-        line_1: `${shipping.address.street}, ${shipping.address.number}`,
-        line_2: shipping.address.complement,
-        zip_code: shipping.address.zip_code,
-        city: shipping.address.city,
-        state: shipping.address.state,
-        country: shipping.address.country.toLowerCase() === 'brasil' ? 'BR' : shipping.address.country,
-      },
-      amount: shipping.amount,
-      description: shipping.description,
-      recipient_name: shipping.recipient_name,
-      recipient_phone: shipping.recipient_phone,
-    }
 
-    const { id, code, amount, currency, closed, status, charges } = await createOrderPayment({ customer, shipping: pagarmeShipping, items, payments })
-
-    // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "charges" PROPERTY
-    if (!charges) {
-      return reply.status(500).send({ message: 'Pagar.me did not return charges property.' });
-    }
 
     const orderId = randomUUID()
 
     const token = await fetchTestEnvToken()
 
-    const order = {
+    const orderInfo = {
       id: orderId,
-      created_at: charges[0].last_transaction.created_at,
+      created_at: new Date().toString(),
       operationCode: 510,
       freight_value: shipping.amount / 100,
-      total_value: charges[0].last_transaction.amount / 100,
+      total_value: payments[0].amount ?? 0 / 100,
       items: items.map((item) => {
         return {
           productCode: item.code,
           price: item.amount / 100,
           quantity: item.quantity,
-          billingForecastDate: charges[0].last_transaction.created_at,
+          billingForecastDate: new Date().toString(),
         }
       })
     }
@@ -233,9 +214,75 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       service_name: shipping.service_name,
     }
 
-    console.log(totvsShipping)
+    const createOrderWithShippingUseCase = makeCreateOrderWithShippingAddressUseCase()
+
+    const fake_order_code = randomUUID()
+
+    const orderWithShipping = await createOrderWithShippingUseCase.execute({
+      // code: totvsOrder.orderCode.toString(),
+      code: fake_order_code,
+      status: 1,
+      type: 1,
+      items_quantity: items.reduce((acc, item) => acc + item.quantity, 0),
+      total_items: items.reduce((acc, item) => acc + item.amount, 0),
+      discount_value: 0,
+      total_value: orderInfo.total_value,
+      utm_campaign,
+      utm_source,
+      utm_medium,
+      utm_content,
+      utm_term,
+      totvs_branch_code: 1,
+      freight_type: 1,
+      freight_value: orderInfo.freight_value,
+      shipping_company_code: '64',
+      shipping_company_cnpj: '34028316003129',
+      shipping_company_name: 'EMPRESA BRASILEIRA DE CORREIOS E TELEGRAFOS',
+      shipping_service_code: shipping.service_code,
+      totvs_order_status: 'Blocked',
+      user_code: customerCode,
+      shippingAddress: totvsShipping,
+    })
+
+    if (!orderWithShipping.order) {
+      return reply.status(500).send({ message: 'Error creating order with shipping address' });
+    }
+
+    const createOrderItemUseCase = makeCreateOrderItemUseCase()
+
+    items.forEach(async (item) => {
+      await createOrderItemUseCase.execute({
+        sku_code: item.code.toString(),
+        price: item.amount,
+        quantity: item.quantity,
+        // order_code: totvsOrder.orderCode.toString(),
+        order_code: fake_order_code
+      })
+    })
+
+    const pagarmeShipping = {
+      address: {
+        line_1: `${shipping.address.street}, ${shipping.address.number}`,
+        line_2: shipping.address.complement,
+        zip_code: shipping.address.zip_code,
+        city: shipping.address.city,
+        state: shipping.address.state,
+        country: shipping.address.country.toLowerCase() === 'brasil' ? 'BR' : shipping.address.country,
+      },
+      amount: shipping.amount,
+      description: shipping.description,
+      recipient_name: shipping.recipient_name,
+      recipient_phone: shipping.recipient_phone,
+    }
 
     if (payments[0].payment_method === 'credit_card') {  
+      const { id, code, amount, currency, closed, status, charges } = await createOrderPayment({ customer, shipping: pagarmeShipping, items, payments })
+
+      // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "charges" PROPERTY
+      if (!charges) {
+        return reply.status(500).send({ message: 'Pagar.me did not return charges property.' });
+      }
+
       const payment = {
         document_type: "CreditCard",
         transaction_id: charges[0].last_transaction.id,
@@ -250,80 +297,38 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
   
       const totvsOrder = await createOrder({
         token: token.access_token, 
-        order, 
+        order: orderInfo, 
         client, 
         payment, 
         shipping: totvsShipping
       })
+
   
       if (!totvsOrder.orderCode) {
         return reply.status(500).send({ message: 'TOTVS API did not return orderCode property.' });
       }
       // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "orderCode" PROPERTY
-
-      const totvs_test_code = `totvs-${totvsOrder.orderCode}`
-
-      const createOrderWithShippingUseCase = makeCreateOrderWithShippingAddressUseCase()
-
-      const orderWithShipping = await createOrderWithShippingUseCase.execute({
-        // code: totvsOrder.orderCode.toString(),
-        code: totvs_test_code,
-        status: 200,
-        type: 1,
-        items_quantity: items.reduce((acc, item) => acc + item.quantity, 0),
-        total_items: items.reduce((acc, item) => acc + item.amount, 0),
-        discount_value: 0,
-        total_value: order.total_value,
-        utm_campaign,
-        utm_source,
-        utm_medium,
-        utm_content,
-        utm_term,
-        // fiscal_code,
-        gateway_id: charges[0].last_transaction.id,
-        // arrival_date,
-        // order_vtex_id,
-        totvs_branch_code: 1,
-        // totvs_creation_date,
-        // representative_code,
-        // representative_name,
-        // operation_code,
-        // operation_name,
-        // payment_condition_code,
-        // payment_condition_name,
-        freight_type: 1,
-        freight_value: order.freight_value,
-        shipping_company_code: '64',
-        shipping_company_cnpj: '34028316003129',
-        shipping_company_name: 'EMPRESA BRASILEIRA DE CORREIOS E TELEGRAFOS',
-        shipping_service_code: shipping.service_code,
-        // shipping_service_name,
-        totvs_order_status: 'Blocked',
-        user_code: customerCode,
-        shippingAddress: totvsShipping,
-      })
-
-      if (!orderWithShipping) {
-        return reply.status(500).send({ message: 'Error creating order with shipping address' });
-      }
-
-      const createOrderItemUseCase = makeCreateOrderItemUseCase()
-
-      items.forEach(async (item) => {
-        await createOrderItemUseCase.execute({
-          sku_code: item.code.toString(),
-          price: item.amount,
-          quantity: item.quantity,
-          // order_code: totvsOrder.orderCode.toString(),
-          order_code: totvs_test_code
-        })
-      })
   
+      const order_code = totvsOrder.orderCode.toString()
+
+      const updateOrderCodeUseCase = makeUpdateOrderCodeUseCase()
+      const updatedOrder = await updateOrderCodeUseCase.execute({
+        id: orderWithShipping.order.id,
+        code: order_code
+      })
+      
       // return reply.status(201).send({ totvsOrder })
-      return reply.status(201).send({ totvs_test_code })
+      return reply.status(201).send({ updatedOrder })
     }
 
     if (payments[0].payment_method === 'boleto') {
+      const { id, code, amount, currency, closed, status, charges } = await createOrderPayment({ customer, shipping: pagarmeShipping, items, payments })
+
+      // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "charges" PROPERTY
+      if (!charges) {
+        return reply.status(500).send({ message: 'Pagar.me did not return charges property.' });
+      }
+
       const payment = {
         document_type: "Boleto",
         transaction_id: charges[0].last_transaction.id,
@@ -334,7 +339,7 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
   
       const totvsOrder = await createOrder({
         token: token.access_token, 
-        order, 
+        order: orderInfo, 
         client, 
         payment, 
         shipping: totvsShipping
