@@ -34,7 +34,7 @@ interface CreateOrderWithShippingAddressUseCaseRequest {
   utm_content?: string | null
   utm_term?: string | null
   fiscal_code?: string | null
-  gateway_id: string | null
+  gateway_id?: string | null
   arrival_date?: string | null
   order_vtex_id?: string | null
   totvs_branch_code?: number

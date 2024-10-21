@@ -8,18 +8,6 @@ export async function registerTotvsUser(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const addressSchema = z.object({
-    sequence: z.number().optional(),
-    addressType: z.string(),
-    publicPlace: z.string().optional(),
-    address: z.string(),
-    number: z.number(),
-    complement: z.string().optional(),
-    neighborhood: z.string(),
-    cityName: z.string(),
-    stateAbbreviation: z.string(),
-    cep: z.string(),
-  })
 
   const registerBodySchema = z.object({
     name: z.string(),
@@ -29,10 +17,6 @@ export async function registerTotvsUser(
     birthDate: z.string(),
     gender: z.string(),
     isInactive: z.boolean(),
-    nationality: z.string(),
-    homeTown: z.string(),
-    address: addressSchema,
-    phoneNumber: z.string(),
     email: z.string(),
     password: z.string(),
   })
@@ -45,10 +29,6 @@ export async function registerTotvsUser(
     birthDate,
     gender,
     isInactive,
-    nationality,
-    homeTown,
-    address,
-    phoneNumber,
     email,
     password,
   } = registerBodySchema.parse(request.body)
@@ -67,10 +47,6 @@ export async function registerTotvsUser(
         birthDate,
         gender,
         isInactive,
-        nationality,
-        homeTown,
-        address,
-        phoneNumber,
         email,
       })
   
@@ -78,11 +54,9 @@ export async function registerTotvsUser(
         code: customerCode.toString(),
         name,
         email,
-        phone_number: phoneNumber,
         regitered_at: new Date(),
         rg: rg ?? '',
         birthDate,
-        address,
         cpf,
         cnpj: '',
         gender,
@@ -101,22 +75,16 @@ export async function registerTotvsUser(
         birthDate,
         gender,
         isInactive,
-        nationality,
-        homeTown,
-        address,
-        phoneNumber,
         email,
       })
       const { user } = await registerTotvsUserUseCase.execute({
         code: customerCode.toString(),
         name,
         email,
-        phone_number: phoneNumber,
         regitered_at: new Date(),
         birthDate,
         cpf: '',
         cnpj,
-        address,
         gender,
         password,
       })

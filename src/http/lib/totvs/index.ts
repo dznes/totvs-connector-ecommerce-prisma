@@ -797,10 +797,6 @@ export async function createRetailClient({
   rg,
   birthDate,
   gender,
-  nationality,
-  homeTown,
-  address,
-  phoneNumber,
   email,
 }: CreateUserRequest): Promise<RetailClients> {
   const url = `${totvs_test_url}/api/totvsmoda/person/v2/individual-customers`
@@ -816,8 +812,6 @@ export async function createRetailClient({
     birthDate,
     gender,
     isInactive: false,
-    nationality,
-    homeTown,
     registrationStatus: 'Normal',
     isBloqued: false,
     isCustomer: true,
@@ -828,14 +822,6 @@ export async function createRetailClient({
     isEmployee: false,
     employeeStatus: 'Ativo',
     customerStatus: 'Ativo',
-    addresses: [{ ...address }],
-    phones: [
-      {
-        typeCode: 1,
-        number: phoneNumber,
-        isDefault: true,
-      },
-    ],
     emails: [
       {
         sequence: 1,
@@ -862,10 +848,6 @@ export async function createWholesaleClient({
   cnpj,
   birthDate,
   gender,
-  nationality,
-  homeTown,
-  address,
-  phoneNumber,
   email,
 }: CreateUserRequest): Promise<RetailClients> {
   const url = `${totvs_test_url}/api/totvsmoda/person/v2/legal-customers`
@@ -880,8 +862,6 @@ export async function createWholesaleClient({
     birthDate,
     gender,
     isInactive: false,
-    nationality,
-    homeTown,
     registrationStatus: 'Normal',
     isBloqued: false,
     isCustomer: true,
@@ -892,14 +872,6 @@ export async function createWholesaleClient({
     isEmployee: false,
     employeeStatus: 'Ativo',
     customerStatus: 'Ativo',
-    addresses: [{ ...address }],
-    phones: [
-      {
-        typeCode: 1,
-        number: phoneNumber,
-        isDefault: true,
-      },
-    ],
     emails: [
       {
         sequence: 1,

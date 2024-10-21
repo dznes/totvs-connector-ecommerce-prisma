@@ -3,20 +3,20 @@ import { User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 
-interface CreateUserAddress {
-  cep: string
-  sequence?: number
-  addressType: string
-  address: string
-  number: number
-  complement?: string | null
-  neighborhood: string | null
-  ibgeCityCode?: number
-  cityName: string
-  stateAbbreviation: string
-  bcbCountryCode?: number
-  countryName?: string
-}
+// interface CreateUserAddress {
+//   cep: string
+//   sequence?: number
+//   addressType: string
+//   address: string
+//   number: number
+//   complement?: string | null
+//   neighborhood: string | null
+//   ibgeCityCode?: number
+//   cityName: string
+//   stateAbbreviation: string
+//   bcbCountryCode?: number
+//   countryName?: string
+// }
 
 interface RegisterTotvsUserUseCaseRequest {
   code: string
@@ -36,8 +36,6 @@ interface RegisterTotvsUserUseCaseRequest {
   is_employee?: boolean
   is_active?: boolean
   employee_status?: string
-  phone_number: string
-  address: CreateUserAddress
 }
 
 interface RegisterTotvsUserUseCaseResponse {
@@ -52,11 +50,9 @@ export class RegisterTotvsUserUseCase {
     name,
     email,
     password,
-    phone_number,
     regitered_at,
     rg,
     birthDate,
-    address,
     cpf,
     cnpj,
     gender,
@@ -98,31 +94,6 @@ export class RegisterTotvsUserUseCase {
         is_active: is_active ?? true,
         employee_status,
         totvs_branch_code: 1,
-        addresses: {
-          create: {
-            status: 200,
-            type: address.addressType,
-            country: address.countryName ?? 'BRASIL',
-            state: address.stateAbbreviation,
-            city: address.cityName,
-            zip_code: address.cep,
-            neighborhood: address.neighborhood,
-            street: address.address,
-            number: address.number ?? 0,
-            complement: address.complement,
-            ibge_city_code: address.ibgeCityCode,
-            bcb_country_code: address.bcbCountryCode,
-          },
-        },
-        phones: {
-          create: {
-            status: 200,
-            type: 'COMERCIAL',
-            // Remove any non-numeric characters from the phone number
-            ddd_code: phone_number.replace(/\D/g, '').substring(0, 2), // Get the first 2 digits as DDD
-            number: phone_number.replace(/\D/g, '').substring(2), // Get the rest of the number
-          },
-        },
       })
 
       console.log("User created successfully:", user);

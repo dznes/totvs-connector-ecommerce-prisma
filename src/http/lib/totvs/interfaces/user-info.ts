@@ -93,7 +93,7 @@ export interface CreateUserRequest {
   employeeStatus?: string
   customerStatus?: string
   branchInsertCode?: number
-  address: CreateUserAddress
-  phoneNumber: string
+  address?: CreateUserAddress
+  phoneNumber?: string
   email: string
 }
