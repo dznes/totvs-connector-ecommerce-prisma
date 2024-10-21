@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { createRetailClient, createWholesaleClient, fetchTestEnvToken } from '@/http/lib/totvs'
 import { makeRegisterTotvsUserUseCase } from '@/use-cases/factories/users/make-register-totvs-user-use-case'
+import { CodeAlreadyExistsError } from '@/use-cases/errors/totvs-code-already-exists-error'
 
 export async function registerTotvsUser(
   request: FastifyRequest,
@@ -16,7 +17,7 @@ export async function registerTotvsUser(
     cnpj: z.string().optional(),
     birthDate: z.string(),
     gender: z.string(),
-    isInactive: z.boolean(),
+    isInactive: z.boolean().optional().default(false),
     email: z.string(),
     password: z.string(),
   })
@@ -94,6 +95,9 @@ export async function registerTotvsUser(
 
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {
+      return reply.status(409).send({ message: err.message })
+    }
+    if (err instanceof CodeAlreadyExistsError) {
       return reply.status(409).send({ message: err.message })
     }
     throw err

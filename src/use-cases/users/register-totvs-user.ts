@@ -2,6 +2,7 @@ import { UsersRepository } from '@/repositories/users-repository'
 import { User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
+import { CodeAlreadyExistsError } from '../errors/totvs-code-already-exists-error'
 
 // interface CreateUserAddress {
 //   cep: string
@@ -67,9 +68,13 @@ export class RegisterTotvsUserUseCase {
     const password_hash = await bcrypt.hash(password, 6)
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
+    const userWithSameCode = await this.usersRepository.findByCode(code)
 
     if (userWithSameEmail) {
       throw new UserAlreadyExistsError()
+    }
+    if (userWithSameCode) {
+      throw new CodeAlreadyExistsError()
     }
 
     try {
