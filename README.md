@@ -77,7 +77,7 @@ OPERATOR - PAGAR.ME
     ##### ORDERS
     - [X] GET order information by order ID.
     - [X] LIST orders using query params and pagination.
-    - [X] CREATE order.
+    - [X] CREATE order. 
     - [ ] UPDATE order specific informations.
     - [ ] UPDATE order status with webhooks.
 
@@ -92,8 +92,8 @@ OPERATOR - PAGAR.ME
 - [X] Add clients backup.
 - [X] Add orders backup.
 - [X] Add orders with skus backup.
-- [X] Create client and push it into TOTVS MODA API.
-- [X] Create order and push it into TOTVS MODA API.
+- [X] Create client and push it into TOTVS MODA API. (When CPF is the same in TOTVS it updates do USER. Change TOTVS ENV to Production)
+- [X] Create order and push it into TOTVS MODA API. (Change TOTVS ENV to Production)
 - [X] Add JWT and role-based authentication to access private routes.
 
 ### Scheduller using Google Console
@@ -121,3 +121,6 @@ ADD TRANSACTIONS AND ALL ITS INFORMATIONS INTO SEPARATE DATABASE.
 NEED TO REFACTOR PRODUCT AND PRODUCT IMAGES BACKUP, USING DDD.
 ADD INTERFACES TO VTEX LIB RESPONSES.
 
+
+#### Add Products to Google Merchant Center
+https://developers.google.com/shopping-content/reference/rest/v2.1/products/insert

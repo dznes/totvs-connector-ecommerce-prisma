@@ -44,6 +44,25 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async findByCpf(cpf: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        cpf,
+      },
+    })
+    return user
+  }
+
+  async findByCnpj(cnpj: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        cnpj,
+      },
+    })
+    return user
+  }
+
+
   async create(data: Prisma.UserCreateInput) {
     const user = await prisma.user.create({
       data,

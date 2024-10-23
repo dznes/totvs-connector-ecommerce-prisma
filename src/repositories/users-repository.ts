@@ -5,6 +5,8 @@ export interface UsersRepository {
   findByCode(code: string): Promise<User | null>
   findByIdWithNested(id: string): Promise<User | null>
   findByEmail(email: string): Promise<User | null>
+  findByCpf(cpf: string): Promise<User | null>
+  findByCnpj(cnpj: string): Promise<User | null>
   create(data: Prisma.UserCreateInput): Promise<User>
   list(): Promise<User[] | null>
   searchMany(query: string, page: number, perPage: number): Promise<User[]>

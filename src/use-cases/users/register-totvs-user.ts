@@ -37,6 +37,12 @@ interface RegisterTotvsUserUseCaseRequest {
   is_employee?: boolean
   is_active?: boolean
   employee_status?: string
+  utm_campaign?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_content?: string
+  utm_term?: string
+  referrer?: string
 }
 
 interface RegisterTotvsUserUseCaseResponse {
@@ -64,6 +70,12 @@ export class RegisterTotvsUserUseCase {
     is_employee,
     is_active,
     employee_status,
+    utm_campaign,
+    utm_source,
+    utm_medium,
+    utm_content,
+    utm_term,
+    referrer,
   }: RegisterTotvsUserUseCaseRequest): Promise<RegisterTotvsUserUseCaseResponse> {
     const password_hash = await bcrypt.hash(password, 6)
 
@@ -78,7 +90,6 @@ export class RegisterTotvsUserUseCase {
     }
 
     try {
-
       const user = await this.usersRepository.create({
         code,
         status: 200,
@@ -99,12 +110,16 @@ export class RegisterTotvsUserUseCase {
         is_active: is_active ?? true,
         employee_status,
         totvs_branch_code: 1,
+        utm_campaign,
+        utm_source,
+        utm_medium,
+        utm_content,
+        utm_term,
+        referrer,
       })
 
-      console.log("User created successfully:", user);
       return { user };
   } catch (error) {
-    console.error("Error creating user:", error);
     throw error;
   }
   }

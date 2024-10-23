@@ -4,6 +4,8 @@ import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-e
 import { createRetailClient, createWholesaleClient, fetchTestEnvToken } from '@/http/lib/totvs'
 import { makeRegisterTotvsUserUseCase } from '@/use-cases/factories/users/make-register-totvs-user-use-case'
 import { CodeAlreadyExistsError } from '@/use-cases/errors/totvs-code-already-exists-error'
+import { makeFindUserWithSameCpfUseCase } from '@/use-cases/factories/users/make-find-user-with-same-cpf-use-case'
+import { makeFindUserWithSameCnpjUseCase } from '@/use-cases/factories/users/make-find-user-with-same-cnpj-use-case'
 
 export async function registerTotvsUser(
   request: FastifyRequest,
@@ -20,6 +22,12 @@ export async function registerTotvsUser(
     isInactive: z.boolean().optional().default(false),
     email: z.string(),
     password: z.string(),
+    utm_campaign: z.string().optional(),
+    utm_source: z.string().optional(),
+    utm_medium: z.string().optional(),
+    utm_content: z.string().optional(),
+    utm_term: z.string().optional(),
+    referrer: z.string().optional(),
   })
 
   const {
@@ -32,14 +40,30 @@ export async function registerTotvsUser(
     isInactive,
     email,
     password,
+    utm_campaign,
+    utm_source,
+    utm_medium,
+    utm_content,
+    utm_term,
+    referrer,
   } = registerBodySchema.parse(request.body)
 
   try {
     // Fetch the authentication token
     const token = await fetchTestEnvToken()
     const registerTotvsUserUseCase = makeRegisterTotvsUserUseCase()
+    const findUserWithSameCpfUseCase = makeFindUserWithSameCpfUseCase()
+    const findUserWithSameCnpjUseCase = makeFindUserWithSameCnpjUseCase()
 
     if (cpf?.length === 11) {
+
+      // Check if user CPF already exists
+      const userWithExistingCpf = await findUserWithSameCpfUseCase.execute({ cpf })
+      if (userWithExistingCpf) {
+        return reply.status(409).send({ message: 'Cpf already exists' })
+      }
+      
+      // Register user in TOTVS
       const customerCode = await createRetailClient({
         token: token.access_token,
         name,
@@ -51,8 +75,9 @@ export async function registerTotvsUser(
         email,
       })
   
+      // Register user in Database
       const { user } = await registerTotvsUserUseCase.execute({
-        code: customerCode.toString(),
+        code: `totvs-${customerCode.toString()}`,
         name,
         email,
         regitered_at: new Date(),
@@ -62,12 +87,26 @@ export async function registerTotvsUser(
         cnpj: '',
         gender,
         password,
+        utm_campaign,
+        utm_source,
+        utm_medium,
+        utm_content,
+        utm_term,
+        referrer,
       })
   
       return reply.status(201).send({ user })
     }
 
     if (cnpj?.length === 14) {
+
+      // Check if user CPF already exists
+      const userWithExistingCnpj = await findUserWithSameCnpjUseCase.execute({ cnpj })
+      if (userWithExistingCnpj) {
+        return reply.status(409).send({ message: 'Cnpj already exists' })
+      }
+            
+      // Register user in TOTVS
       const customerCode = await createWholesaleClient({
         token: token.access_token,
         name,
@@ -78,8 +117,10 @@ export async function registerTotvsUser(
         isInactive,
         email,
       })
+
+      // Register user in Database
       const { user } = await registerTotvsUserUseCase.execute({
-        code: customerCode.toString(),
+        code: `totvs-${customerCode.toString()}`,
         name,
         email,
         regitered_at: new Date(),
@@ -88,6 +129,12 @@ export async function registerTotvsUser(
         cnpj,
         gender,
         password,
+        utm_campaign,
+        utm_source,
+        utm_medium,
+        utm_content,
+        utm_term,
+        referrer,
       })
   
       return reply.status(201).send({ user })

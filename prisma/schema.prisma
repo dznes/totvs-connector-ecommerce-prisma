@@ -208,6 +208,12 @@ model User {
   is_active           Boolean   @default(true)
   employee_status     String?
   totvs_branch_code   Int?
+  utm_campaign        String?
+  utm_source          String?
+  utm_medium          String?
+  utm_content         String?
+  utm_term            String?
+  referrer            String?
 
   addresses Address[]
   phones    Phone[]

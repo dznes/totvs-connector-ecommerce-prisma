@@ -62,6 +62,7 @@ export class PrismaProductsRepository implements ProductsRepository {
             size: true,
           },
         },
+        categories: true,
       },
     })
     return product
