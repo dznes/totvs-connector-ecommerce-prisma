@@ -5,10 +5,11 @@ import { SearchProductsByClassificationSlugUseCase } from '@/use-cases/products/
 export function makeSearchProductsByClassificationSlugUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
   const productRepository = new PrismaProductsRepository()
-  const listClassificationsUseCase = new SearchProductsByClassificationSlugUseCase(
-    classificationRepository,
-    productRepository,
-  )
+  const listClassificationsUseCase =
+    new SearchProductsByClassificationSlugUseCase(
+      classificationRepository,
+      productRepository,
+    )
 
   return listClassificationsUseCase
 }

@@ -36,7 +36,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   try {
     const createAddressUseCase = makeCreateAddressUseCase()
 
-    const {address, user} = await createAddressUseCase.execute({
+    const { address, user } = await createAddressUseCase.execute({
       userId,
       status,
       type,
@@ -66,11 +66,10 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     }
 
     // if (user?.cnpj) {
-      
+
     // }
 
     return reply.status(201).send({ address })
-
   } catch (err) {
     if (err instanceof UserNotFoundError) {
       return reply.status(409).send({ message: err.message })

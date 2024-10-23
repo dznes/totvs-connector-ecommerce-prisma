@@ -11,7 +11,9 @@ export async function searchProductsByCategorySlug(
     categorySlug: z.string(),
   })
 
-  const { categorySlug } = SearchProductsByCategorySlugParamsSchema.parse(request.params)
+  const { categorySlug } = SearchProductsByCategorySlugParamsSchema.parse(
+    request.params,
+  )
 
   const SearchProductsByCategorySlugQuerySchema = z.object({
     q: z.string(),

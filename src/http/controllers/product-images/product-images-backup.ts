@@ -5,7 +5,10 @@ import { makeCreateProductImageUseCase } from '@/use-cases/factories/product-ima
 import { makeFindProductImageByCode } from '@/use-cases/factories/product-images/make-find-product-image-by-code-use-case'
 import { makeUpdateProductImageUseCase } from '@/use-cases/factories/product-images/make-update-product-image-use-case'
 
-export async function productImageBackup(request: FastifyRequest, reply: FastifyReply) {
+export async function productImageBackup(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const bodySchema = z.object({
     code: z.string(),
     title: z.string(),
@@ -17,7 +20,7 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
     skuCode: z.string(),
   })
 
-  const { 
+  const {
     code,
     title,
     file_key,
@@ -25,13 +28,13 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
     slug,
     content_type,
     position,
-    skuCode
+    skuCode,
   } = bodySchema.parse(request.query)
 
   const createProductImageUseCase = makeCreateProductImageUseCase()
   const findProductImageUseCase = makeFindProductImageByCode()
   const updateProductImageUseCase = makeUpdateProductImageUseCase()
-  
+
   const productImageExists = await findProductImageUseCase.execute({ code })
 
   if (!productImageExists) {
@@ -45,9 +48,9 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
       position,
       sku_code: skuCode,
     })
-  
+
     return reply.status(200).send({
-      productImage
+      productImage,
     })
   } else {
     await updateProductImageUseCase.execute({
@@ -60,7 +63,7 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
       position,
       sku_code: skuCode,
     })
-  
+
     return reply.status(200).send()
   }
 }

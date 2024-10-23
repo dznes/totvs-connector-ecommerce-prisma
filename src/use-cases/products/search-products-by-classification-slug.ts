@@ -1,8 +1,9 @@
-import {
-  ClassificationsRepository,
-} from '@/repositories/classifications-repository'
+import { ClassificationsRepository } from '@/repositories/classifications-repository'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
-import { ProductsRepository, ProductWithSkuAndVariants } from '@/repositories/products-repository'
+import {
+  ProductsRepository,
+  ProductWithSkuAndVariants,
+} from '@/repositories/products-repository'
 
 interface SearchProductsByClassificationSlugUseCaseRequest {
   classificationSlug: string
@@ -29,17 +30,19 @@ export class SearchProductsByClassificationSlugUseCase {
     page,
     perPage,
   }: SearchProductsByClassificationSlugUseCaseRequest): Promise<SearchProductsByClassificationSlugUseCaseResponse> {
-    const classification = await this.classificationsRepository.findBySlug(classificationSlug)
+    const classification =
+      await this.classificationsRepository.findBySlug(classificationSlug)
 
     if (!classification) {
       throw new ResourceNotFoundError()
     }
-    const products = await this.productsRepository.searchProductsByClassificationId(
-      classification.id,
-      query,
-      page,
-      perPage,
-    )
+    const products =
+      await this.productsRepository.searchProductsByClassificationId(
+        classification.id,
+        query,
+        page,
+        perPage,
+      )
 
     const count = await this.productsRepository.countProductsByClassificationId(
       classification.id,

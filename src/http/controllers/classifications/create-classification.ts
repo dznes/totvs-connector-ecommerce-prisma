@@ -13,7 +13,8 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     slug: z.string().optional(),
   })
 
-  const { code, type_code, type_name, status, title, slug } = registerBodySchema.parse(request.body)
+  const { code, type_code, type_name, status, title, slug } =
+    registerBodySchema.parse(request.body)
 
   try {
     const registerUseCase = makeCreateClassificationUseCase()

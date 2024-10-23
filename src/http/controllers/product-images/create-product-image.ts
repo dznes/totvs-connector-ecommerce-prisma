@@ -3,7 +3,10 @@ import { z } from 'zod'
 
 import { makeCreateProductImageUseCase } from '@/use-cases/factories/product-images/make-create-product-image-use-case'
 
-export async function productImageBackup(request: FastifyRequest, reply: FastifyReply) {
+export async function productImageBackup(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const bodySchema = z.object({
     code: z.string().optional(),
     title: z.string(),
@@ -15,7 +18,7 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
     skuCode: z.string(),
   })
 
-  const { 
+  const {
     code,
     title,
     file_key,
@@ -23,7 +26,7 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
     slug,
     content_type,
     position,
-    skuCode
+    skuCode,
   } = bodySchema.parse(request.query)
 
   const createProductImageUseCase = makeCreateProductImageUseCase()
@@ -40,6 +43,6 @@ export async function productImageBackup(request: FastifyRequest, reply: Fastify
   })
 
   return reply.status(200).send({
-    productImage
+    productImage,
   })
 }

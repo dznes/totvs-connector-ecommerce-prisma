@@ -15,10 +15,9 @@ export async function getOrderDetailsById(
 
   try {
     const listOrdersByUserId = makeGetOrderByIdUseCase()
-    const { order } = await listOrdersByUserId.execute({id})
+    const { order } = await listOrdersByUserId.execute({ id })
 
     return reply.status(200).send({ order })
-
   } catch (err) {
     if (err instanceof ResourceNotFoundError) {
       return reply.status(409).send({ message: err.message })

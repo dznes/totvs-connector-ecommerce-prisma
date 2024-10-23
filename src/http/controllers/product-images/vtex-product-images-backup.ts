@@ -61,11 +61,11 @@ export async function VtexProductImagesBackup(
           where: {
             code: image.sku_code,
           },
-        });
+        })
 
         if (!skuExists) {
-          console.error(`SKU with code ${image.sku_code} not found`);
-          continue; // Skip this image if the sku_code is invalid
+          console.error(`SKU with code ${image.sku_code} not found`)
+          continue // Skip this image if the sku_code is invalid
         }
 
         if (productImageExists) {
@@ -105,7 +105,10 @@ export async function VtexProductImagesBackup(
           })
         }
       } catch (error) {
-        console.error(`Error processing image with code ${image.code}:`, JSON.stringify(error, null, 2))
+        console.error(
+          `Error processing image with code ${image.code}:`,
+          JSON.stringify(error, null, 2),
+        )
       }
     }
 

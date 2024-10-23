@@ -3,7 +3,9 @@ import { ListClassificationsUseCase } from '@/use-cases/classifications/list-cla
 
 export function makeListClassificationsUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
-  const listClassificationsUseCase = new ListClassificationsUseCase(classificationRepository)
+  const listClassificationsUseCase = new ListClassificationsUseCase(
+    classificationRepository,
+  )
 
   return listClassificationsUseCase
 }

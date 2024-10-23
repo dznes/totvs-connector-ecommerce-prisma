@@ -89,38 +89,34 @@ export class RegisterTotvsUserUseCase {
       throw new CodeAlreadyExistsError()
     }
 
-    try {
-      const user = await this.usersRepository.create({
-        code,
-        status: 200,
-        name,
-        email,
-        password_hash,
-        regitered_at,
-        rg,
-        birthDate: birthDate ?? null,
-        cpf,
-        cnpj: cnpj ?? null,
-        gender,
-        is_customer: is_customer ?? false,
-        is_supplier: is_supplier ?? false,
-        is_representative: is_representative ?? false,
-        is_shipping_company: is_shipping_company ?? false,
-        is_employee: is_employee ?? false,
-        is_active: is_active ?? true,
-        employee_status,
-        totvs_branch_code: 1,
-        utm_campaign,
-        utm_source,
-        utm_medium,
-        utm_content,
-        utm_term,
-        referrer,
-      })
+    const user = await this.usersRepository.create({
+      code,
+      status: 200,
+      name,
+      email,
+      password_hash,
+      regitered_at,
+      rg,
+      birthDate: birthDate ?? null,
+      cpf,
+      cnpj: cnpj ?? null,
+      gender,
+      is_customer: is_customer ?? false,
+      is_supplier: is_supplier ?? false,
+      is_representative: is_representative ?? false,
+      is_shipping_company: is_shipping_company ?? false,
+      is_employee: is_employee ?? false,
+      is_active: is_active ?? true,
+      employee_status,
+      totvs_branch_code: 1,
+      utm_campaign,
+      utm_source,
+      utm_medium,
+      utm_content,
+      utm_term,
+      referrer,
+    })
 
-      return { user };
-  } catch (error) {
-    throw error;
-  }
+    return { user }
   }
 }

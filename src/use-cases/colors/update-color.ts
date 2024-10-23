@@ -1,4 +1,3 @@
-import { convertToDecimal } from '@/core/entities/value-objects/convert-to-decimal'
 import { ColorsRepository } from '@/repositories/colors-repository'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
@@ -18,9 +17,9 @@ export class UpdateColorsUseCase {
     }
 
     await this.colorsRepository.update({
-        ...color,
-        background_color: backgroundColor,
-        updated_at: new Date(),
-      })
+      ...color,
+      background_color: backgroundColor,
+      updated_at: new Date(),
+    })
   }
 }

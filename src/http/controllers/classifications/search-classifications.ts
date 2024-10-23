@@ -10,7 +10,9 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     perPage: z.coerce.number().min(1).default(20),
   })
 
-  const { q, page, perPage } = searchClassificationsQuerySchema.parse(request.query)
+  const { q, page, perPage } = searchClassificationsQuerySchema.parse(
+    request.query,
+  )
 
   const searchClassificationsUseCase = makeSearchClassificationsUseCase()
 

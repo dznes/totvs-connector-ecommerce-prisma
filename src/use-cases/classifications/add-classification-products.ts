@@ -44,10 +44,11 @@ export class AddClassificationProductsUseCase {
       .filter((product) => product.exists)
       .map((product) => product.productId)
 
-    const classification = await this.classificationsRepository.addProductsToClassification(
-      classificationId,
-      existingProductIds,
-    )
+    const classification =
+      await this.classificationsRepository.addProductsToClassification(
+        classificationId,
+        existingProductIds,
+      )
 
     return { classification }
   }

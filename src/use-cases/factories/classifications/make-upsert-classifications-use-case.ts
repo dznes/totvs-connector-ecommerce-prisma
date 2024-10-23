@@ -3,7 +3,9 @@ import { UpsertClassificationUseCase } from '@/use-cases/classifications/upsert-
 
 export function makeUpsertClassificationUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
-  const upsertClassificationUseCase = new UpsertClassificationUseCase(classificationRepository)
+  const upsertClassificationUseCase = new UpsertClassificationUseCase(
+    classificationRepository,
+  )
 
   return upsertClassificationUseCase
 }

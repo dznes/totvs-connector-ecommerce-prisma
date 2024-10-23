@@ -5,7 +5,10 @@ import { UpdateProductImageUseCase } from '@/use-cases/product-images/update-pro
 export function makeUpdateProductImageUseCase() {
   const productImagesRepository = new PrismaProductImagesRepository()
   const skusRepository = new PrismaSkusRepository()
-  const updateProductImageUseCase = new UpdateProductImageUseCase(productImagesRepository, skusRepository)
+  const updateProductImageUseCase = new UpdateProductImageUseCase(
+    productImagesRepository,
+    skusRepository,
+  )
 
   return updateProductImageUseCase
 }

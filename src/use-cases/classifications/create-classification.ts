@@ -34,7 +34,10 @@ export class CreateClassificationUseCase {
     }
 
     const classificationWithSameCode =
-      await this.classificationsRepository.findByCodeAndTypeCode(code, type_code)
+      await this.classificationsRepository.findByCodeAndTypeCode(
+        code,
+        type_code,
+      )
 
     if (classificationWithSameCode) {
       throw new ResourceAlreadyExistsError()

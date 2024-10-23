@@ -5,7 +5,10 @@ import { CreateProductImageUseCase } from '@/use-cases/product-images/create-pro
 export function makeCreateProductImageUseCase() {
   const productImagesRepository = new PrismaProductImagesRepository()
   const skusRepository = new PrismaSkusRepository()
-  const createProductImageUseCase = new CreateProductImageUseCase(productImagesRepository, skusRepository)
+  const createProductImageUseCase = new CreateProductImageUseCase(
+    productImagesRepository,
+    skusRepository,
+  )
 
   return createProductImageUseCase
 }

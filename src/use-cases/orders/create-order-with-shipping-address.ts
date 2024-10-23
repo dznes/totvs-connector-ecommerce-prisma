@@ -13,12 +13,12 @@ interface ShippingAddress {
   complement?: string
 }
 
-interface Items {
-  code: string
-  amount: number
-  description: string
-  quantity: number
-}
+// interface Items {
+//   code: string
+//   amount: number
+//   description: string
+//   quantity: number
+// }
 
 interface CreateOrderWithShippingAddressUseCaseRequest {
   code: string
@@ -97,7 +97,7 @@ export class CreateOrderWithShippingAddressUseCase {
     shipping_service_name,
     totvs_order_status,
     user_code,
-    shippingAddress
+    shippingAddress,
   }: CreateOrderWithShippingAddressUseCaseRequest) {
     // Check if user exists
     const user = await this.usersRepository.findByCode(user_code)
@@ -110,7 +110,7 @@ export class CreateOrderWithShippingAddressUseCase {
 
     if (orderWithSameCode) {
       throw new ResourceAlreadyExistsError()
-    } 
+    }
 
     const order = await this.ordersRepository.create({
       code,
@@ -156,9 +156,8 @@ export class CreateOrderWithShippingAddressUseCase {
           number: shippingAddress.number,
           complement: shippingAddress.complement,
           country: shippingAddress.country,
-
-        }
-      }
+        },
+      },
     })
 
     return { order }

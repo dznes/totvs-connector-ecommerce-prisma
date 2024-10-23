@@ -3,7 +3,9 @@ import { CreateClassificationUseCase } from '@/use-cases/classifications/create-
 
 export function makeCreateClassificationUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
-  const createClassificationUseCase = new CreateClassificationUseCase(classificationRepository)
+  const createClassificationUseCase = new CreateClassificationUseCase(
+    classificationRepository,
+  )
 
   return createClassificationUseCase
 }

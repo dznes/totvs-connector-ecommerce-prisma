@@ -10,19 +10,22 @@ const getDefaultStartDate = () => {
   return thirtyDaysAgo
 }
 
-export async function getSalesByDay(request: FastifyRequest, reply: FastifyReply) {
+export async function getSalesByDay(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const getSalesByDayQuerySchema = z.object({
     startDate: z.coerce.date().optional().default(getDefaultStartDate), // Default to 30 days ago
-    endDate: z.coerce.date().optional().default(new Date())  // Default to today
+    endDate: z.coerce.date().optional().default(new Date()), // Default to today
   })
 
-  const { startDate, endDate } =
-    getSalesByDayQuerySchema.parse(request.query)
+  const { startDate, endDate } = getSalesByDayQuerySchema.parse(request.query)
 
   const getSalesByDayUseCase = makeGetSalesByDayUseCase()
 
   const { result } = await getSalesByDayUseCase.execute({
-    startDate, endDate
+    startDate,
+    endDate,
   })
 
   return reply.status(200).send({

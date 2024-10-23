@@ -2,10 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 import { makeListPhonesUseCase } from '@/use-cases/factories/phones/make-list-phones-use-case'
 
-export async function listPhones(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function listPhones(request: FastifyRequest, reply: FastifyReply) {
   try {
     const listPhonesUseCase = makeListPhonesUseCase()
 

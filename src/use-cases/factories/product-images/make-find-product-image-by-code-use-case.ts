@@ -3,7 +3,9 @@ import { FindProductImageByCodeUseCase } from '@/use-cases/product-images/find-p
 
 export function makeFindProductImageByCode() {
   const productImagesRepository = new PrismaProductImagesRepository()
-  const updateProductImageUseCase = new FindProductImageByCodeUseCase(productImagesRepository)
+  const updateProductImageUseCase = new FindProductImageByCodeUseCase(
+    productImagesRepository,
+  )
 
   return updateProductImageUseCase
 }

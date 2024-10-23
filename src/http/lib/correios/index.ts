@@ -9,7 +9,7 @@ const correios_cep_url = 'https://api.correios.com.br'
 function headerBuilder(token: string) {
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   }
 }
 
@@ -42,7 +42,7 @@ interface GetTokenWithPostageCardResponse {
 
 export async function getTokenWithPostageCard(): Promise<GetTokenWithPostageCardResponse> {
   const url = `${correios_cep_url}/token/v1/autentica/cartaopostagem`
-  const body= {
+  const body = {
     numero: process.env.CORREIOS_POSTAGE_CARD,
     contrato: process.env.CORREIOS_CONTRACT,
     dr: process.env.CORREIOS_DR,
@@ -59,9 +59,33 @@ export async function getTokenWithPostageCard(): Promise<GetTokenWithPostageCard
       throw new Error(`Failed to authenticate: ${response.statusText}`)
     }
 
-    const { ambiente, id, ip, perfil, cnpj, categoria, emissao, expiraEm, zoneOffset, cartaoPostagem, token } = await response.json()
+    const {
+      ambiente,
+      id,
+      ip,
+      perfil,
+      cnpj,
+      categoria,
+      emissao,
+      expiraEm,
+      zoneOffset,
+      cartaoPostagem,
+      token,
+    } = await response.json()
 
-    return { ambiente, id, ip, perfil, cnpj, categoria, emissao, expiraEm, zoneOffset, cartaoPostagem, token }
+    return {
+      ambiente,
+      id,
+      ip,
+      perfil,
+      cnpj,
+      categoria,
+      emissao,
+      expiraEm,
+      zoneOffset,
+      cartaoPostagem,
+      token,
+    }
   } catch (error) {
     console.error('Error fetching Token info:', error)
     throw new Error('Failed to fetch Token information')
@@ -101,7 +125,9 @@ interface AddressInfoByCEPResponde {
   txMsg?: string
 }
 
-export async function AddressInfoByCEP(cep: string): Promise<AddressInfoByCEPResponde> {
+export async function AddressInfoByCEP(
+  cep: string,
+): Promise<AddressInfoByCEPResponde> {
   const url = `${correios_cep_url}/cep/v2/enderecos//${cep}`
   const { token } = await getTokenWithPostageCard()
 
@@ -115,9 +141,65 @@ export async function AddressInfoByCEP(cep: string): Promise<AddressInfoByCEPRes
       throw new Error(`Failed to fetch CEP Info: ${response.statusText}`)
     }
 
-    const { cep, uf, numeroLocalidade, localidade, logradouro, tipoLogradouro, nomeLogradouro, numeroLogradouro, complemento, abreviatura, bairro, numeroLocalidadeSuperior, localidadeSuperior, nome, siglaUnidade, tipoCEP, cepAnterior, distrito, cepUnidadeOperacional, lado, numeroInicial, numeroFinal, clique, caixasPostais, locker, agenciaModular, txMsg } = await response.json()
+    const {
+      cep,
+      uf,
+      numeroLocalidade,
+      localidade,
+      logradouro,
+      tipoLogradouro,
+      nomeLogradouro,
+      numeroLogradouro,
+      complemento,
+      abreviatura,
+      bairro,
+      numeroLocalidadeSuperior,
+      localidadeSuperior,
+      nome,
+      siglaUnidade,
+      tipoCEP,
+      cepAnterior,
+      distrito,
+      cepUnidadeOperacional,
+      lado,
+      numeroInicial,
+      numeroFinal,
+      clique,
+      caixasPostais,
+      locker,
+      agenciaModular,
+      txMsg,
+    } = await response.json()
 
-    return { cep, uf, numeroLocalidade, localidade, logradouro, tipoLogradouro, nomeLogradouro, numeroLogradouro, complemento, abreviatura, bairro, numeroLocalidadeSuperior, localidadeSuperior, nome, siglaUnidade, tipoCEP, cepAnterior, distrito, cepUnidadeOperacional, lado, numeroInicial, numeroFinal, clique, caixasPostais, locker, agenciaModular, txMsg }
+    return {
+      cep,
+      uf,
+      numeroLocalidade,
+      localidade,
+      logradouro,
+      tipoLogradouro,
+      nomeLogradouro,
+      numeroLogradouro,
+      complemento,
+      abreviatura,
+      bairro,
+      numeroLocalidadeSuperior,
+      localidadeSuperior,
+      nome,
+      siglaUnidade,
+      tipoCEP,
+      cepAnterior,
+      distrito,
+      cepUnidadeOperacional,
+      lado,
+      numeroInicial,
+      numeroFinal,
+      clique,
+      caixasPostais,
+      locker,
+      agenciaModular,
+      txMsg,
+    }
   } catch (error) {
     console.error('Error fetching CEP info:', error)
     throw new Error('Failed to fetch CEP information')
@@ -154,15 +236,15 @@ interface CalculatePriceResponse {
 }
 
 export async function calculatePrice({
-  codigoServico, 
-  cepDestino, 
-  cepOrigem, 
+  codigoServico,
+  cepDestino,
+  cepOrigem,
   pesoObjeto,
-  tipoObjeto, 
-  comprimento, 
-  largura, 
-  altura, 
-  diametro
+  tipoObjeto,
+  comprimento,
+  largura,
+  altura,
+  diametro,
 }: CalculatePriceRequest): Promise<CalculatePriceResponse> {
   const url = `${correios_cep_url}/preco/v1/nacional/${codigoServico}?cepDestino=${cepDestino}&cepOrigem=${cepOrigem}&psObjeto=${pesoObjeto}&tipoObjeto=${tipoObjeto}&comprimento=${comprimento}&largura=${largura}&altura=${altura}&diametro=${diametro}`
   const { token } = await getTokenWithPostageCard()
@@ -192,7 +274,7 @@ export async function calculatePrice({
       pcFaixa,
       pcFaixaVariacao,
       pcProduto,
-      pcFinal
+      pcFinal,
     } = await response.json()
 
     return {
@@ -210,7 +292,7 @@ export async function calculatePrice({
       pcFaixa,
       pcFaixaVariacao,
       pcProduto,
-      pcFinal
+      pcFinal,
     }
   } catch (error) {
     console.error('Error fetching CEP info:', error)
@@ -219,13 +301,13 @@ export async function calculatePrice({
 }
 
 interface CalculateDeliveryDateRequest {
-  codigoServico: string, 
-  cepDestino: string, 
-  cepOrigem: string,
-  dataEvento?: string,
+  codigoServico: string
+  cepDestino: string
+  cepOrigem: string
+  dataEvento?: string
 }
 interface CalculateDeliveryDateResponse {
-  coProduto: string,
+  coProduto: string
   prazoEntrega: number
   dataMaxima: string
   entregaDomiciliar: string
@@ -234,8 +316,8 @@ interface CalculateDeliveryDateResponse {
 }
 
 export async function calculateDeliveryDate({
-  codigoServico, 
-  cepDestino, 
+  codigoServico,
+  cepDestino,
   cepOrigem,
   dataEvento,
 }: CalculateDeliveryDateRequest): Promise<CalculateDeliveryDateResponse> {
@@ -261,18 +343,16 @@ export async function calculateDeliveryDate({
       entregaDomingo,
     } = await response.json()
 
-    return { 
+    return {
       coProduto,
       prazoEntrega,
       dataMaxima,
       entregaDomiciliar,
       entregaSabado,
       entregaDomingo,
-     }
-
+    }
   } catch (error) {
     console.error('Error fetching CEP info:', error)
     throw new Error('Failed to fetch CEP information')
   }
 }
-

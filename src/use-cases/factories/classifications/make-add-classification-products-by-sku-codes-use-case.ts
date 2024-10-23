@@ -5,10 +5,11 @@ import { PrismaProductsRepository } from '@/repositories/prisma/prisma-products-
 export function makeAddClassificationProductsBySkuCodesUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
   const productRepository = new PrismaProductsRepository()
-  const addClassificationProductsBySkuCodesUseCase = new AddClassificationBySkuCodesProductsUseCase(
-    classificationRepository,
-    productRepository,
-  )
+  const addClassificationProductsBySkuCodesUseCase =
+    new AddClassificationBySkuCodesProductsUseCase(
+      classificationRepository,
+      productRepository,
+    )
 
   return addClassificationProductsBySkuCodesUseCase
 }

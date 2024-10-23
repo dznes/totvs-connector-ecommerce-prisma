@@ -25,8 +25,7 @@ interface CreateAddressUseCaseResponse {
 export class CreateAddressUseCase {
   constructor(
     private addressesRepository: AddressesRepository,
-    private usersRepository: UsersRepository
-
+    private usersRepository: UsersRepository,
   ) {}
 
   async execute({
@@ -44,7 +43,7 @@ export class CreateAddressUseCase {
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
     if (!user) {
-        throw new UserNotFoundError()
+      throw new UserNotFoundError()
     }
 
     const address = await this.addressesRepository.create({

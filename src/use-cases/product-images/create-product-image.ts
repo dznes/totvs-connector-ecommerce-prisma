@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface CreateProductImageUseCaseRequest {
   code?: string
-  title:string
+  title: string
   file_key?: string
   color?: string
   slug?: string
@@ -40,7 +40,8 @@ export class CreateProductImageUseCase {
       code = randomUUID()
     }
 
-    const productImageExists = await this.productImagesRepository.findByCode(code)
+    const productImageExists =
+      await this.productImagesRepository.findByCode(code)
 
     if (productImageExists) {
       throw new ResourceAlreadyExistsError()

@@ -4,5 +4,8 @@ import { LinkProductImagesToSkuByProductAndColor } from './link-product-images-t
 
 export async function ProductImagesRoutes(app: FastifyInstance) {
   app.get('/vtex/products', VtexProductImagesBackup)
-  app.get('/product-images/link-by-product-color', LinkProductImagesToSkuByProductAndColor)
+  app.get(
+    '/product-images/link-by-product-color',
+    LinkProductImagesToSkuByProductAndColor,
+  )
 }

@@ -14,7 +14,8 @@ export async function update(request: FastifyRequest, reply: FastifyReply) {
   const searchColorsUseCase = makeUpdateColorsUseCase()
 
   await searchColorsUseCase.execute({
-    code, backgroundColor
+    code,
+    backgroundColor,
   })
 
   return reply.status(200).send()

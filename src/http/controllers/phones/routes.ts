@@ -10,11 +10,7 @@ import { checkoutCreate } from './create-phone-user-cookie'
 export async function PhonesRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJwt)
   app.post('/api/phones', { onRequest: [verifyJwt] }, create)
-  app.post(
-    '/api/checkout/phone',
-    { onRequest: [verifyJwt] },
-    checkoutCreate,
-  )
+  app.post('/api/checkout/phone', { onRequest: [verifyJwt] }, checkoutCreate)
   app.get('/api/phones/all', listPhones)
   app.get('/api/phones/:id', listByUserId)
   app.delete('/api/phones/:id', deletePhone)

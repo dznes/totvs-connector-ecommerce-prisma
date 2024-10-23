@@ -703,9 +703,9 @@ export async function getClassifications({
 }: GetClassificationsProps): Promise<ClassificationsList> {
   const typeCodeParams = typeCodeList?.length
     ? typeCodeList.map((typeCode) => `TypeCodeList=${typeCode}`).join('&')
-    : '';
+    : ''
 
-  const url = `${totvs_url}/api/totvsmoda/product/v2/classifications${typeCodeParams ? `?${typeCodeParams}` : ''}`;
+  const url = `${totvs_url}/api/totvsmoda/product/v2/classifications${typeCodeParams ? `?${typeCodeParams}` : ''}`
 
   const headers = headerBuilder(token)
 
@@ -721,7 +721,7 @@ interface GetProductCodesByClassificationProps extends TotvsProps {
   classificationTypeCode: number
   classificationCode: string
 }
-interface GetProductCodesByClassificationResponse extends TotvsResponse{
+interface GetProductCodesByClassificationResponse extends TotvsResponse {
   items: {
     productCode: number
     maxChangeFilterDate: Date
@@ -760,15 +760,13 @@ export async function getProductCodesByClassification({
         endDate: formattedEndDate,
         inProduct: true,
         inBranchInfo: true,
-        branchInfoCodeList: [
-          1,2
-        ]
+        branchInfoCodeList: [1, 2],
       },
       classifications: [
         {
           type: classificationTypeCode,
           codeList: [classificationCode],
-        }
+        },
       ],
     },
     option: {
@@ -787,7 +785,6 @@ export async function getProductCodesByClassification({
 
   return data
 }
-
 
 // CREATION ROUTE FUNCTIONS
 export async function createRetailClient({
@@ -893,13 +890,13 @@ export async function createWholesaleClient({
 }
 
 interface createRetailClientAddressProps {
-  token: string;
-  cpf: string;
-  type: string;
-  zip_code: string;
-  street: string;
-  number: number;
-  complement?: string;
+  token: string
+  cpf: string
+  type: string
+  zip_code: string
+  street: string
+  number: number
+  complement?: string
 }
 
 export async function createRetailClientAddress({
@@ -917,7 +914,7 @@ export async function createRetailClientAddress({
 
   const body = {
     branchInsertCode: 1,
-    cpf: cpf,
+    cpf,
     addresses: [
       {
         addressTypeCode: 5,
@@ -926,7 +923,7 @@ export async function createRetailClientAddress({
         cep: zip_code,
         number,
         complement,
-      }
+      },
     ],
   }
 
@@ -961,12 +958,12 @@ export async function createRetailClientPhone({
 
   const body = {
     branchInsertCode: 1,
-    cpf: cpf,
+    cpf,
     phones: [
       {
         typeCode,
         number: `${ddd}${number}`,
-      }
+      },
     ],
   }
 
@@ -982,60 +979,60 @@ export async function createRetailClientPhone({
 }
 
 interface OrderItem {
-  productCode: number;
-  price: number;
-  quantity: number;
-  billingForecastDate: string;
+  productCode: number
+  price: number
+  quantity: number
+  billingForecastDate: string
 }
 
 interface OrderCreation {
-  id: string;
-  created_at: string;
-  operationCode: number;
-  freight_value: number;
-  total_value: number;
-  items: OrderItem[];
+  id: string
+  created_at: string
+  operationCode: number
+  freight_value: number
+  total_value: number
+  items: OrderItem[]
 }
 
 interface Client {
-  code: string;
-  cpf: string;
+  code: string
+  cpf: string
 }
 
 interface Payment {
   document_type: string
-  transaction_id: string;
-  nsu?: string;
+  transaction_id: string
+  nsu?: string
   authorization_code?: string
   credit_card_operator?: string
-  card_brand?: string;
-  installments: number;
-  total_value: number;
-  created_at: string;
+  card_brand?: string
+  installments: number
+  total_value: number
+  created_at: string
 }
 
-interface ShippingAddress {
-  cep: string;
-  address: string;
-  number: number;
-  complement?: string;
-}
+// interface ShippingAddress {
+//   cep: string
+//   address: string
+//   number: number
+//   complement?: string
+// }
 
 interface Shipping {
-  zip_code: string;
-  street: string;
-  number: number;
-  complement?: string;
+  zip_code: string
+  street: string
+  number: number
+  complement?: string
   service_code: string
   service_name: string
 }
 
 interface CreateOrderRequest {
-  token: string;
-  order: OrderCreation;
-  client: Client;
-  payment: Payment;
-  shipping: Shipping;
+  token: string
+  order: OrderCreation
+  client: Client
+  payment: Payment
+  shipping: Shipping
 }
 
 export async function createOrder({
@@ -1045,9 +1042,9 @@ export async function createOrder({
   payment,
   shipping,
 }: CreateOrderRequest): Promise<any> {
-  const url = `${totvs_test_url}/api/totvsmoda/sales-order/v2/b2c-orders`;
+  const url = `${totvs_test_url}/api/totvsmoda/sales-order/v2/b2c-orders`
 
-  const headers = headerBuilder(token);
+  const headers = headerBuilder(token)
   const body = {
     orderId: order.id,
     branchCode: 1,
@@ -1061,21 +1058,21 @@ export async function createOrder({
     paymentConditionCode: 1,
     paymentBaseDate: payment.created_at,
     priorityCode: 99,
-    arrivalDate: "2024-09-04T13:36:45.040Z",
+    arrivalDate: '2024-09-04T13:36:45.040Z',
     shippingCompanyCode: 64,
     billingForecastDate: payment.created_at,
     freightType: 1,
     freightValue: order.freight_value,
-    statusOrder: "Blocked",
+    statusOrder: 'Blocked',
     shippingService: shipping.service_code,
     shippingServiceName: shipping.service_name,
-    experienceType: "Ecommerce",
+    experienceType: 'Ecommerce',
     totalAmountOrder: order.total_value,
     items: order.items,
     classifications: [
       {
         classificationTypeCode: 1,
-        classificationCode: "02",
+        classificationCode: '02',
       },
     ],
     payments: [
@@ -1089,13 +1086,13 @@ export async function createOrder({
         installment: payment.installments,
         paymentValue: order.total_value,
         currentAccountCode: 1,
-        paymentType: "Normal",
+        paymentType: 'Normal',
         paymentBranch: 1,
       },
     ],
     observations: [
       {
-        observation: "SEM BRINDE",
+        observation: 'SEM BRINDE',
       },
     ],
     shippingAddress: {
@@ -1104,32 +1101,34 @@ export async function createOrder({
       number: shipping.number,
       complement: shipping.complement,
     },
-  };
+  }
 
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
-    });
+    })
 
     if (!response.ok) {
       // Handle non-2xx HTTP status codes
-      const errorResponse = await response.json();
-      console.log('Error response:', errorResponse);
-      throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(errorResponse) || 'Unknown error'}`);
+      const errorResponse = await response.json()
+      console.log('Error response:', errorResponse)
+      throw new Error(
+        `API request failed with status ${response.status}: ${JSON.stringify(errorResponse) || 'Unknown error'}`,
+      )
     }
 
-    const data = await response.json();
-    return data;
+    const data = await response.json()
+    return data
   } catch (error) {
     // Check if error is an instance of Error to safely access its properties
     if (error instanceof Error) {
-      console.error('Error creating order:', error.message);
-      throw new Error(`Failed to create order: ${error.message}`);
+      console.error('Error creating order:', error.message)
+      throw new Error(`Failed to create order: ${error.message}`)
     } else {
-      console.error('An unknown error occurred:', error);
-      throw new Error('Failed to create order: An unknown error occurred');
+      console.error('An unknown error occurred:', error)
+      throw new Error('Failed to create order: An unknown error occurred')
     }
   }
 }

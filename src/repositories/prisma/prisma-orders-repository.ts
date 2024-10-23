@@ -203,7 +203,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
       orderBy: {
         totvs_creation_date: 'asc',
       },
-    });
+    })
 
     return orders
   }

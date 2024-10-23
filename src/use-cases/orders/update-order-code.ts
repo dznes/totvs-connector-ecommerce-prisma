@@ -13,9 +13,7 @@ export interface UpdateOrderCodeUseCaseResponse {
 }
 
 export class UpdateOrderCodeUseCase {
-  constructor(
-    private ordersRepository: OrdersRepository,
-  ) {}
+  constructor(private ordersRepository: OrdersRepository) {}
 
   async execute({
     id,

@@ -11,9 +11,7 @@ interface UpsertClassificationUseCaseRequest {
 }
 
 export class UpsertClassificationUseCase {
-  constructor(
-    private classificationsRepository: ClassificationsRepository,
-  ) {}
+  constructor(private classificationsRepository: ClassificationsRepository) {}
 
   async execute({
     code,
@@ -23,8 +21,11 @@ export class UpsertClassificationUseCase {
     title,
     slug,
   }: UpsertClassificationUseCaseRequest) {
-
-    const classification = await this.classificationsRepository.findByCodeAndTypeCode(code, type_code)
+    const classification =
+      await this.classificationsRepository.findByCodeAndTypeCode(
+        code,
+        type_code,
+      )
 
     if (classification) {
       await this.classificationsRepository.update({

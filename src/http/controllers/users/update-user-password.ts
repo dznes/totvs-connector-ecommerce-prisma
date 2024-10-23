@@ -12,9 +12,7 @@ export async function updateUserPassword(
     password: z.string().optional(),
   })
 
-  const { code, password } = createPhoneParamsSchema.parse(
-    request.body,
-  )
+  const { code, password } = createPhoneParamsSchema.parse(request.body)
 
   try {
     const updateUserPassword = makeUpdateUserPasswordUseCase()

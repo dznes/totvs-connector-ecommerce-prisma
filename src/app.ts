@@ -26,7 +26,11 @@ export const app = fastify()
 
 // Register @fastify/cors with options as needed
 app.register(fastifyCors, {
-  origin: ['http://localhost:3000', 'http://localhost:3010', 'https://dznes-store.vercel.app'], // Allowed origins
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3010',
+    'https://dznes-store.vercel.app',
+  ], // Allowed origins
   methods: ['GET', 'PUT', 'POST', 'DELETE'],
 })
 

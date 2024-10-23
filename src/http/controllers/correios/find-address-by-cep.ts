@@ -7,12 +7,10 @@ export async function findAddressByCEP(
   reply: FastifyReply,
 ) {
   const bodySchema = z.object({
-    cep: z.string()
+    cep: z.string(),
   })
-  const { cep } =
-  bodySchema.parse(request.body)
+  const { cep } = bodySchema.parse(request.body)
   try {
-
     const address = await AddressInfoByCEP(cep)
     return reply.status(201).send(address)
   } catch (err) {

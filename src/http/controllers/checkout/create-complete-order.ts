@@ -1,12 +1,15 @@
 import { createOrderPayment } from '@/http/lib/pagarme'
-import { createOrder, fetchTestEnvToken } from '@/http/lib/totvs';
-import { makeCreateOrderItemUseCase } from '@/use-cases/factories/order-items/make-create-order-item-use-case';
-import { makeCreateOrderWithShippingAddressUseCase } from '@/use-cases/factories/orders/make-create-order-with-shipping-address-use-case';
-import { randomUUID } from 'crypto';
+import { createOrder, fetchTestEnvToken } from '@/http/lib/totvs'
+import { makeCreateOrderItemUseCase } from '@/use-cases/factories/order-items/make-create-order-item-use-case'
+import { makeCreateOrderWithShippingAddressUseCase } from '@/use-cases/factories/orders/make-create-order-with-shipping-address-use-case'
+import { randomUUID } from 'crypto'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 
-export async function orderComplete(request: FastifyRequest, reply: FastifyReply) {
+export async function orderComplete(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const createOrderPaymentBodySchema = z.object({
     customer: z.object({
       name: z.string(),
@@ -45,123 +48,130 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
         amount: z.number(),
         description: z.string(),
         quantity: z.number(),
-      })
+      }),
     ),
     payments: z.array(
-      z.object({
-        payment_method: z.enum([
-          'credit_card',
-          'boleto',
-          'voucher',
-          'bank_transfer',
-          'safety_pay',
-          'checkout',
-          'cash',
-          'pix',
-        ]),
-        credit_card: z
-          .object({
-            recurrence: z.boolean().optional().default(false),
-            installments: z.number(),
-            statement_descriptor: z.string(),
-            card_token: z.string().optional(),
-            card: z
-              .object({
-                number: z.string().optional(),
-                holder_name: z.string().optional(),
-                cvv: z.string().optional(),
-                billing_address: z.object({
-                  line_1: z.string(),
-                  zip_code: z.string(),
-                  city: z.string(),
-                  state: z.string(),
-                  country: z.string(),
-                }),
-              })
-              .optional(),
-          })
-          .optional(),
-        boleto: z
-          .object({
-            bank: z.string().optional(),
-            instructions: z.string(),
-            due_at: z.string(),
-            nosso_numero: z.string(),
-            type: z.string(),
-            document_number: z.string(),
-            interest: z.object({
-              days: z.number(),
-              type: z.string(),
-              amount: z.string(),
-            }).optional(),
-            fine: z.object({
-              days: z.number(),
-              type: z.string(),
-              amount: z.number(),
-            }).optional(),
-          })
-          .optional(),
-        pix:z
-        .union([
-          z.object({
-            expires_in: z.number(),
-            additional_information: z
-              .object({
-                name: z.string(),
-                value: z.string(),
-              })
-              .optional(),
-          }),
-          z.object({
-            expires_at: z.date(),
-            additional_information: z
-              .object({
-                name: z.string(),
-                value: z.string(),
-              })
-              .optional(),
-          }),
-        ])
-        .optional(),
-        amount: z.number().optional(),
-        split: z
-          .array(
-            z.object({
-              amount: z.number(),
-              recipient_id: z
-                .string()
-                .regex(/^rp_[A-Za-z0-9]{16}$/), // rp_XXXXXXXXXXXXXXXX format
-              type: z.enum(['percentage', 'flat']),
-              options: z.object({
-                charge_processing_fee: z.boolean(),
-                charge_remainder_fee: z.boolean(),
-                liable: z.boolean(),
-              }),
+      z
+        .object({
+          payment_method: z.enum([
+            'credit_card',
+            'boleto',
+            'voucher',
+            'bank_transfer',
+            'safety_pay',
+            'checkout',
+            'cash',
+            'pix',
+          ]),
+          credit_card: z
+            .object({
+              recurrence: z.boolean().optional().default(false),
+              installments: z.number(),
+              statement_descriptor: z.string(),
+              card_token: z.string().optional(),
+              card: z
+                .object({
+                  number: z.string().optional(),
+                  holder_name: z.string().optional(),
+                  cvv: z.string().optional(),
+                  billing_address: z.object({
+                    line_1: z.string(),
+                    zip_code: z.string(),
+                    city: z.string(),
+                    state: z.string(),
+                    country: z.string(),
+                  }),
+                })
+                .optional(),
             })
-          )
-          .optional(),
-      }).refine(
-        (data) => {
-          // Ensure the correct object is present depending on the payment_method
-          if (data.payment_method === 'credit_card' && !data.credit_card) return false;
-          if (data.payment_method === 'boleto' && !data.boleto) return false;
-          if (data.payment_method === 'pix' && !data.pix) return false;
-          return true;
-        },
-        {
-          message: 'Required payment object is missing for the selected payment method',
-          path: ['payments'],
-        }
-      )
+            .optional(),
+          boleto: z
+            .object({
+              bank: z.string().optional(),
+              instructions: z.string(),
+              due_at: z.string(),
+              nosso_numero: z.string(),
+              type: z.string(),
+              document_number: z.string(),
+              interest: z
+                .object({
+                  days: z.number(),
+                  type: z.string(),
+                  amount: z.string(),
+                })
+                .optional(),
+              fine: z
+                .object({
+                  days: z.number(),
+                  type: z.string(),
+                  amount: z.number(),
+                })
+                .optional(),
+            })
+            .optional(),
+          pix: z
+            .union([
+              z.object({
+                expires_in: z.number(),
+                additional_information: z
+                  .object({
+                    name: z.string(),
+                    value: z.string(),
+                  })
+                  .optional(),
+              }),
+              z.object({
+                expires_at: z.date(),
+                additional_information: z
+                  .object({
+                    name: z.string(),
+                    value: z.string(),
+                  })
+                  .optional(),
+              }),
+            ])
+            .optional(),
+          amount: z.number().optional(),
+          split: z
+            .array(
+              z.object({
+                amount: z.number(),
+                recipient_id: z.string().regex(/^rp_[A-Za-z0-9]{16}$/), // rp_XXXXXXXXXXXXXXXX format
+                type: z.enum(['percentage', 'flat']),
+                options: z.object({
+                  charge_processing_fee: z.boolean(),
+                  charge_remainder_fee: z.boolean(),
+                  liable: z.boolean(),
+                }),
+              }),
+            )
+            .optional(),
+        })
+        .refine(
+          (data) => {
+            // Ensure the correct object is present depending on the payment_method
+            if (data.payment_method === 'credit_card' && !data.credit_card)
+              return false
+            if (data.payment_method === 'boleto' && !data.boleto) return false
+            if (data.payment_method === 'pix' && !data.pix) return false
+            return true
+          },
+          {
+            message:
+              'Required payment object is missing for the selected payment method',
+            path: ['payments'],
+          },
+        ),
     ),
     utm_source: z.string().optional(),
     utm_medium: z.string().optional(),
     utm_campaign: z.string().optional(),
     utm_term: z.string().optional(),
     utm_content: z.string().optional(),
-  });
-        
-  const { customer,
+  })
+
+  const {
+    customer,
     customerCode,
     shipping,
     items,
@@ -170,9 +180,9 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
     utm_medium,
     utm_campaign,
     utm_term,
-    utm_content 
-  } = createOrderPaymentBodySchema.parse(request.body);
-  
+    utm_content,
+  } = createOrderPaymentBodySchema.parse(request.body)
+
   try {
     const pagarmeShipping = {
       address: {
@@ -181,7 +191,10 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
         zip_code: shipping.address.zip_code,
         city: shipping.address.city,
         state: shipping.address.state,
-        country: shipping.address.country.toLowerCase() === 'brasil' ? 'BR' : shipping.address.country,
+        country:
+          shipping.address.country.toLowerCase() === 'brasil'
+            ? 'BR'
+            : shipping.address.country,
       },
       amount: shipping.amount,
       description: shipping.description,
@@ -189,11 +202,26 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       recipient_phone: shipping.recipient_phone,
     }
 
-    const { id, code, amount, currency, closed, status, charges } = await createOrderPayment({ customer, shipping: pagarmeShipping, items, payments })
+    const {
+      // id,
+      // code,
+      // amount,
+      // currency,
+      // closed,
+      // status,
+      charges,
+    } = await createOrderPayment({
+      customer,
+      shipping: pagarmeShipping,
+      items,
+      payments,
+    })
 
     // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "charges" PROPERTY
     if (!charges) {
-      return reply.status(500).send({ message: 'Pagar.me did not return charges property.' });
+      return reply
+        .status(500)
+        .send({ message: 'Pagar.me did not return charges property.' })
     }
 
     const orderId = randomUUID()
@@ -213,7 +241,7 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
           quantity: item.quantity,
           billingForecastDate: charges[0].last_transaction.created_at,
         }
-      })
+      }),
     }
 
     const client = {
@@ -235,35 +263,38 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
 
     console.log(totvsShipping)
 
-    if (payments[0].payment_method === 'credit_card') {  
+    if (payments[0].payment_method === 'credit_card') {
       const payment = {
-        document_type: "CreditCard",
+        document_type: 'CreditCard',
         transaction_id: charges[0].last_transaction.id,
         nsu: charges[0].last_transaction.acquirer_nsu,
         authorization_code: charges[0].last_transaction.acquirer_auth_code,
-        credit_card_operator: "PAGAR.ME",
+        credit_card_operator: 'PAGAR.ME',
         card_brand: charges[0].last_transaction.card.brand,
         installments: charges[0].last_transaction.installments,
         total_value: charges[0].last_transaction.amount / 100,
         created_at: charges[0].last_transaction.created_at,
       }
-  
+
       const totvsOrder = await createOrder({
-        token: token.access_token, 
-        order, 
-        client, 
-        payment, 
-        shipping: totvsShipping
+        token: token.access_token,
+        order,
+        client,
+        payment,
+        shipping: totvsShipping,
       })
-  
+
       if (!totvsOrder.orderCode) {
-        return reply.status(500).send({ message: 'TOTVS API did not return orderCode property.' });
+        return reply
+          .status(500)
+          .send({ message: 'TOTVS API did not return orderCode property.' })
       }
       // ADD ERROR HANDLIG FOR TOTVS API WHEN IT DOESNT RETURN A "orderCode" PROPERTY
 
       const totvs_test_code = `totvs-${totvsOrder.orderCode}`
 
-      const createOrderWithShippingUseCase = makeCreateOrderWithShippingAddressUseCase()
+      const createOrderWithShippingUseCase =
+        makeCreateOrderWithShippingAddressUseCase()
 
       const orderWithShipping = await createOrderWithShippingUseCase.execute({
         // code: totvsOrder.orderCode.toString(),
@@ -304,7 +335,9 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
       })
 
       if (!orderWithShipping) {
-        return reply.status(500).send({ message: 'Error creating order with shipping address' });
+        return reply
+          .status(500)
+          .send({ message: 'Error creating order with shipping address' })
       }
 
       const createOrderItemUseCase = makeCreateOrderItemUseCase()
@@ -315,34 +348,30 @@ export async function orderComplete(request: FastifyRequest, reply: FastifyReply
           price: item.amount,
           quantity: item.quantity,
           // order_code: totvsOrder.orderCode.toString(),
-          order_code: totvs_test_code
+          order_code: totvs_test_code,
         })
       })
-  
+
       // return reply.status(201).send({ totvsOrder })
       return reply.status(201).send({ totvs_test_code })
     }
 
     if (payments[0].payment_method === 'boleto') {
-      const payment = {
-        document_type: "Boleto",
-        transaction_id: charges[0].last_transaction.id,
-        installments: charges[0].last_transaction.installments,
-        total_value: charges[0].last_transaction.amount / 100,
-        created_at: charges[0].last_transaction.created_at,
-      }
-  
-      const totvsOrder = await createOrder({
-        token: token.access_token, 
-        order, 
-        client, 
-        payment, 
-        shipping: totvsShipping
-      })
+      // const payment = {
+      //   document_type: 'Boleto',
+      //   transaction_id: charges[0].last_transaction.id,
+      //   installments: charges[0].last_transaction.installments,
+      //   total_value: charges[0].last_transaction.amount / 100,
+      //   created_at: charges[0].last_transaction.created_at,
+      // }
+      // const totvsOrder = await createOrder({
+      //   token: token.access_token,
+      //   order,
+      //   client,
+      //   payment,
+      //   shipping: totvsShipping,
+      // })
     }
-
-
-
   } catch (err) {
     if (err) {
       return reply.status(409).send({ message: err })

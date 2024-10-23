@@ -10,9 +10,7 @@ interface FindProductImageByCodeUseCaseResponse {
 }
 
 export class FindProductImageByCodeUseCase {
-  constructor(
-    private productImagesRepository: ProductImagesRepository,
-  ) {}
+  constructor(private productImagesRepository: ProductImagesRepository) {}
 
   async execute({
     code,

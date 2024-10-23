@@ -1,12 +1,12 @@
 import { Prisma, Order } from '@prisma/client'
-import { Decimal } from '@prisma/client/runtime/library';
+import { Decimal } from '@prisma/client/runtime/library'
 
 export interface SalesByDayAndOperationCode {
-  operation_code: string | null;  // Assuming operation_code is a string
-  totvs_creation_date: Date | null;
+  operation_code: string | null // Assuming operation_code is a string
+  totvs_creation_date: Date | null
   _sum: {
-    total_value: Decimal | null;  // total_value could be null if no sum exists
-  };
+    total_value: Decimal | null // total_value could be null if no sum exists
+  }
 }
 
 export interface OrdersRepository {
@@ -33,5 +33,8 @@ export interface OrdersRepository {
 
   // Dashboard queries
 
-  getSalesByDayAndOperationCode(startDate: Date, endDate: Date): Promise<SalesByDayAndOperationCode[]>
+  getSalesByDayAndOperationCode(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<SalesByDayAndOperationCode[]>
 }

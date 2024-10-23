@@ -23,7 +23,8 @@ export async function addClassificationProducts(
   const { productIds } = addClassificationProductsBodySchema.parse(request.body)
 
   try {
-    const addClassificationProductsUseCase = makeAddClassificationProductsUseCase()
+    const addClassificationProductsUseCase =
+      makeAddClassificationProductsUseCase()
 
     await addClassificationProductsUseCase.execute({
       classificationId: id,

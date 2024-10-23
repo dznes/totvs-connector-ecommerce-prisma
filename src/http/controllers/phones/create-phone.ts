@@ -40,8 +40,6 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     }
 
     return reply.status(201).send({ phone })
-
-
   } catch (err) {
     if (err instanceof ResourceAlreadyExistsError) {
       return reply.status(409).send({ message: err.message })

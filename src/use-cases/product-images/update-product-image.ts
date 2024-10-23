@@ -4,7 +4,7 @@ import { ResourceNotFoundError } from '../errors/resource-not-found-error'
 
 interface UpdateProductImageUseCaseRequest {
   code: string
-  title?:string
+  title?: string
   file_key?: string
   color?: string
   slug?: string
@@ -29,20 +29,20 @@ export class UpdateProductImageUseCase {
     position,
     sku_code,
   }: UpdateProductImageUseCaseRequest) {
-
-    const productImageExists = await this.productImagesRepository.findByCode(code)
+    const productImageExists =
+      await this.productImagesRepository.findByCode(code)
 
     if (!productImageExists) {
       throw new ResourceNotFoundError()
     }
 
-    if(sku_code) {
+    if (sku_code) {
       const skuExists = await this.skusRepository.findByCode(sku_code)
 
       if (!skuExists) {
         throw new ResourceNotFoundError()
       }
-      
+
       await this.productImagesRepository.update({
         ...productImageExists,
         title: title ?? productImageExists.title,

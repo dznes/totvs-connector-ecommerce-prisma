@@ -10,39 +10,41 @@ export async function linkProductsByClassificationTypeCode(
   reply: FastifyReply,
 ) {
   const bodySchema = z.object({
-    classificationTypeCode: z.string()
+    classificationTypeCode: z.string(),
   })
 
   const { classificationTypeCode } = bodySchema.parse(request.body)
 
   try {
-    let page = 1
-    let isLastPage = false
+    const page = 1
     const token = await fetchToken()
-    const listClassificationsByTypeCodeUseCase = makeListClassificationsByTypeCodeUseCase()
-    const addClassificationProductsBySkuCodesUseCase = makeAddClassificationProductsBySkuCodesUseCase()
+    const listClassificationsByTypeCodeUseCase =
+      makeListClassificationsByTypeCodeUseCase()
+    const addClassificationProductsBySkuCodesUseCase =
+      makeAddClassificationProductsBySkuCodesUseCase()
 
-    const { classifications } = await listClassificationsByTypeCodeUseCase.execute({
-      typeCode: classificationTypeCode,
-    })
+    const { classifications } =
+      await listClassificationsByTypeCodeUseCase.execute({
+        typeCode: classificationTypeCode,
+      })
 
     for (const classification of classifications) {
       // // Loop until the last page is reached
       // while (!isLastPage) {
-        const { items, hasNext } = await getProductCodesByClassification({ 
-          token: token.access_token,
-          page,
-          classificationTypeCode: Number(classification.type_code),
-          classificationCode: classification.code
-        })
+      const { items } = await getProductCodesByClassification({
+        token: token.access_token,
+        page,
+        classificationTypeCode: Number(classification.type_code),
+        classificationCode: classification.code,
+      })
 
-        const skuCodes = items.map((item) => item.productCode)
+      const skuCodes = items.map((item) => item.productCode)
 
-        await addClassificationProductsBySkuCodesUseCase.execute({
-          classificationId: classification.id,
-          skuCodes,
-        })
-        
+      await addClassificationProductsBySkuCodesUseCase.execute({
+        classificationId: classification.id,
+        skuCodes,
+      })
+
       //   // Check if there are more pages to fetch
       //   if (!hasNext) {
       //     isLastPage = true
@@ -51,7 +53,6 @@ export async function linkProductsByClassificationTypeCode(
       //   }
       // }
     }
-
   } catch (err) {
     if (err instanceof ResourceNotFoundError) {
       return reply.status(409).send({ message: err.message })

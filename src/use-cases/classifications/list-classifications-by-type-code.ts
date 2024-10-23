@@ -13,8 +13,11 @@ interface ListClassificationsByTypeCodeUseCaseResponse {
 export class ListClassificationsByTypeCodeUseCase {
   constructor(private classificationsRepository: ClassificationsRepository) {}
 
-  async execute({ typeCode }: ListClassificationsByTypeCodeUseCaseRequest): Promise<ListClassificationsByTypeCodeUseCaseResponse> {
-    const classifications = await this.classificationsRepository.listByTypeCode(typeCode)
+  async execute({
+    typeCode,
+  }: ListClassificationsByTypeCodeUseCaseRequest): Promise<ListClassificationsByTypeCodeUseCaseResponse> {
+    const classifications =
+      await this.classificationsRepository.listByTypeCode(typeCode)
 
     if (!classifications) {
       throw new ResourceNotFoundError()

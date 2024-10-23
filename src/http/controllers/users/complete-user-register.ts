@@ -1,7 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { createRetailClient, createWholesaleClient, fetchTestEnvToken } from '@/http/lib/totvs'
+import {
+  createRetailClient,
+  createWholesaleClient,
+  fetchTestEnvToken,
+} from '@/http/lib/totvs'
 import { makeRegisterTotvsUserUseCase } from '@/use-cases/factories/users/make-register-totvs-user-use-case'
 import { CodeAlreadyExistsError } from '@/use-cases/errors/totvs-code-already-exists-error'
 import { makeFindUserWithSameCpfUseCase } from '@/use-cases/factories/users/make-find-user-with-same-cpf-use-case'
@@ -11,7 +15,6 @@ export async function registerTotvsUser(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-
   const registerBodySchema = z.object({
     name: z.string(),
     cpf: z.string().optional(),
@@ -56,13 +59,14 @@ export async function registerTotvsUser(
     const findUserWithSameCnpjUseCase = makeFindUserWithSameCnpjUseCase()
 
     if (cpf?.length === 11) {
-
       // Check if user CPF already exists
-      const userWithExistingCpf = await findUserWithSameCpfUseCase.execute({ cpf })
+      const userWithExistingCpf = await findUserWithSameCpfUseCase.execute({
+        cpf,
+      })
       if (userWithExistingCpf) {
         return reply.status(409).send({ message: 'Cpf already exists' })
       }
-      
+
       // Register user in TOTVS
       const customerCode = await createRetailClient({
         token: token.access_token,
@@ -74,7 +78,7 @@ export async function registerTotvsUser(
         isInactive,
         email,
       })
-  
+
       // Register user in Database
       const { user } = await registerTotvsUserUseCase.execute({
         code: `totvs-${customerCode.toString()}`,
@@ -94,18 +98,19 @@ export async function registerTotvsUser(
         utm_term,
         referrer,
       })
-  
+
       return reply.status(201).send({ user })
     }
 
     if (cnpj?.length === 14) {
-
       // Check if user CPF already exists
-      const userWithExistingCnpj = await findUserWithSameCnpjUseCase.execute({ cnpj })
+      const userWithExistingCnpj = await findUserWithSameCnpjUseCase.execute({
+        cnpj,
+      })
       if (userWithExistingCnpj) {
         return reply.status(409).send({ message: 'Cnpj already exists' })
       }
-            
+
       // Register user in TOTVS
       const customerCode = await createWholesaleClient({
         token: token.access_token,
@@ -136,10 +141,9 @@ export async function registerTotvsUser(
         utm_term,
         referrer,
       })
-  
+
       return reply.status(201).send({ user })
     }
-
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: err.message })
@@ -149,6 +153,4 @@ export async function registerTotvsUser(
     }
     throw err
   }
-
-  
 }

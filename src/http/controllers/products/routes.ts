@@ -14,7 +14,10 @@ export async function ProductRoutes(app: FastifyInstance) {
   app.get('/api/products/search', search)
   app.get('/api/products/search-with-image-and-stock', searchWithImageAndStock)
   app.get('/api/category/:categorySlug', searchProductsByCategorySlug)
-  app.get('/api/classification/:classificationSlug', searchProductsByClassificationSlug)
+  app.get(
+    '/api/classification/:classificationSlug',
+    searchProductsByClassificationSlug,
+  )
 
   app.get('/api/products/id/:id', getById)
 

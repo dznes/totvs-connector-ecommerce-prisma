@@ -5,7 +5,8 @@ import { CreateOrderWithShippingAddressUseCase } from '@/use-cases/orders/create
 export function makeCreateOrderWithShippingAddressUseCase() {
   const ordersRepository = new PrismaOrdersRepository()
   const usersRepository = new PrismaUsersRepository()
-  const createOrderWithShippingAddressUseCase = new CreateOrderWithShippingAddressUseCase(ordersRepository, usersRepository)
+  const createOrderWithShippingAddressUseCase =
+    new CreateOrderWithShippingAddressUseCase(ordersRepository, usersRepository)
 
   return createOrderWithShippingAddressUseCase
 }

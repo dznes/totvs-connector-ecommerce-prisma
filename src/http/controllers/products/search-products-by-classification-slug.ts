@@ -11,7 +11,8 @@ export async function searchProductsByClassificationSlug(
     classificationSlug: z.string(),
   })
 
-  const { classificationSlug } = SearchProductsByClassificationSlugParamsSchema.parse(request.params)
+  const { classificationSlug } =
+    SearchProductsByClassificationSlugParamsSchema.parse(request.params)
 
   const SearchProductsByClassificationSlugQuerySchema = z.object({
     q: z.string(),
@@ -19,12 +20,12 @@ export async function searchProductsByClassificationSlug(
     perPage: z.coerce.number().min(1).default(20),
   })
 
-  const { q, page, perPage } = SearchProductsByClassificationSlugQuerySchema.parse(
-    request.query,
-  )
+  const { q, page, perPage } =
+    SearchProductsByClassificationSlugQuerySchema.parse(request.query)
 
   try {
-    const searchClassificationsUseCase = makeSearchProductsByClassificationSlugUseCase()
+    const searchClassificationsUseCase =
+      makeSearchProductsByClassificationSlugUseCase()
 
     const { products, count, totalPages } =
       await searchClassificationsUseCase.execute({

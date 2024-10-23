@@ -3,7 +3,9 @@ import { Classification, Prisma } from '@prisma/client'
 
 import { ClassificationsRepository } from '../classifications-repository'
 
-export class PrismaClassificationsRepository implements ClassificationsRepository {
+export class PrismaClassificationsRepository
+  implements ClassificationsRepository
+{
   async findById(id: number) {
     const classification = await prisma.classification.findUnique({
       where: {
@@ -16,7 +18,8 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
   async findByCodeAndTypeCode(code: string, type_code: string) {
     const classification = await prisma.classification.findUnique({
       where: {
-        code_type_code: {  // Composite key lookup
+        code_type_code: {
+          // Composite key lookup
           code,
           type_code,
         },
@@ -101,15 +104,19 @@ export class PrismaClassificationsRepository implements ClassificationsRepositor
     return classification
   }
 
-  async addProductsToClassification(classificationId: number, productIds: number[]) {
-    const classificationWithUpdatedProducts = await prisma.classification.update({
-      where: { id: classificationId },
-      data: {
-        products: {
-          connect: productIds.map((productId) => ({ id: productId })),
+  async addProductsToClassification(
+    classificationId: number,
+    productIds: number[],
+  ) {
+    const classificationWithUpdatedProducts =
+      await prisma.classification.update({
+        where: { id: classificationId },
+        data: {
+          products: {
+            connect: productIds.map((productId) => ({ id: productId })),
+          },
         },
-      },
-    })
+      })
 
     return classificationWithUpdatedProducts
   }

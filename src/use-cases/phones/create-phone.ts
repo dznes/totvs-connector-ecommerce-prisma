@@ -19,8 +19,7 @@ interface CreatePhoneUseCaseResponse {
 export class CreatePhoneUseCase {
   constructor(
     private phonesRepository: PhonesRepository,
-    private usersRepository: UsersRepository
-
+    private usersRepository: UsersRepository,
   ) {}
 
   async execute({
@@ -32,10 +31,11 @@ export class CreatePhoneUseCase {
   }: CreatePhoneUseCaseRequest): Promise<CreatePhoneUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
     if (!user) {
-        throw new UserNotFoundError()
+      throw new UserNotFoundError()
     }
 
-    const findPhoneByUserIdPhoneType = await this.phonesRepository.findByUserIdPhoneType(userId, type)
+    const findPhoneByUserIdPhoneType =
+      await this.phonesRepository.findByUserIdPhoneType(userId, type)
 
     if (findPhoneByUserIdPhoneType) {
       await this.phonesRepository.update({
@@ -45,7 +45,7 @@ export class CreatePhoneUseCase {
         number,
       })
 
-      return ({ user })
+      return { user }
     } else {
       const phone = await this.phonesRepository.create({
         status: status ?? 200,

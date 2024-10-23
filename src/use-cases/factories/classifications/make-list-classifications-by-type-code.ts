@@ -3,7 +3,8 @@ import { ListClassificationsByTypeCodeUseCase } from '@/use-cases/classification
 
 export function makeListClassificationsByTypeCodeUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
-  const listClassificationsByTypeCodeUseCase = new ListClassificationsByTypeCodeUseCase(classificationRepository)
+  const listClassificationsByTypeCodeUseCase =
+    new ListClassificationsByTypeCodeUseCase(classificationRepository)
 
   return listClassificationsByTypeCodeUseCase
 }

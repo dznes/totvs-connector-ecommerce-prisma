@@ -3,7 +3,9 @@ import { DeleteClassificationUseCase } from '@/use-cases/classifications/delete-
 
 export function makeDeleteClassificationUseCase() {
   const classificationRepository = new PrismaClassificationsRepository()
-  const deleteClassificationUseCase = new DeleteClassificationUseCase(classificationRepository)
+  const deleteClassificationUseCase = new DeleteClassificationUseCase(
+    classificationRepository,
+  )
 
   return deleteClassificationUseCase
 }

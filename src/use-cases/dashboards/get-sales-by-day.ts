@@ -1,9 +1,12 @@
-import { OrdersRepository, SalesByDayAndOperationCode } from '@/repositories/orders-repository'
-import { Decimal } from '@prisma/client/runtime/library';
+import {
+  OrdersRepository,
+  // SalesByDayAndOperationCode,
+} from '@/repositories/orders-repository'
+import { Decimal } from '@prisma/client/runtime/library'
 
 interface SalesByDate {
-  date: string;
-  [operationCode: string]: number | string;
+  date: string
+  [operationCode: string]: number | string
 }
 
 interface GetSalesByDayUseCaseRequest {
@@ -18,50 +21,63 @@ interface GetSalesByDayUseCaseResponse {
 export class GetSalesByDayUseCase {
   constructor(private ordersRepository: OrdersRepository) {}
 
-  async execute({ startDate, endDate }: GetSalesByDayUseCaseRequest): Promise<GetSalesByDayUseCaseResponse> {
-    const orders = await this.ordersRepository.getSalesByDayAndOperationCode(startDate, endDate)
+  async execute({
+    startDate,
+    endDate,
+  }: GetSalesByDayUseCaseRequest): Promise<GetSalesByDayUseCaseResponse> {
+    const orders = await this.ordersRepository.getSalesByDayAndOperationCode(
+      startDate,
+      endDate,
+    )
 
     // Get a unique list of all operation codes that exist in the period
-    const operationCodes = [...new Set(orders.map(order => order.operation_code))];
+    const operationCodes = [
+      ...new Set(orders.map((order) => order.operation_code)),
+    ]
 
     // Initialize a variable to store the total sum of all total_value
-    let total = 0;
+    let total = 0
 
     // Format the result into the desired structure
-    const formattedOrders = orders.reduce<Record<string, SalesByDate>>((acc, order) => {
-      if (order.totvs_creation_date) { // Ensure totvs_creation_date is not null
-        const date = order.totvs_creation_date.toISOString().split('T')[0]; // Format the date as 'YYYY-MM-DD'
+    const formattedOrders = orders.reduce<Record<string, SalesByDate>>(
+      (acc, order) => {
+        if (order.totvs_creation_date) {
+          // Ensure totvs_creation_date is not null
+          const date = order.totvs_creation_date.toISOString().split('T')[0] // Format the date as 'YYYY-MM-DD'
 
-        // Initialize the date object if it doesn't exist
-        if (!acc[date]) {
-          acc[date] = { date };
+          // Initialize the date object if it doesn't exist
+          if (!acc[date]) {
+            acc[date] = { date }
 
-          // Initialize all operation codes with 0 for the date
-          operationCodes.forEach(code => {
-            if (code) acc[date][code] = 0;
-          });
+            // Initialize all operation codes with 0 for the date
+            operationCodes.forEach((code) => {
+              if (code) acc[date][code] = 0
+            })
+          }
+
+          // Ensure operation_code is not null, then add the sales value
+          if (order.operation_code) {
+            const totalValue = (order._sum.total_value as Decimal).toNumber() // Convert Decimal to number
+
+            // Sum the sales value instead of overwriting it
+            acc[date][order.operation_code] =
+              (acc[date][order.operation_code] as number) + totalValue
+
+            // Add the totalValue to the total sum
+            total += totalValue
+          }
         }
 
-        // Ensure operation_code is not null, then add the sales value
-        if (order.operation_code) {
-          const totalValue = (order._sum.total_value as Decimal).toNumber(); // Convert Decimal to number
-
-          // Sum the sales value instead of overwriting it
-          acc[date][order.operation_code] = (acc[date][order.operation_code] as number) + totalValue;
-
-          // Add the totalValue to the total sum
-          total += totalValue;
-        }
-      }
-
-      return acc;
-    }, {});
+        return acc
+      },
+      {},
+    )
 
     // Log the total to the console
-    console.log('Total sales value:', total);
+    console.log('Total sales value:', total)
 
     // Convert the object into an array of objects
-    const result = Object.values(formattedOrders);
+    const result = Object.values(formattedOrders)
 
     return { result }
   }
