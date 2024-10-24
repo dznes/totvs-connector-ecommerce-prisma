@@ -37,6 +37,7 @@ interface RegisterTotvsUserUseCaseRequest {
   is_employee?: boolean
   is_active?: boolean
   employee_status?: string
+  newsletter?: boolean
   utm_campaign?: string
   utm_source?: string
   utm_medium?: string
@@ -70,6 +71,7 @@ export class RegisterTotvsUserUseCase {
     is_employee,
     is_active,
     employee_status,
+    newsletter,
     utm_campaign,
     utm_source,
     utm_medium,
@@ -109,6 +111,7 @@ export class RegisterTotvsUserUseCase {
       is_active: is_active ?? true,
       employee_status,
       totvs_branch_code: 1,
+      newsletter,
       utm_campaign,
       utm_source,
       utm_medium,

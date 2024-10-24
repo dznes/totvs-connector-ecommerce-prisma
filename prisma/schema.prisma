@@ -206,6 +206,7 @@ model User {
   is_shipping_company Boolean   @default(false)
   is_employee         Boolean   @default(false)
   is_active           Boolean   @default(true)
+  newsletter          Boolean?  @default(true)
   employee_status     String?
   totvs_branch_code   Int?
   utm_campaign        String?

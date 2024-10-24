@@ -25,6 +25,7 @@ export async function registerTotvsUser(
     isInactive: z.boolean().optional().default(false),
     email: z.string(),
     password: z.string(),
+    newsletter: z.boolean().optional().default(true),
     utm_campaign: z.string().optional(),
     utm_source: z.string().optional(),
     utm_medium: z.string().optional(),
@@ -49,6 +50,7 @@ export async function registerTotvsUser(
     utm_content,
     utm_term,
     referrer,
+    newsletter,
   } = registerBodySchema.parse(request.body)
 
   try {
@@ -91,6 +93,7 @@ export async function registerTotvsUser(
         cnpj: '',
         gender,
         password,
+        newsletter,
         utm_campaign,
         utm_source,
         utm_medium,
@@ -134,6 +137,7 @@ export async function registerTotvsUser(
         cnpj,
         gender,
         password,
+        newsletter,
         utm_campaign,
         utm_source,
         utm_medium,

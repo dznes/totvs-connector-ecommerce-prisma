@@ -14,6 +14,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     gender: z.string(),
     birth_date: z.string(),
     is_customer: z.boolean().optional(),
+    newsletter: z.boolean().optional().default(true),
   })
 
   const {
@@ -26,6 +27,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     cpf,
     cnpj,
     is_customer,
+    newsletter,
   } = registerBodySchema.parse(request.body)
 
   try {
@@ -41,6 +43,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       cpf,
       cnpj,
       is_customer,
+      newsletter,
     })
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {

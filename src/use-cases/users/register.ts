@@ -15,6 +15,7 @@ interface RegisterUseCaseRequest {
   cpf?: string
   cnpj?: string
   is_customer?: boolean
+  newsletter?: boolean
 }
 
 interface RegisterUseCaseResponse {
@@ -35,6 +36,7 @@ export class RegisterUseCase {
     cpf,
     cnpj,
     is_customer,
+    newsletter,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await bcrypt.hash(password, 6)
 
@@ -55,6 +57,7 @@ export class RegisterUseCase {
       cpf,
       cnpj,
       is_customer,
+      newsletter,
     })
 
     return { user }
